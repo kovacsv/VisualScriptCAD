@@ -88,8 +88,8 @@ def Main (argv):
 	if not os.path.exists (targetFolder):
 		os.makedirs (targetFolder)
 	
-	#InstallwxWidgets (targetFolder, msBuildPath, msBuildConfiguration)
-	#InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration)
+	InstallwxWidgets (targetFolder, msBuildPath, msBuildConfiguration)
+	InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration)
 	InstallVisualScriptEngine (targetFolder, msBuildPath, msBuildConfiguration)
 	return 0
 	
