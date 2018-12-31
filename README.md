@@ -2,8 +2,6 @@
 
 VisualScriptCad is a simple experimental 3D modeling application based on [VisualScriptEngine](https://github.com/kovacsv/VisualScriptEngine).
 
-VisualScriptEngine is an experimental visual scripting engine designed for embedding in another applications.
-
 ## Documentation
 
 [VisualScriptCAD Wiki](https://github.com/kovacsv/VisualScriptCAD/wiki)
