@@ -17,6 +17,7 @@ class ApplicationHeaderIO : public NUIE::ExternalHeaderIO
 public:
 	ApplicationHeaderIO ()
 	{
+
 	}
 
 	virtual bool Read (NE::InputStream& inputStream) const override
@@ -28,13 +29,22 @@ public:
 		}
 		Version readVersion;
 		readVersion.Read (inputStream);
+		if (readVersion > AppVersion) {
+			return false;
+		}
+		int readFileVersion = 0;
+		inputStream.Read (readFileVersion);
+		if (readFileVersion > FileVersion) {
+			return false;
+		}
 		return true;
 	}
 
 	virtual void Write (NE::OutputStream& outputStream) const override
 	{
 		outputStream.Write (std::wstring (VSCAD_APP_NAME));
-		currentVersion.Write (outputStream);
+		AppVersion.Write (outputStream);
+		outputStream.Write (FileVersion);
 	}
 };
 
