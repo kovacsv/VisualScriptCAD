@@ -15,7 +15,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf64}\{#MyAppName}
 DisableProgramGroupPage=yes
 OutputBaseFilename={#MyAppName} v{#MyAppVersion} Installer
-OutputDir="..\Build\Installer"
+OutputDir="..\Build\Package"
 Compression=lzma
 SolidCompression=yes
 
