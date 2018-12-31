@@ -71,7 +71,9 @@ def InstallVisualScriptEngine (targetFolder, msBuildPath, msBuildConfiguration):
 		UnzipFile (vseZipPath, targetFolder)
 		CmakeProject (vseFolderPath, 'Build')
 		solutionPath = os.path.join (vseFolderPath, 'Build', 'VisualScriptEngine.sln')
+		installProjectPath = os.path.join (vseFolderPath, 'Build', 'INSTALL.vcxproj')
 		BuildSolution (msBuildPath, solutionPath, msBuildConfiguration)
+		BuildSolution (msBuildPath, installProjectPath, msBuildConfiguration)
 	
 def Main (argv):
 	if len (argv) != 4:
