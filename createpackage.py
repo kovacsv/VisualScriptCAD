@@ -32,7 +32,7 @@ def Main (argv):
 	innoSetupPath = 'C:\\Program Files (x86)\\Inno Setup 5\\ISCC.exe'
 
 	version = GetVersionFromInnoSetupScript (installerScriptPath)
-	zipPath = os.path.abspath (os.path.join (packagePath, 'VisualScriptCAD v' + version + '.zip'))
+	zipPath = os.path.abspath (os.path.join (packagePath, 'VisualScriptCAD_v' + version + '_Portable.zip'))
 	
 	subprocess.call ([innoSetupPath, installerScriptPath])
 	
