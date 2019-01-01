@@ -11,7 +11,6 @@ NE::SerializationInfo			PointNodeBase::serializationInfo (NE::ObjectVersion (1))
 NE::DynamicSerializationInfo	PointNode::serializationInfo (NE::ObjectId ("{F387DF9E-CFAE-47D9-ABD5-F1195473A5C5}"), NE::ObjectVersion (1), PointNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	LinePointsNode::serializationInfo (NE::ObjectId ("{6228348D-9DE5-43DA-A3D8-7AA59BEE551A}"), NE::ObjectVersion (1), LinePointsNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ArcPointsNode::serializationInfo (NE::ObjectId ("{968F0889-E537-4A0F-9D76-4E0378868AB2}"), NE::ObjectVersion (1), ArcPointsNode::CreateSerializableInstance);
-NE::DynamicSerializationInfo	TransformPointNode::serializationInfo (NE::ObjectId ("{8AC8484D-C80C-450B-AF86-B5E915179CED}"), NE::ObjectVersion (1), TransformPointNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	PointTranslationNode::serializationInfo (NE::ObjectId ("{23F99EC7-E0E1-42FB-88BD-239A27F1E24E}"), NE::ObjectVersion (1), PointTranslationNode::CreateSerializableInstance);
 
 PointNodeBase::PointNodeBase () :
@@ -278,62 +277,6 @@ NE::Stream::Status ArcPointsNode::Read (NE::InputStream& inputStream)
 }
 
 NE::Stream::Status ArcPointsNode::Write (NE::OutputStream& outputStream) const
-{
-	NE::ObjectHeader header (outputStream, serializationInfo);
-	PointNodeBase::Write (outputStream);
-	return outputStream.GetStatus ();
-}
-
-TransformPointNode::TransformPointNode () :
-	TransformPointNode (L"", NUIE::Point ())
-{
-
-}
-
-TransformPointNode::TransformPointNode (const std::wstring& name, const NUIE::Point& position) :
-	PointNodeBase (name, position)
-{
-
-}
-
-void TransformPointNode::Initialize ()
-{
-	PointNodeBase::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("point"), L"Point", NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
-}
-
-NE::ValuePtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
-{
-	NE::ValuePtr pointValue = EvaluateSingleInputSlot (NE::SlotId ("point"), env);
-	NE::ValuePtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	if (!NE::IsComplexType<PointValue> (pointValue) || !NE::IsComplexType<TransformationValue> (transformationValue)) {
-		return nullptr;
-	}
-
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
-	NE::ListValuePtr result (new NE::ListValue ());
-	valueCombination->CombineValues ({pointValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
-		glm::dvec3 point (PointValue::Get (combination.GetValue (0)));
-		glm::dmat4 transformation (TransformationValue::Get (combination.GetValue (1)));
-		glm::dvec3 transformed = glm::dvec3 (transformation * glm::dvec4 (point, 1.0));
-		result->Push (NE::ValuePtr (new PointValue (transformed)));
-		return true;
-	});
-
-	return result;
-}
-
-NE::Stream::Status TransformPointNode::Read (NE::InputStream& inputStream)
-{
-	NE::ObjectHeader header (inputStream);
-	PointNodeBase::Read (inputStream);
-	return inputStream.GetStatus ();
-}
-
-NE::Stream::Status TransformPointNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	PointNodeBase::Write (outputStream);

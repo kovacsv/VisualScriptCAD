@@ -69,9 +69,6 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Point Nodes", L"Arc Points",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ArcPointsNode (L"Arc Points", position)); }
 	);
-	RegisterNode (L"Point Nodes", L"Transform Point",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (L"Transform Point", position)); }
-	);
 	RegisterNode (L"Shape Nodes", L"Material",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MaterialNode (L"Material", position)); }
 	);
@@ -104,6 +101,9 @@ NodeRegistry::NodeRegistry () :
 	);
 	RegisterNode (L"Transformation Nodes", L"Combination",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CombinationNode (L"Combination", position)); }
+	);
+	RegisterNode (L"Transformation Nodes", L"Transform Point",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (L"Transform Point", position)); }
 	);
 	RegisterNode (L"Boolean Nodes", L"Difference",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Difference", position, CGALOperations::BooleanOperation::Difference)); }
