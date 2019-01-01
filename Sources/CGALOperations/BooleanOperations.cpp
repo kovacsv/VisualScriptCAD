@@ -368,12 +368,17 @@ static bool MeshBooleanOperationWithCGALPolyhedron (const Modeler::Mesh& aMesh, 
 
 bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
 {
+	// use the same rounding for mesh generation as for operation
+	// also workaround a CGAL bug of not resetting the rounding value sometimes
+	CGAL::Protect_FPU_rounding<true> protect (CGAL_FE_UPWARD);
+
 	bool success = false;
 	try {
 		success = MeshBooleanOperationWithCGALMesh (aMesh, bMesh, operation, resultMesh);
 	} catch (...) {
 		success = false;
 	}
+
 	static bool enablePolyhedronOperation = false;
 	if (enablePolyhedronOperation && !success) {
 		try {
@@ -382,17 +387,16 @@ bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMes
 			success = false;
 		}
 	}
+
 	return success;
 }
 
 std::shared_ptr<Modeler::MeshShape> MeshBooleanOperation (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape, BooleanOperation operation)
 {
-	// use the same rounding for mesh generation as for operation
-	// also workaround a CGAL bug of not resetting the rounding value sometimes
-	CGAL::Protect_FPU_rounding<true> protect (CGAL_FE_UPWARD);
-	
+	Modeler::Mesh aMesh = aShape->GenerateMesh ();
+	Modeler::Mesh bMesh = bShape->GenerateMesh ();
 	Modeler::Mesh resultMesh;
-	bool opResult = MeshBooleanOperation (aShape->GenerateMesh (), bShape->GenerateMesh (), operation, resultMesh);
+	bool opResult = MeshBooleanOperation (aMesh, bMesh, operation, resultMesh);
 	if (!opResult) {
 		return nullptr;
 	}
