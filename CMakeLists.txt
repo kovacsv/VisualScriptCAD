@@ -42,6 +42,8 @@ enable_testing ()
 
 set (LibSourcesFolder Libs)
 set (GLMSourcesFolder ${LibSourcesFolder}/glm-0.9.9.2)
+set (GladSourcesFolder ${LibSourcesFolder}/glad-opengl-3.3)
+set (TinyXMLSourcesFolder ${LibSourcesFolder}/tinyxml2-7.0.1)
 
 # Geometry
 
@@ -157,7 +159,8 @@ set (VisualScriptCADSourcesFolder Sources/VisualScriptCAD)
 configure_file (${VisualScriptCADSourcesFolder}/Application/VersionInfo.hpp.in ${PROJECT_BINARY_DIR}/VersionInfo.hpp)
 include_directories (${PROJECT_BINARY_DIR})
 
-file (GLOB VisualScriptCADGladSourceFiles ${LibSourcesFolder}/glad-opengl-3.3/include/glad/*.h ${LibSourcesFolder}/glad-opengl-3.3/src/*.c)
+file (GLOB VisualScriptCADGladSourceFiles ${GladSourcesFolder}/include/glad/*.h ${GladSourcesFolder}/src/*.c)
+file (GLOB VisualScriptCADTinyXMLSourceFiles ${TinyXMLSourcesFolder}/*.h ${TinyXMLSourcesFolder}/*.cpp)
 file (GLOB VisualScriptCADSourceFiles ${VisualScriptCADSourcesFolder}/*.hpp ${VisualScriptCADSourcesFolder}/*.cpp)
 if (MSVC)
 	file (GLOB VisualScriptCADSourceFiles ${VisualScriptCADSourceFiles} ${VisualScriptCADSourcesFolder}/appicon.rc ${VisualScriptCADSourcesFolder}/appicon.ico)
@@ -168,6 +171,7 @@ file (GLOB VisualScriptCADApplicationSourceFiles ${VisualScriptCADSourcesFolder}
 set (
 	VisualScriptCADFiles
 	${VisualScriptCADGladSourceFiles}
+	${VisualScriptCADTinyXMLSourceFiles}
 	${VisualScriptCADSourceFiles}
 	${VisualScriptCADEditorSourceFiles}
 	${VisualScriptCADRendererSourceFiles}
@@ -175,6 +179,7 @@ set (
 )
 
 source_group ("Libs" FILES ${VisualScriptCADGladSourceFiles})
+source_group ("Libs" FILES ${VisualScriptCADTinyXMLSourceFiles})
 source_group ("Sources" FILES ${VisualScriptCADSourceFiles})
 source_group ("Editor" FILES ${VisualScriptCADEditorSourceFiles})
 source_group ("Renderer" FILES ${VisualScriptCADRendererSourceFiles})
@@ -186,7 +191,8 @@ target_include_directories (
 	${GeometrySourcesFolder}
 	${ModelerSourcesFolder}
 	${CGALOperationsSourcesFolder}
-	${LibSourcesFolder}/glad-opengl-3.3/include
+	${GladSourcesFolder}/include
+	${TinyXMLSourcesFolder}
 	${VisualScriptCADSourcesFolder}/Editor
 	${VisualScriptCADSourcesFolder}/Renderer
 	${VisualScriptCADSourcesFolder}/Application
