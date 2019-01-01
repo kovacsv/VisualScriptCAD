@@ -80,7 +80,7 @@ class MenuBar : public wxMenuBar
 public:
 	MenuBar ();
 
-	void	UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode);
+	void	UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const RenderScene::Settings& renderSettings);
 };
 
 class ToolBar : public wxToolBar

@@ -184,11 +184,11 @@ MenuBar::MenuBar () :
 	modelMenu->Append (CommandId::Model_FitToWindow, "Fit to Window");
 	wxMenu* viewModeMenu = new wxMenu ();
 	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Lines, "Lines");
-	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Polygons, "Polygons")->Check ();
+	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Polygons, "Polygons");
 	modelMenu->AppendSubMenu (viewModeMenu, L"View Mode");
 	wxMenu* axisModeMenu = new wxMenu ();
 	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_On, "On");
-	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_Off, "Off")->Check ();
+	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_Off, "Off");
 	modelMenu->AppendSubMenu (axisModeMenu, L"Axis Mode");
 	modelMenu->Append (CommandId::Model_Info, "Information...");
 	modelMenu->Append (CommandId::Model_Export, "Export...");
@@ -199,7 +199,7 @@ MenuBar::MenuBar () :
 	Append (aboutMenu, L"&About");
 }
 
-void MenuBar::UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode)
+void MenuBar::UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const RenderScene::Settings& renderSettings)
 {
 	if (viewMode == ViewMode::Editor) {
 		FindItem (CommandId::View_Editor)->Check (true);
@@ -215,6 +215,22 @@ void MenuBar::UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMo
 		FindItem (CommandId::Mode_Automatic)->Check (true);
 	} else if (updateMode == WXAS::NodeEditorControl::UpdateMode::Manual) {
 		FindItem (CommandId::Mode_Manual)->Check (true);
+	} else {
+		DBGBREAK ();
+	}
+
+	if (renderSettings.viewMode == RenderScene::ViewMode::Lines) {
+		FindItem (CommandId::Model_ViewMode_Lines)->Check (true);
+	} else if (renderSettings.viewMode == RenderScene::ViewMode::Polygons) {
+		FindItem (CommandId::Model_ViewMode_Polygons)->Check (true);
+	} else {
+		DBGBREAK ();
+	}
+
+	if (renderSettings.axisMode == RenderScene::AxisMode::On) {
+		FindItem (CommandId::Model_AxisMode_On)->Check (true);
+	} else if (renderSettings.axisMode == RenderScene::AxisMode::Off) {
+		FindItem (CommandId::Model_AxisMode_Off)->Check (true);
 	} else {
 		DBGBREAK ();
 	}
@@ -314,6 +330,8 @@ MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	editorAndModelSplitter->SetSashGravity (0.5);
 	editorAndModelSplitter->SetMinimumPaneSize (100);
 	editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
+
+	UpdateMenuBar ();
 
 	if (!defaultFileName.empty ()) {
 		OpenFile (defaultFileName);
@@ -550,7 +568,7 @@ bool MainWindow::ConfirmLosingUnsavedChanges ()
 void MainWindow::UpdateMenuBar ()
 {
 	WXAS::NodeEditorControl* editor = nodeEditorControl->GetEditor ();
- 	menuBar->UpdateStatus (viewMode, editor->GetUpdateMode ());
+ 	menuBar->UpdateStatus (viewMode, editor->GetUpdateMode (), modelControl->GetRenderSettings ());
 	toolBar->UpdateStatus (viewMode, editor->GetUpdateMode ());
 }
 
