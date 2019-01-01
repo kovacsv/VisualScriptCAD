@@ -24,6 +24,13 @@ void Shape::SetTransformation (const glm::dmat4& newTransformation)
 	transformation = newTransformation;
 }
 
+Modeler::ShapePtr Shape::Transform (const glm::dmat4& newTransformation) const
+{
+	Modeler::ShapePtr transformed = Clone ();
+	transformed->SetTransformation (transformed->GetTransformation () * newTransformation);
+	return transformed;
+}
+
 BoxShape::BoxShape (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize) :
 	Shape (transformation),
 	material (material),

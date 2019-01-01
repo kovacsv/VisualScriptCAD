@@ -3,6 +3,7 @@
 
 #include "NE_GenericValue.hpp"
 #include "BI_BasicUINode.hpp"
+#include "ShapeNode.hpp"
 #include "NodeValues.hpp"
 #include "IncludeGLM.hpp"
 
@@ -90,6 +91,21 @@ class TransformPointNode : public TransformationNode
 public:
 	TransformPointNode ();
 	TransformPointNode (const std::wstring& name, const NUIE::Point& position);
+
+	virtual void				Initialize () override;
+	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+};
+
+class TransformShapeNode : public ShapeNode
+{
+	DYNAMIC_SERIALIZABLE (TransformShapeNode);
+
+public:
+	TransformShapeNode ();
+	TransformShapeNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;

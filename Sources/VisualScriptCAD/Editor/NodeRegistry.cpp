@@ -105,6 +105,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Transformation Nodes", L"Transform Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (L"Transform Point", position)); }
 	);
+	RegisterNode (L"Transformation Nodes", L"Transform Shape",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformShapeNode (L"Transform Shape", position)); }
+	);
 	RegisterNode (L"Boolean Nodes", L"Difference",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Difference", position, CGALOperations::BooleanOperation::Difference)); }
 	);

@@ -20,6 +20,7 @@ public:
 
 	const glm::dmat4&		GetTransformation () const;
 	void					SetTransformation (const glm::dmat4& newTransformation);
+	Modeler::ShapePtr		Transform (const glm::dmat4& newTransformation) const;
 
 	virtual bool			Check () const = 0;
 	virtual ShapePtr		Clone () const = 0;

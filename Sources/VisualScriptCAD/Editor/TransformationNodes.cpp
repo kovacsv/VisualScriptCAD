@@ -10,6 +10,7 @@ NE::DynamicSerializationInfo	RotationNode::serializationInfo (NE::ObjectId ("{2F
 NE::DynamicSerializationInfo	ScaleNode::serializationInfo (NE::ObjectId ("{9E070858-8AC9-42DE-95A6-0C2AB6807426}"), NE::ObjectVersion (1), ScaleNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	CombinationNode::serializationInfo (NE::ObjectId ("{E6FC2758-00D6-47F6-B321-AE46ECEA66C5}"), NE::ObjectVersion (1), CombinationNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TransformPointNode::serializationInfo (NE::ObjectId ("{8AC8484D-C80C-450B-AF86-B5E915179CED}"), NE::ObjectVersion (1), TransformPointNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	TransformShapeNode::serializationInfo (NE::ObjectId ("{3BA3AD96-09FD-49D2-8299-2143A0A8ECFA}"), NE::ObjectVersion (1), TransformShapeNode::CreateSerializableInstance);
 
 TransformationNode::TransformationNode () :
 	TransformationNode (L"", NUIE::Point ())
@@ -379,5 +380,61 @@ NE::Stream::Status TransformPointNode::Write (NE::OutputStream& outputStream) co
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	TransformationNode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+TransformShapeNode::TransformShapeNode () :
+	TransformShapeNode (L"", NUIE::Point ())
+{
+
+}
+
+TransformShapeNode::TransformShapeNode (const std::wstring& name, const NUIE::Point& position) :
+	ShapeNode (name, position)
+{
+
+}
+
+void TransformShapeNode::Initialize ()
+{
+	ShapeNode::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), L"Shape", nullptr, NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+}
+
+NE::ValuePtr TransformShapeNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValuePtr shapeValue = EvaluateSingleInputSlot (NE::SlotId ("shape"), env);
+	NE::ValuePtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	if (!NE::IsComplexType<ShapeValue> (shapeValue) || !NE::IsComplexType<TransformationValue> (transformationValue)) {
+		return nullptr;
+	}
+
+	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	valueCombination->CombineValues ({shapeValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
+		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
+		glm::dmat4 transformation (TransformationValue::Get (combination.GetValue (1)));
+		Modeler::ShapePtr transformed = shape->Transform (transformation);
+		result->Push (NE::ValuePtr (new ShapeValue (transformed)));
+		return true;
+	});
+
+	return result;
+}
+
+NE::Stream::Status TransformShapeNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	ShapeNode::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status TransformShapeNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	ShapeNode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
