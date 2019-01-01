@@ -170,14 +170,13 @@ MenuBar::MenuBar () :
 	viewMenu->AppendRadioItem (CommandId::View_Split, "Split View");
 	Append (viewMenu, L"&View");
 
+	wxMenu* editorMenu = new wxMenu ();
 	wxMenu* updateModeMenu = new wxMenu ();
 	updateModeMenu->AppendRadioItem (CommandId::Mode_Automatic, "Automatic");
 	updateModeMenu->AppendRadioItem (CommandId::Mode_Manual, "Manual");
 	updateModeMenu->AppendSeparator ();
-	updateModeMenu->Append (CommandId::Mode_Update, "Update");
-	Append (updateModeMenu, L"&Update");
-
-	wxMenu* editorMenu = new wxMenu ();
+	updateModeMenu->Append (CommandId::Mode_Update, "Update Now");
+	editorMenu->AppendSubMenu (updateModeMenu, L"Update");
 	editorMenu->Append (CommandId::Editor_FitToWindow, "Fit to Window");
 	Append (editorMenu, L"E&ditor");
 
@@ -243,7 +242,7 @@ ToolBar::ToolBar (wxWindow* parent) :
 
 	AddRadioButton (CommandId::Mode_Automatic, control_end_blue, control_end_blue_size, L"Automatic Update");
 	AddRadioButton (CommandId::Mode_Manual, control_pause_blue, control_pause_blue_size, L"Manual Update");
-	AddIconButton (CommandId::Mode_Update, control_play_blue, control_play_blue_size, L"Update");
+	AddIconButton (CommandId::Mode_Update, control_play_blue, control_play_blue_size, L"Update Now");
 
 	AddSeparator ();
 
