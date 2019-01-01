@@ -12,7 +12,7 @@ static std::atomic<MeshGeometryId> nextMeshGeometryId (0);
 static std::atomic<MeshId> nextMeshId (0);
 static std::atomic<MaterialId> nextMaterialId (0);
 
-const Material DefaultMaterial (glm::dvec3 (1.0f, 0.5f, 0.2f));
+const Material DefaultMaterial (glm::dvec3 (0.5f, 0.5f, 0.5f));
 
 Material::Material () :
 	color (0.0f, 0.0f, 0.0f)

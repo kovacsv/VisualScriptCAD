@@ -16,29 +16,29 @@ public:
 	ModelControl (wxWindow *parent);
 	virtual ~ModelControl ();
 
-	void					AddMesh (const Modeler::Model& model, Modeler::MeshId meshId);
-	void					RemoveMesh (Modeler::MeshId meshId);
-	void					Clear ();
+	void							AddMesh (const Modeler::Model& model, Modeler::MeshId meshId);
+	void							RemoveMesh (Modeler::MeshId meshId);
+	void							Clear ();
 
-	void					FitToWindow ();
+	void							FitToWindow ();
 
-	void					OnPaint (wxPaintEvent& evt);
-	void					OnResize (wxSizeEvent& evt);
+	void							OnPaint (wxPaintEvent& evt);
+	void							OnResize (wxSizeEvent& evt);
 
-	void					OnMouseDown (wxMouseEvent& evt);
-	void					OnMouseMove (wxMouseEvent& evt);
-	void					OnMouseUp (wxMouseEvent& evt);
-	void					OnMouseWheel (wxMouseEvent& evt);
+	void							OnMouseDown (wxMouseEvent& evt);
+	void							OnMouseMove (wxMouseEvent& evt);
+	void							OnMouseUp (wxMouseEvent& evt);
+	void							OnMouseWheel (wxMouseEvent& evt);
 
-	RenderScene::ViewMode	GetViewMode () const;
-	void					SetViewMode (RenderScene::ViewMode newViewMode);
+	const RenderScene::Settings& 	GetRenderSettings () const;
+	void							SetRenderSettings (const RenderScene::Settings& newSettings);
 
 private:
 	bool InitContext ();
 
 	wxGLContext*			glContext;
-	RenderScene::ViewMode	renderSceneViewMode;
 	RenderModelConverter	renderModelConverter;
+	RenderScene::Settings	renderSceneSettings;
 	RenderScene				renderScene;
 
 	// TODO: separate class

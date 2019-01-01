@@ -27,9 +27,11 @@ enum CommandId
 	Model_FitToWindow			= 15,
 	Model_ViewMode_Lines		= 16,
 	Model_ViewMode_Polygons		= 17,
-	Model_Info					= 18,
-	Model_Export				= 19,
-	About_GitHub				= 20
+	Model_AxisMode_On			= 18,
+	Model_AxisMode_Off			= 19,
+	Model_Info					= 20,
+	Model_Export				= 21,
+	About_GitHub				= 22
 };
 
 enum class ViewMode

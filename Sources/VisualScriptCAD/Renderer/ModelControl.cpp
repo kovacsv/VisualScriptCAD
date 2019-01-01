@@ -19,8 +19,8 @@ static const int canvasAttributes[] = {
 ModelControl::ModelControl (wxWindow *parent) :
 	wxGLCanvas (parent, wxID_ANY, canvasAttributes, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
 	glContext (nullptr),
-	renderSceneViewMode (RenderScene::ViewMode::Polygons),
 	renderModelConverter (),
+	renderSceneSettings (RenderScene::ViewMode::Polygons, RenderScene::AxisMode::Off),
 	renderScene (),
 	lastMousePosition (0, 0),
 	lastMouseButton (-1),
@@ -73,7 +73,7 @@ void ModelControl::OnPaint (wxPaintEvent&)
 	wxPaintDC dc (this);
 
 	const wxSize clientSize = GetClientSize ();
-	renderScene.Draw (clientSize.x, clientSize.y, renderSceneViewMode);
+	renderScene.Draw (clientSize.x, clientSize.y, renderSceneSettings);
 
 	SwapBuffers ();
 }
@@ -123,14 +123,14 @@ void ModelControl::OnMouseWheel (wxMouseEvent& evt)
 	Refresh ();
 }
 
-RenderScene::ViewMode ModelControl::GetViewMode () const
+const RenderScene::Settings& ModelControl::GetRenderSettings () const
 {
-	return renderSceneViewMode;
+	return renderSceneSettings;
 }
 
-void ModelControl::SetViewMode (RenderScene::ViewMode newViewMode)
+void ModelControl::SetRenderSettings (const RenderScene::Settings& newSettings)
 {
-	renderSceneViewMode = newViewMode;
+	renderSceneSettings = newSettings;
 	Refresh ();
 }
 

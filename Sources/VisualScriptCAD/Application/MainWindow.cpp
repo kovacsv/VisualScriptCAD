@@ -187,6 +187,10 @@ MenuBar::MenuBar () :
 	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Lines, "Lines");
 	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Polygons, "Polygons")->Check ();
 	modelMenu->AppendSubMenu (viewModeMenu, L"View Mode");
+	wxMenu* axisModeMenu = new wxMenu ();
+	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_On, "On");
+	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_Off, "Off")->Check ();
+	modelMenu->AppendSubMenu (axisModeMenu, L"Axis Mode");
 	modelMenu->Append (CommandId::Model_Info, "Information...");
 	modelMenu->Append (CommandId::Model_Export, "Export...");
 	Append (modelMenu, L"&Model");
@@ -445,12 +449,30 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_ViewMode_Lines:
 			{
-				modelControl->SetViewMode (RenderScene::ViewMode::Lines);
+				RenderScene::Settings settings = modelControl->GetRenderSettings ();
+				settings.viewMode = RenderScene::ViewMode::Lines;
+				modelControl->SetRenderSettings (settings);
 			}
 			break;
 		case Model_ViewMode_Polygons:
 			{
-				modelControl->SetViewMode (RenderScene::ViewMode::Polygons);
+				RenderScene::Settings settings = modelControl->GetRenderSettings ();
+				settings.viewMode = RenderScene::ViewMode::Polygons;
+				modelControl->SetRenderSettings (settings);
+			}
+			break;
+		case Model_AxisMode_On:
+			{
+				RenderScene::Settings settings = modelControl->GetRenderSettings ();
+				settings.axisMode = RenderScene::AxisMode::On;
+				modelControl->SetRenderSettings (settings);
+			}
+			break;
+		case Model_AxisMode_Off:
+			{
+				RenderScene::Settings settings = modelControl->GetRenderSettings ();
+				settings.axisMode = RenderScene::AxisMode::Off;
+				modelControl->SetRenderSettings (settings);
 			}
 			break;
 		case Model_Info:

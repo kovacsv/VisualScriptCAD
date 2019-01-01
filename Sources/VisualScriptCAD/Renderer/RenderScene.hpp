@@ -11,6 +11,14 @@
 typedef int RenderMeshId;
 typedef int RenderMeshInstanceId;
 
+class RenderLineMaterial
+{
+public:
+	RenderLineMaterial (const glm::vec3& color);
+
+	glm::vec3 color;
+};
+
 class RenderMaterial
 {
 public:
@@ -27,6 +35,29 @@ public:
 	glm::vec3	lightColor;
 	float		lightAmbientStrength;
 	float		lightSpecularStrength;
+};
+
+class RenderLineGeometry
+{
+public:
+	RenderLineGeometry (const RenderLineMaterial& lineMaterial);
+	~RenderLineGeometry ();
+
+	void						AddLine (const glm::vec3& v1, const glm::vec3& v2);
+
+	const RenderLineMaterial&	GetMaterial () const;
+
+	void						SetupBuffers () const;
+	void						DrawBuffers () const;
+
+private:
+	void						AddVertex (const glm::vec3& v);
+
+	std::vector<float>			lineVertices;
+	RenderLineMaterial			lineMaterial;
+
+	mutable unsigned int		vertexArrayObject;
+	mutable unsigned int		vertexBufferObject;
 };
 
 class RenderGeometry
@@ -114,6 +145,17 @@ private:
 	std::unordered_map<RenderMeshInstanceId, RenderMeshId>	instanceIdToMeshId;
 };
 
+class RenderLineModel
+{
+public:
+	RenderLineModel ();
+
+	void				AddRenderLineGeometry (const RenderLineGeometry& lineGeometry);
+	void				EnumerateRenderLineGeometries (const std::function<void (const RenderLineGeometry&)>& processor) const;
+private:
+	std::vector<RenderLineGeometry>		renderLineGeometries;
+};
+
 class RenderScene
 {
 public:
@@ -130,10 +172,25 @@ public:
 		Polygons
 	};
 
+	enum class AxisMode
+	{
+		On,
+		Off
+	};
+
+	class Settings
+	{
+	public:
+		Settings (ViewMode viewMode, AxisMode axisMode);
+
+		ViewMode viewMode;
+		AxisMode axisMode;
+	};
+
 	RenderScene ();
 
 	bool			Init ();
-	void			Draw (int width, int height, ViewMode drawMode);
+	void			Draw (int width, int height, const Settings& settings);
 	RenderModel&	GetModel ();
 
 	void			OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
@@ -142,10 +199,15 @@ public:
 	void			FitToWindow (int width, int height);
 
 private:
-	int				shader;
-	RenderModel		model;
-	RenderLight		light;
-	Camera			camera;
+	void			DrawModel (int width, int height, ViewMode drawMode);
+	void			DrawLines (int width, int height, AxisMode axisMode);
+
+	int					lineShader;
+	int					triangleShader;
+	RenderModel			model;
+	RenderLineModel		lineModel;
+	RenderLight			light;
+	Camera				camera;
 };
 
 #endif
