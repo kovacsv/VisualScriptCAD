@@ -14,7 +14,7 @@ public:
 	BoxNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -30,7 +30,7 @@ public:
 	CylinderNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -46,7 +46,7 @@ public:
 	ConeNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -62,7 +62,7 @@ public:
 	SphereNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -78,7 +78,7 @@ public:
 	TorusNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;

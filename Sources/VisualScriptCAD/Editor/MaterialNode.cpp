@@ -78,11 +78,11 @@ void MaterialNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("material"), L"Material")));
 }
 
-NE::ValuePtr MaterialNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr MaterialNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr red = EvaluateSingleInputSlot (NE::SlotId ("red"), env);
-	NE::ValuePtr green = EvaluateSingleInputSlot (NE::SlotId ("green"), env);
-	NE::ValuePtr blue = EvaluateSingleInputSlot (NE::SlotId ("blue"), env);
+	NE::ValueConstPtr red = EvaluateSingleInputSlot (NE::SlotId ("red"), env);
+	NE::ValueConstPtr green = EvaluateSingleInputSlot (NE::SlotId ("green"), env);
+	NE::ValueConstPtr blue = EvaluateSingleInputSlot (NE::SlotId ("blue"), env);
 	if (!NE::IsComplexType<NE::NumberValue> (red) || !NE::IsComplexType<NE::NumberValue> (green) || !NE::IsComplexType<NE::NumberValue> (blue)) {
 		return nullptr;
 	}

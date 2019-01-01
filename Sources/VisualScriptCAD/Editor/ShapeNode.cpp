@@ -29,7 +29,7 @@ void ShapeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) cons
 	BI::BasicUINode::RegisterParameters (parameterList);
 }
 
-void ShapeNode::ProcessValue (const NE::ValuePtr& value, NE::EvaluationEnv& env) const
+void ShapeNode::ProcessValue (const NE::ValueConstPtr& value, NE::EvaluationEnv& env) const
 {
 	std::shared_ptr<BI::EnableDisableFeature> enableDisable = GetEnableDisableFeature (this);
 	if (enableDisable->GetEnableState ()) {
@@ -37,7 +37,7 @@ void ShapeNode::ProcessValue (const NE::ValuePtr& value, NE::EvaluationEnv& env)
 	}
 }
 
-void ShapeNode::OnCalculated (const NE::ValuePtr&, NE::EvaluationEnv& env) const
+void ShapeNode::OnCalculated (const NE::ValueConstPtr&, NE::EvaluationEnv& env) const
 {
 	RemoveItem (env);
 	AddItem (env);
@@ -81,14 +81,14 @@ void ShapeNode::AddItem (NE::EvaluationEnv& env) const
 		return;
 	}
 
-	NE::ValuePtr value = GetCalculatedValue ();
+	NE::ValueConstPtr value = GetCalculatedValue ();
 	if (!NE::Value::IsType<NE::ListValue> (value)) {
 		return;
 	}
 
 	std::shared_ptr<ModelEvaluationData> evalData = env.GetData<ModelEvaluationData> ();
-	NE::Value::Cast<NE::ListValue> (value)->Enumerate ([&] (const NE::ValuePtr& innerValue) {
-		ShapeValue* shapeValue = NE::Value::Cast<ShapeValue> (innerValue.get ());
+	NE::Value::Cast<NE::ListValue> (value)->Enumerate ([&] (const NE::ValueConstPtr& innerValue) {
+		const ShapeValue* shapeValue = NE::Value::Cast<ShapeValue> (innerValue.get ());
 		if (shapeValue != nullptr && shapeValue->GetValue () != nullptr) {
 			Modeler::ShapePtr shape = shapeValue->GetValue ();
 			Modeler::MeshId meshId = evalData->AddMesh (shape->GenerateMesh ());

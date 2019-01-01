@@ -64,11 +64,11 @@ void TranslationNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValuePtr TranslationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr TranslationNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr offsetXValue = EvaluateSingleInputSlot (NE::SlotId ("offsetx"), env);
-	NE::ValuePtr offsetYValue = EvaluateSingleInputSlot (NE::SlotId ("offsety"), env);
-	NE::ValuePtr offsetZValue = EvaluateSingleInputSlot (NE::SlotId ("offsetz"), env);
+	NE::ValueConstPtr offsetXValue = EvaluateSingleInputSlot (NE::SlotId ("offsetx"), env);
+	NE::ValueConstPtr offsetYValue = EvaluateSingleInputSlot (NE::SlotId ("offsety"), env);
+	NE::ValueConstPtr offsetZValue = EvaluateSingleInputSlot (NE::SlotId ("offsetz"), env);
 
 	if (!NE::IsComplexType<NE::NumberValue> (offsetXValue) || !NE::IsComplexType<NE::NumberValue> (offsetYValue) || !NE::IsComplexType<NE::NumberValue> (offsetZValue)) {
 		return nullptr;
@@ -135,12 +135,12 @@ void RotationNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValuePtr RotationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr RotationNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr angleValue = EvaluateSingleInputSlot (NE::SlotId ("angle"), env);
-	NE::ValuePtr axisXValue = EvaluateSingleInputSlot (NE::SlotId ("axisx"), env);
-	NE::ValuePtr axisYValue = EvaluateSingleInputSlot (NE::SlotId ("axisy"), env);
-	NE::ValuePtr axisZValue = EvaluateSingleInputSlot (NE::SlotId ("axisz"), env);
+	NE::ValueConstPtr angleValue = EvaluateSingleInputSlot (NE::SlotId ("angle"), env);
+	NE::ValueConstPtr axisXValue = EvaluateSingleInputSlot (NE::SlotId ("axisx"), env);
+	NE::ValueConstPtr axisYValue = EvaluateSingleInputSlot (NE::SlotId ("axisy"), env);
+	NE::ValueConstPtr axisZValue = EvaluateSingleInputSlot (NE::SlotId ("axisz"), env);
 
 	if (!NE::IsComplexType<NE::NumberValue> (angleValue) || !NE::IsComplexType<NE::NumberValue> (axisXValue) || !NE::IsComplexType<NE::NumberValue> (axisYValue) || !NE::IsComplexType<NE::NumberValue> (axisZValue)) {
 		return nullptr;
@@ -215,11 +215,11 @@ void ScaleNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValuePtr ScaleNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr ScaleNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr scaleXValue = EvaluateSingleInputSlot (NE::SlotId ("scalex"), env);
-	NE::ValuePtr scaleYValue = EvaluateSingleInputSlot (NE::SlotId ("scaley"), env);
-	NE::ValuePtr scaleZValue = EvaluateSingleInputSlot (NE::SlotId ("scalez"), env);
+	NE::ValueConstPtr scaleXValue = EvaluateSingleInputSlot (NE::SlotId ("scalex"), env);
+	NE::ValueConstPtr scaleYValue = EvaluateSingleInputSlot (NE::SlotId ("scaley"), env);
+	NE::ValueConstPtr scaleZValue = EvaluateSingleInputSlot (NE::SlotId ("scalez"), env);
 
 	if (!NE::IsComplexType<NE::NumberValue> (scaleXValue) || !NE::IsComplexType<NE::NumberValue> (scaleYValue) || !NE::IsComplexType<NE::NumberValue> (scaleZValue)) {
 		return nullptr;
@@ -290,10 +290,10 @@ void CombinationNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValuePtr CombinationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr CombinationNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr transformation1Value = EvaluateSingleInputSlot (NE::SlotId ("transformation1"), env);
-	NE::ValuePtr transformation2Value = EvaluateSingleInputSlot (NE::SlotId ("transformation2"), env);
+	NE::ValueConstPtr transformation1Value = EvaluateSingleInputSlot (NE::SlotId ("transformation1"), env);
+	NE::ValueConstPtr transformation2Value = EvaluateSingleInputSlot (NE::SlotId ("transformation2"), env);
 
 	if (!NE::IsComplexType<TransformationValue> (transformation1Value) || !NE::IsComplexType<TransformationValue> (transformation2Value)) {
 		return nullptr;
@@ -347,10 +347,10 @@ void TransformPointNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
 }
 
-NE::ValuePtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr pointValue = EvaluateSingleInputSlot (NE::SlotId ("point"), env);
-	NE::ValuePtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr pointValue = EvaluateSingleInputSlot (NE::SlotId ("point"), env);
+	NE::ValueConstPtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
 	if (!NE::IsComplexType<PointValue> (pointValue) || !NE::IsComplexType<TransformationValue> (transformationValue)) {
 		return nullptr;
 	}
@@ -403,10 +403,10 @@ void TransformShapeNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
 }
 
-NE::ValuePtr TransformShapeNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr TransformShapeNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr shapeValue = EvaluateSingleInputSlot (NE::SlotId ("shape"), env);
-	NE::ValuePtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr shapeValue = EvaluateSingleInputSlot (NE::SlotId ("shape"), env);
+	NE::ValueConstPtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
 	if (!NE::IsComplexType<ShapeValue> (shapeValue) || !NE::IsComplexType<TransformationValue> (transformationValue)) {
 		return nullptr;
 	}

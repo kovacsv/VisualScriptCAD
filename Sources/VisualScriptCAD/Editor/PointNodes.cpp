@@ -75,11 +75,11 @@ void PointNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
 }
 
-NE::ValuePtr PointNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr PointNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr x = EvaluateSingleInputSlot (NE::SlotId ("x"), env);
-	NE::ValuePtr y = EvaluateSingleInputSlot (NE::SlotId ("y"), env);
-	NE::ValuePtr z = EvaluateSingleInputSlot (NE::SlotId ("z"), env);
+	NE::ValueConstPtr x = EvaluateSingleInputSlot (NE::SlotId ("x"), env);
+	NE::ValueConstPtr y = EvaluateSingleInputSlot (NE::SlotId ("y"), env);
+	NE::ValueConstPtr z = EvaluateSingleInputSlot (NE::SlotId ("z"), env);
 	if (!NE::IsComplexType<NE::NumberValue> (x) || !NE::IsComplexType<NE::NumberValue> (y) || !NE::IsComplexType<NE::NumberValue> (z)) {
 		return nullptr;
 	}
@@ -143,11 +143,11 @@ void LinePointsNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("points"), L"Points")));
 }
 
-NE::ValuePtr LinePointsNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr LinePointsNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr begValue = EvaluateSingleInputSlot (NE::SlotId ("beg"), env);
-	NE::ValuePtr endValue = EvaluateSingleInputSlot (NE::SlotId ("end"), env);
-	NE::ValuePtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
+	NE::ValueConstPtr begValue = EvaluateSingleInputSlot (NE::SlotId ("beg"), env);
+	NE::ValueConstPtr endValue = EvaluateSingleInputSlot (NE::SlotId ("end"), env);
+	NE::ValueConstPtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
 	if (!NE::IsComplexType<PointValue> (begValue) || !NE::IsComplexType<PointValue> (endValue) || !NE::IsComplexType<NE::NumberValue> (segmentationValue)) {
 		return nullptr;
 	}
@@ -222,11 +222,11 @@ void ArcPointsNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("points"), L"Points")));
 }
 
-NE::ValuePtr ArcPointsNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr ArcPointsNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr radiusValue = EvaluateSingleInputSlot (NE::SlotId ("radius"), env);
-	NE::ValuePtr angleValue = EvaluateSingleInputSlot (NE::SlotId ("angle"), env);
-	NE::ValuePtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
+	NE::ValueConstPtr radiusValue = EvaluateSingleInputSlot (NE::SlotId ("radius"), env);
+	NE::ValueConstPtr angleValue = EvaluateSingleInputSlot (NE::SlotId ("angle"), env);
+	NE::ValueConstPtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
 	if (!NE::IsComplexType<NE::NumberValue> (radiusValue) || !NE::IsComplexType<NE::NumberValue> (angleValue) || !NE::IsComplexType<NE::NumberValue> (segmentationValue)) {
 		return nullptr;
 	}
@@ -301,15 +301,15 @@ void PointTranslationNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValuePtr PointTranslationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr PointTranslationNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr pointValue = EvaluateSingleInputSlot (NE::SlotId ("point"), env);
+	NE::ValueConstPtr pointValue = EvaluateSingleInputSlot (NE::SlotId ("point"), env);
 	if (!NE::IsComplexType<PointValue> (pointValue)) {
 		return nullptr;
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	NE::FlatEnumerate (pointValue, [&] (const NE::ValuePtr& val) {
+	NE::FlatEnumerate (pointValue, [&] (const NE::ValueConstPtr& val) {
 		glm::dvec3 offset (PointValue::Get (val));
 		glm::dmat4 transformation = glm::translate (glm::dmat4 (1.0), offset);
 		result->Push (NE::ValuePtr (new TransformationValue (transformation)));

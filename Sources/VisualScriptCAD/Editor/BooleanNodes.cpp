@@ -34,11 +34,11 @@ void BooleanNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
 }
 
-NE::ValuePtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValuePtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValuePtr aValue = EvaluateSingleInputSlot (NE::SlotId ("a"), env);
-	NE::ValuePtr bValue = EvaluateSingleInputSlot (NE::SlotId ("b"), env);
+	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr aValue = EvaluateSingleInputSlot (NE::SlotId ("a"), env);
+	NE::ValueConstPtr bValue = EvaluateSingleInputSlot (NE::SlotId ("b"), env);
 
 	if (!NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<ShapeValue> (aValue) || !NE::IsComplexType<ShapeValue> (bValue)) {
 		return nullptr;

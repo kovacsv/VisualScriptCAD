@@ -30,7 +30,7 @@ public:
 	TranslationNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -46,7 +46,7 @@ public:
 	RotationNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -62,7 +62,7 @@ public:
 	ScaleNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -78,7 +78,7 @@ public:
 	CombinationNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
@@ -93,7 +93,7 @@ public:
 	TransformPointNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
@@ -108,7 +108,7 @@ public:
 	TransformShapeNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValuePtr		Calculate (NE::EvaluationEnv& env) const override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
