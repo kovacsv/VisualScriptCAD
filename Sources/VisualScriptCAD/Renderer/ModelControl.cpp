@@ -20,7 +20,7 @@ ModelControl::ModelControl (wxWindow *parent) :
 	wxGLCanvas (parent, wxID_ANY, canvasAttributes, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
 	glContext (nullptr),
 	renderModelConverter (),
-	renderSceneSettings (RenderScene::ViewMode::Polygons, RenderScene::AxisMode::Off),
+	renderSceneSettings (ViewMode::Polygons, AxisMode::Off),
 	renderScene (),
 	lastMousePosition (0, 0),
 	lastMouseButton (-1),
@@ -123,12 +123,12 @@ void ModelControl::OnMouseWheel (wxMouseEvent& evt)
 	Refresh ();
 }
 
-const RenderScene::Settings& ModelControl::GetRenderSettings () const
+const RenderSettings& ModelControl::GetRenderSettings () const
 {
 	return renderSceneSettings;
 }
 
-void ModelControl::SetRenderSettings (const RenderScene::Settings& newSettings)
+void ModelControl::SetRenderSettings (const RenderSettings& newSettings)
 {
 	renderSceneSettings = newSettings;
 	Refresh ();

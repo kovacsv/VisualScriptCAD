@@ -34,7 +34,7 @@ enum CommandId
 	About_GitHub				= 22
 };
 
-enum class ViewMode
+enum class SplitViewMode
 {
 	Editor,
 	Model,
@@ -80,7 +80,7 @@ class MenuBar : public wxMenuBar
 public:
 	MenuBar ();
 
-	void	UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const RenderScene::Settings& renderSettings);
+	void	UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const UserSettings& userSettings);
 };
 
 class ToolBar : public wxToolBar
@@ -88,7 +88,7 @@ class ToolBar : public wxToolBar
 public:
 	ToolBar (wxWindow* parent);
 
-	void	UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode);
+	void	UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode);
 
 private:
 	wxToolBarToolBase*	AddIconButton (int toolId, const void* imageData, size_t imageSize, std::wstring helpText);
@@ -138,7 +138,8 @@ private:
 	NodeEditorControl*					nodeEditorControl;
 
 	ApplicationState					applicationState;
-	ViewMode							viewMode;
+	SplitViewMode						splitViewMode;
+	UserSettings						userSettings;
 	int									sashPosition;
 
 	DECLARE_EVENT_TABLE ()

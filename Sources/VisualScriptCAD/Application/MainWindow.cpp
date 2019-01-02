@@ -199,13 +199,13 @@ MenuBar::MenuBar () :
 	Append (aboutMenu, L"&About");
 }
 
-void MenuBar::UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const RenderScene::Settings& renderSettings)
+void MenuBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const UserSettings& userSettings)
 {
-	if (viewMode == ViewMode::Editor) {
+	if (viewMode == SplitViewMode::Editor) {
 		FindItem (CommandId::View_Editor)->Check (true);
-	} else if (viewMode == ViewMode::Model) {
+	} else if (viewMode == SplitViewMode::Model) {
 		FindItem (CommandId::View_Model)->Check (true);
-	} else if (viewMode == ViewMode::Split) {
+	} else if (viewMode == SplitViewMode::Split) {
 		FindItem (CommandId::View_Split)->Check (true);
 	} else {
 		DBGBREAK ();
@@ -219,17 +219,17 @@ void MenuBar::UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMo
 		DBGBREAK ();
 	}
 
-	if (renderSettings.viewMode == RenderScene::ViewMode::Lines) {
+	if (userSettings.renderSettings.viewMode == ViewMode::Lines) {
 		FindItem (CommandId::Model_ViewMode_Lines)->Check (true);
-	} else if (renderSettings.viewMode == RenderScene::ViewMode::Polygons) {
+	} else if (userSettings.renderSettings.viewMode == ViewMode::Polygons) {
 		FindItem (CommandId::Model_ViewMode_Polygons)->Check (true);
 	} else {
 		DBGBREAK ();
 	}
 
-	if (renderSettings.axisMode == RenderScene::AxisMode::On) {
+	if (userSettings.renderSettings.axisMode == AxisMode::On) {
 		FindItem (CommandId::Model_AxisMode_On)->Check (true);
-	} else if (renderSettings.axisMode == RenderScene::AxisMode::Off) {
+	} else if (userSettings.renderSettings.axisMode == AxisMode::Off) {
 		FindItem (CommandId::Model_AxisMode_Off)->Check (true);
 	} else {
 		DBGBREAK ();
@@ -270,13 +270,13 @@ ToolBar::ToolBar (wxWindow* parent) :
 	Realize ();
 }
 
-void ToolBar::UpdateStatus (ViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode)
+void ToolBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode)
 {
-	if (viewMode == ViewMode::Editor) {
+	if (viewMode == SplitViewMode::Editor) {
 		ToggleTool (CommandId::View_Editor, true);
-	} else if (viewMode == ViewMode::Model) {
+	} else if (viewMode == SplitViewMode::Model) {
 		ToggleTool (CommandId::View_Model, true);
-	} else if (viewMode == ViewMode::Split) {
+	} else if (viewMode == SplitViewMode::Split) {
 		ToggleTool (CommandId::View_Split, true);
 	} else {
 		DBGBREAK ();
@@ -311,7 +311,9 @@ MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	modelControl (new ModelControl (editorAndModelSplitter)),
 	modelControlSynchronizer (evaluationData, modelControl),
 	nodeEditorControl (new NodeEditorControl (editorAndModelSplitter, evaluationData, modelControlSynchronizer)),
-	viewMode (ViewMode::Split),
+	applicationState (),
+	splitViewMode (SplitViewMode::Split),
+	userSettings (),
 	sashPosition (700)
 {
 	wxIcon icon;
@@ -437,7 +439,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 				sashPosition = editorAndModelSplitter->GetSashPosition ();
 				editorAndModelSplitter->Unsplit (modelControl);
-				viewMode = ViewMode::Editor;
+				splitViewMode = SplitViewMode::Editor;
 			}
 			break;
 		case View_Model:
@@ -445,13 +447,13 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 				sashPosition = editorAndModelSplitter->GetSashPosition ();
 				editorAndModelSplitter->Unsplit (nodeEditorControl);
-				viewMode = ViewMode::Model;
+				splitViewMode = SplitViewMode::Model;
 			}
 			break;
 		case View_Split:
 			{
 				editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
-				viewMode = ViewMode::Split;
+				splitViewMode = SplitViewMode::Split;
 			}
 			break;
 		case Editor_FitToWindow:
@@ -466,30 +468,26 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_ViewMode_Lines:
 			{
-				RenderScene::Settings settings = modelControl->GetRenderSettings ();
-				settings.viewMode = RenderScene::ViewMode::Lines;
-				modelControl->SetRenderSettings (settings);
+				userSettings.renderSettings.viewMode = ViewMode::Lines;
+				modelControl->SetRenderSettings (userSettings.renderSettings);
 			}
 			break;
 		case Model_ViewMode_Polygons:
 			{
-				RenderScene::Settings settings = modelControl->GetRenderSettings ();
-				settings.viewMode = RenderScene::ViewMode::Polygons;
-				modelControl->SetRenderSettings (settings);
+				userSettings.renderSettings.viewMode = ViewMode::Polygons;
+				modelControl->SetRenderSettings (userSettings.renderSettings);
 			}
 			break;
 		case Model_AxisMode_On:
 			{
-				RenderScene::Settings settings = modelControl->GetRenderSettings ();
-				settings.axisMode = RenderScene::AxisMode::On;
-				modelControl->SetRenderSettings (settings);
+				userSettings.renderSettings.axisMode = AxisMode::On;
+				modelControl->SetRenderSettings (userSettings.renderSettings);
 			}
 			break;
 		case Model_AxisMode_Off:
 			{
-				RenderScene::Settings settings = modelControl->GetRenderSettings ();
-				settings.axisMode = RenderScene::AxisMode::Off;
-				modelControl->SetRenderSettings (settings);
+				userSettings.renderSettings.axisMode = AxisMode::Off;
+				modelControl->SetRenderSettings (userSettings.renderSettings);
 			}
 			break;
 		case Model_Info:
@@ -568,8 +566,8 @@ bool MainWindow::ConfirmLosingUnsavedChanges ()
 void MainWindow::UpdateMenuBar ()
 {
 	WXAS::NodeEditorControl* editor = nodeEditorControl->GetEditor ();
- 	menuBar->UpdateStatus (viewMode, editor->GetUpdateMode (), modelControl->GetRenderSettings ());
-	toolBar->UpdateStatus (viewMode, editor->GetUpdateMode ());
+ 	menuBar->UpdateStatus (splitViewMode, editor->GetUpdateMode (), userSettings);
+	toolBar->UpdateStatus (splitViewMode, editor->GetUpdateMode ());
 }
 
 void MainWindow::UpdateStatusBar ()

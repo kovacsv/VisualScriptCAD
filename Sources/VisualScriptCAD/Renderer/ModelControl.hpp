@@ -30,15 +30,15 @@ public:
 	void							OnMouseUp (wxMouseEvent& evt);
 	void							OnMouseWheel (wxMouseEvent& evt);
 
-	const RenderScene::Settings& 	GetRenderSettings () const;
-	void							SetRenderSettings (const RenderScene::Settings& newSettings);
+	const RenderSettings&		 	GetRenderSettings () const;
+	void							SetRenderSettings (const RenderSettings& newSettings);
 
 private:
 	bool InitContext ();
 
 	wxGLContext*			glContext;
 	RenderModelConverter	renderModelConverter;
-	RenderScene::Settings	renderSceneSettings;
+	RenderSettings			renderSceneSettings;
 	RenderScene				renderScene;
 
 	// TODO: separate class

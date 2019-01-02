@@ -438,13 +438,6 @@ void RenderLineModel::EnumerateRenderLineGeometries (const std::function<void (c
 	}
 }
 
-RenderScene::Settings::Settings (ViewMode viewMode, AxisMode axisMode) :
-	viewMode (viewMode),
-	axisMode (axisMode)
-{
-
-}
-
 RenderScene::RenderScene () :
 	lineShader (-1),
 	triangleShader (-1),
@@ -483,7 +476,7 @@ bool RenderScene::Init ()
 	return true;
 }
 
-void RenderScene::Draw (int width, int height, const Settings& settings)
+void RenderScene::Draw (int width, int height, const RenderSettings& settings)
 {
 	glViewport (0, 0, width, height);
 

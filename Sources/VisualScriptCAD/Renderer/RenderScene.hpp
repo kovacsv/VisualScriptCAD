@@ -2,6 +2,7 @@
 #define RENDERSCENE_HPP
 
 #include "Camera.hpp"
+#include "UserSettings.hpp"
 
 #include <glad/glad.h>
 #include <vector>
@@ -166,31 +167,10 @@ public:
 		Right
 	};
 
-	enum class ViewMode
-	{
-		Lines,
-		Polygons
-	};
-
-	enum class AxisMode
-	{
-		On,
-		Off
-	};
-
-	class Settings
-	{
-	public:
-		Settings (ViewMode viewMode, AxisMode axisMode);
-
-		ViewMode viewMode;
-		AxisMode axisMode;
-	};
-
 	RenderScene ();
 
 	bool			Init ();
-	void			Draw (int width, int height, const Settings& settings);
+	void			Draw (int width, int height, const RenderSettings& settings);
 	RenderModel&	GetModel ();
 
 	void			OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
