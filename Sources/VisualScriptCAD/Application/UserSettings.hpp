@@ -1,6 +1,8 @@
 #ifndef USERSETTINGS_HPP
 #define USERSETTINGS_HPP
 
+#include <string>
+
 enum class ViewMode
 {
 	Lines,
@@ -27,7 +29,14 @@ class UserSettings
 public:
 	UserSettings ();
 
+	void	Load ();
+	void	Save ();
+
+public:
 	RenderSettings	renderSettings;
+
+private:
+	std::string xmlFilePath;
 };
 
 #endif

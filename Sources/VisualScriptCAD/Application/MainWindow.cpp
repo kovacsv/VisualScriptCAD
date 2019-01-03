@@ -333,7 +333,8 @@ MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	editorAndModelSplitter->SetMinimumPaneSize (100);
 	editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 
-	UpdateMenuBar ();
+	userSettings.Load ();
+	SyncUserSettings ();
 
 	if (!defaultFileName.empty ()) {
 		OpenFile (defaultFileName);
@@ -354,6 +355,7 @@ void MainWindow::OnCommand (wxCommandEvent& evt)
 void MainWindow::OnClose (wxCloseEvent&)
 {
 	if (ConfirmLosingUnsavedChanges ()) {
+		userSettings.Save ();
 		Destroy ();
 	}
 }
@@ -561,6 +563,12 @@ bool MainWindow::ConfirmLosingUnsavedChanges ()
 		}
 	}
 	return true;
+}
+
+void MainWindow::SyncUserSettings ()
+{
+	modelControl->SetRenderSettings (userSettings.renderSettings);
+	UpdateMenuBar ();
 }
 
 void MainWindow::UpdateMenuBar ()

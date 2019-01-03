@@ -122,6 +122,7 @@ public:
 
 private:
 	bool	ConfirmLosingUnsavedChanges ();
+	void	SyncUserSettings ();
 	void	UpdateMenuBar ();
 	void	UpdateStatusBar ();
 

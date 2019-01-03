@@ -4,7 +4,6 @@
 #include <wx/filepicker.h>
 #include <wx/stdpaths.h>
 
-
 static const wxSize nameMinSize (100, -1);
 static const wxSize controlMinSize (300, -1);
 
