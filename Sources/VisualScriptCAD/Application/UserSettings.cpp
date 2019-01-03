@@ -35,6 +35,7 @@ public:
 		for (const auto& it : enumStrings) {
 			if (it.first == enumValue) {
 				enumString = it.second;
+				break;
 			}
 		}
 		if (enumString.empty ()) {
