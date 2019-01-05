@@ -1,6 +1,7 @@
 #ifndef USERSETTINGS_HPP
 #define USERSETTINGS_HPP
 
+#include <vector>
 #include <string>
 
 enum class ViewMode
@@ -32,8 +33,11 @@ public:
 	void	Load ();
 	void	Save ();
 
+	void	AddRecentFile (const std::wstring& filePath);
+
 public:
-	RenderSettings	renderSettings;
+	RenderSettings				renderSettings;
+	std::vector<std::wstring>	recentFiles;
 
 private:
 	std::string xmlFilePath;

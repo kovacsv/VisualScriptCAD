@@ -4,6 +4,12 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
+static const size_t MaxRecentFileNumber = 10;
+
 template <typename EnumType>
 class XmlEnum
 {
@@ -53,6 +59,8 @@ private:
 
 static const std::string UserSettingsFileName ("VisualScriptCADSettings.xml");
 static const char SettingsNodeName[] = "VisualScriptCADSettings";
+static const char RecentFilesNodeName[] = "RecentFiles";
+static const char RecentFileNodeName[] = "RecentFile";
 
 static const XmlEnum<ViewMode> ViewModeEnum ("ViewMode", {
 	{ ViewMode::Lines, "Lines" },
@@ -93,6 +101,21 @@ void UserSettings::Load ()
 
 	ViewModeEnum.Read (settingsNode, &renderSettings.viewMode);
 	AxisModeEnum.Read (settingsNode, &renderSettings.axisMode);
+
+#ifdef _WIN32
+	const tinyxml2::XMLNode* recentFilesNode = settingsNode->FirstChildElement (RecentFilesNodeName);
+	if (recentFilesNode != nullptr) {
+		const tinyxml2::XMLElement* recentFileNode = recentFilesNode->FirstChildElement (RecentFileNodeName);
+		while (recentFileNode != nullptr) {
+			std::string recentFile = recentFileNode->GetText ();
+			wchar_t wideCharString[2048];
+			int size = MultiByteToWideChar (CP_UTF8, 0, recentFile.c_str (), recentFile.length (), wideCharString, 2048);
+			wideCharString[size] = 0;
+			recentFiles.push_back (wideCharString);
+			recentFileNode = recentFileNode->NextSiblingElement (RecentFileNodeName);
+		}
+	}
+#endif
 }
 
 void UserSettings::Save ()
@@ -106,6 +129,31 @@ void UserSettings::Save ()
 	ViewModeEnum.Write (doc, settingsNode, renderSettings.viewMode);
 	AxisModeEnum.Write (doc, settingsNode, renderSettings.axisMode);
 
+#ifdef _WIN32
+	tinyxml2::XMLElement* recentFilesNode = doc.NewElement (RecentFilesNodeName);
+	for (const std::wstring& recentFile : recentFiles) {
+		tinyxml2::XMLElement* recentFileNode = doc.NewElement (RecentFileNodeName);
+		char multiByteString[2048];
+		int size = WideCharToMultiByte (CP_UTF8, 0, recentFile.c_str (), recentFile.length (), multiByteString, 2048, NULL, NULL);
+		multiByteString[size] = 0;
+		recentFileNode->SetText (multiByteString);
+		recentFilesNode->InsertEndChild (recentFileNode);
+	}
+	settingsNode->InsertEndChild (recentFilesNode);
+#endif
+
 	doc.SaveFile (xmlFilePath.c_str ());
-	
+}
+
+void UserSettings::AddRecentFile (const std::wstring& filePath)
+{
+	auto found = std::find (recentFiles.begin (), recentFiles.end (), filePath);
+	if (found != recentFiles.end ()) {
+		return;
+	}
+
+	recentFiles.push_back (filePath);
+	if (recentFiles.size () > MaxRecentFileNumber) {
+		recentFiles.erase (recentFiles.begin ());
+	}
 }

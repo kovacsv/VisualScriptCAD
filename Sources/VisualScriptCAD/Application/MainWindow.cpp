@@ -148,6 +148,10 @@ MenuBar::MenuBar () :
 	wxMenu* fileMenu = new wxMenu ();
 	fileMenu->Append (CommandId::File_New, "New");
 	fileMenu->Append (CommandId::File_Open, "Open...");
+
+	openRecentMenu = new wxMenu ();
+	fileMenu->AppendSubMenu (openRecentMenu, L"Open Recent");
+
 	fileMenu->Append (CommandId::File_Save, "Save...");
 	fileMenu->Append (CommandId::File_SaveAs, "Save As...");
 	fileMenu->AppendSeparator ();
@@ -228,6 +232,15 @@ void MenuBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::Upd
 		FindItem (CommandId::Model_AxisMode_Off)->Check (true);
 	} else {
 		DBGBREAK ();
+	}
+
+	while (openRecentMenu->GetMenuItemCount () > 0) {
+		wxMenuItemList& items = openRecentMenu->GetMenuItems ();
+		openRecentMenu->Destroy (items.GetFirst ()->GetData ());
+	}
+	for (size_t i = 0; i < userSettings.recentFiles.size (); i++) {
+		size_t index = userSettings.recentFiles.size () - i - 1;
+		openRecentMenu->Append (CommandId::File_OpenRecent_First + index, userSettings.recentFiles[index]);
 	}
 }
 
@@ -512,6 +525,13 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			}
 			break;
 	}
+
+	if (commandId >= CommandId::File_OpenRecent_First && commandId < CommandId::File_OpenRecent_First + userSettings.recentFiles.size ()) {
+		if (ConfirmLosingUnsavedChanges ()) {
+			OpenFile (userSettings.recentFiles[commandId - CommandId::File_OpenRecent_First]);
+		}
+	}
+
 	UpdateMenuBar ();
 	UpdateStatusBar ();
 }
@@ -603,6 +623,7 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 	}
 	if (success) {
 		applicationState.SetCurrentFileName (fileName);
+		userSettings.AddRecentFile (fileName);
 		editor->FitToWindow ();
 		modelControl->FitToWindow ();
 	} else {

@@ -31,7 +31,8 @@ enum CommandId
 	Model_AxisMode_Off			= 19,
 	Model_Info					= 20,
 	Model_Export				= 21,
-	About_GitHub				= 22
+	About_GitHub				= 22,
+	File_OpenRecent_First		= 100
 };
 
 enum class SplitViewMode
@@ -81,6 +82,9 @@ public:
 	MenuBar ();
 
 	void	UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const UserSettings& userSettings);
+
+private:
+	wxMenu*		openRecentMenu;
 };
 
 class ToolBar : public wxToolBar
