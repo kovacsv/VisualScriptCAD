@@ -8,6 +8,7 @@
 #include "IconStore.hpp"
 #include "Version.hpp"
 #include "VersionInfo.hpp"
+#include "WXAS_wxFileIO.hpp"
 
 #include <locale>
 #include <codecvt>
@@ -49,12 +50,6 @@ public:
 };
 
 static const ApplicationHeaderIO appHeaderIO;
-
-static std::string WideStringToNormalString (const std::wstring& str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-	return converter.to_bytes (str);
-}
 
 EvaluationData::EvaluationData (Modeler::Model& model) :
 	model (model)
@@ -362,6 +357,7 @@ void MainWindow::OnClose (wxCloseEvent&)
 
 void MainWindow::ProcessCommand (CommandId commandId)
 {
+	WXAS::wxFileIO fileIO;
 	WXAS::NodeEditorControl* editor = nodeEditorControl->GetEditor ();
 	switch (commandId) {
 		case File_New:
@@ -388,10 +384,10 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			{
 				wxFileDialog fileDialog (this, L"Save", L"", L"", L"VisualScriptCAD files (*.vsc)|*.vsc", wxFD_SAVE);
 				if (applicationState.HasCurrentFileName ()) {
-					editor->Save (WideStringToNormalString (applicationState.GetCurrentFileName ()), &appHeaderIO);
+					editor->Save (applicationState.GetCurrentFileName (), &fileIO, &appHeaderIO);
 				} else if (fileDialog.ShowModal () == wxID_OK) {
 					std::wstring fileName = fileDialog.GetPath ().ToStdWstring ();
-					editor->Save (WideStringToNormalString (fileName), &appHeaderIO);
+					editor->Save (fileName, &fileIO, &appHeaderIO);
 					applicationState.SetCurrentFileName (fileName);
 				}
 			}
@@ -401,7 +397,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				wxFileDialog fileDialog (this, L"Save As", L"", L"", L"VisualScriptCAD files (*.vsc)|*.vsc", wxFD_SAVE);
 				if (fileDialog.ShowModal () == wxID_OK) {
 					std::wstring fileName = fileDialog.GetPath ().ToStdWstring ();
-					editor->Save (WideStringToNormalString (fileName), &appHeaderIO);
+					editor->Save (fileName, &fileIO, &appHeaderIO);
 					applicationState.SetCurrentFileName (fileName);
 				}
 			}
@@ -597,11 +593,12 @@ void MainWindow::NewFile ()
 
 void MainWindow::OpenFile (const std::wstring& fileName)
 {
+	WXAS::wxFileIO fileIO;
 	WXAS::NodeEditorControl* editor = nodeEditorControl->GetEditor ();
 	NewFile ();
 	bool success = false;
 	try {
-		success = editor->Open (WideStringToNormalString (fileName), &appHeaderIO);
+		success = editor->Open (fileName, &fileIO, &appHeaderIO);
 	} catch (...) {
 	}
 	if (success) {
