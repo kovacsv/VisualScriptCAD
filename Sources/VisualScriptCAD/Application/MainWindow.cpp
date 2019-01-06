@@ -402,6 +402,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 					std::wstring fileName = fileDialog.GetPath ().ToStdWstring ();
 					editor->Save (fileName, &fileIO, &appHeaderIO);
 					applicationState.SetCurrentFileName (fileName);
+					userSettings.AddRecentFile (fileName);
 				}
 			}
 			break;
@@ -412,6 +413,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 					std::wstring fileName = fileDialog.GetPath ().ToStdWstring ();
 					editor->Save (fileName, &fileIO, &appHeaderIO);
 					applicationState.SetCurrentFileName (fileName);
+					userSettings.AddRecentFile (fileName);
 				}
 			}
 			break;
