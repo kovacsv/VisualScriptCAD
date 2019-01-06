@@ -35,7 +35,7 @@ public:
 		}
 		int readFileVersion = 0;
 		inputStream.Read (readFileVersion);
-		if (readFileVersion > FileVersion) {
+		if (readFileVersion != FileVersion) {
 			return false;
 		}
 		return true;

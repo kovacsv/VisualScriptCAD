@@ -36,6 +36,9 @@ NUIE::UINodePtr NodeRegistry::NodeData::CreateNode (const NUIE::Point& position)
 NodeRegistry::NodeRegistry () :
 	nextNodeTypeId (0)
 {
+	RegisterNode (L"Input Nodes", L"Boolean",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::BooleanNode (L"Boolean", position, true));}
+	);
 	RegisterNode (L"Input Nodes", L"Integer",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::IntegerUpDownNode (L"Integer", position, 0, 1));}
 	);
