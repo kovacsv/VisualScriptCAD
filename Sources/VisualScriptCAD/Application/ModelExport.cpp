@@ -8,8 +8,43 @@ static const wxSize nameMinSize (100, -1);
 static const wxSize controlMinSize (300, -1);
 
 static ExportDialog::FormatId	formatValue = ExportDialog::FormatId::Obj;
-static std::string				folderValue = "";
-static std::string				nameValue = "";
+static std::wstring				folderValue = L"";
+static std::wstring				nameValue = L"";
+
+class wxFileWriter : public Modeler::ModelWriter
+{
+public:
+	wxFileWriter (const std::wstring& folder) :
+		folder (folder),
+		file (nullptr)
+	{
+
+	}
+
+	virtual void OpenFile (const std::wstring& fileName) override
+	{
+		wxFileName filePath (folder, fileName);
+		file = new wxFile (filePath.GetFullPath (), wxFile::OpenMode::write);
+		if (!file->IsOpened ()) {
+			return;
+		}
+	}
+
+	virtual void CloseFile () override
+	{
+		file->Close ();
+		delete file;
+	}
+
+	virtual void WriteLine (const std::wstring& text) override
+	{
+		file->Write (wxString (text + L"\n"));
+	}
+
+private:
+	std::wstring	folder;
+	wxFile*			file;
+};
 
 ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model) :
 	wxDialog (parent, wxID_ANY, L"Export Model", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE),
@@ -25,7 +60,7 @@ ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model) :
 		folderValue = wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop);
 	}
 	if (nameValue.empty ()) {
-		nameValue = "model";
+		nameValue = L"model";
 	}
 	outputFolderText->SetValue (folderValue);
 	outputNameText->SetValue (nameValue);
@@ -70,12 +105,13 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 		if (folderValue.empty () || nameValue.empty ()) {
 			return;
 		}
+		wxFileWriter writer (folderValue);
 		if (formatValue == FormatId::Obj) {
-			Modeler::ExportModel (model, Modeler::FormatId::Obj, folderValue, nameValue);
+			Modeler::ExportModel (model, Modeler::FormatId::Obj, nameValue, writer);
 		} else if (formatValue == FormatId::Stl) {
-			Modeler::ExportModel (model, Modeler::FormatId::Stl, folderValue, nameValue);
+			Modeler::ExportModel (model, Modeler::FormatId::Stl, nameValue, writer);
 		} else if (formatValue == FormatId::Off) {
-			Modeler::ExportModel (model, Modeler::FormatId::Off, folderValue, nameValue);
+			Modeler::ExportModel (model, Modeler::FormatId::Off, nameValue, writer);
 		} else {
 			throw std::logic_error ("invalid export file format");
 		}

@@ -19,50 +19,6 @@ struct PairHash
 namespace Modeler
 {
 
-#ifdef _WIN32
-#define PATH_SEPARATOR '\\'
-#else
-#define PATH_SEPARATOR '/'
-#endif
-
-class ModelFileWriter : public ModelWriter
-{
-public:
-	ModelFileWriter (const std::string& folderPath) :
-		folderPath (folderPath)
-	{
-
-	}
-
-	virtual void OpenFile (const std::string& fileName) override
-	{
-		if (file.is_open ()) {
-			throw std::logic_error ("invalid file operation");
-		}
-		file.open (folderPath + PATH_SEPARATOR + fileName);
-	}
-
-	virtual void CloseFile () override
-	{
-		if (!file.is_open ()) {
-			throw std::logic_error ("invalid file operation");
-		}
-		file.close ();
-	}
-
-	virtual void WriteLine (const std::string& text) override
-	{
-		if (!file.is_open ()) {
-			throw std::logic_error ("invalid file operation");
-		}
-		file << text << std::endl;
-	}
-
-private:
-	std::string folderPath;
-	std::ofstream file;
-};
-
 class MaterialMap
 {
 public:
@@ -110,21 +66,21 @@ static void GetMaterialMap (const Model& model, MaterialMap& materialMap)
 	});
 }
 
-void ExportModelToObj (const Model& model, const std::string& name, ModelWriter& writer)
+void ExportModelToObj (const Model& model, const std::wstring& name, ModelWriter& writer)
 {
 	MaterialMap materialMap;
 	GetMaterialMap (model, materialMap);
 
-	writer.OpenFile (name + ".mtl");
+	writer.OpenFile (name + L".mtl");
 	materialMap.EnumerateMaterials ([&] (MaterialId materialId, const Material& material) {
-		writer.WriteLine ("newmtl Material" + std::to_string (materialId));
+		writer.WriteLine (L"newmtl Material" + std::to_wstring (materialId));
 		const glm::dvec3& color = material.GetColor ();
-		writer.WriteLine ("Kd %g %g %g", color.r, color.g, color.b);
+		writer.WriteLine (L"Kd %g %g %g", color.r, color.g, color.b);
 	});
 	writer.CloseFile ();
 
-	writer.OpenFile (name + ".obj");
-	writer.WriteLine ("mtllib " + name + ".mtl");
+	writer.OpenFile (name + L".obj");
+	writer.WriteLine (L"mtllib " + name + L".mtl");
 	unsigned int vertexOffset = 1;
 	unsigned int normalOffset = 1;
 	unsigned int meshIndex = 1;
@@ -132,19 +88,19 @@ void ExportModelToObj (const Model& model, const std::string& name, ModelWriter&
 		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
 		const MeshMaterials& materials = model.GetMeshMaterials (meshRef.GetMaterialsId ());
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
-		writer.WriteLine ("g Mesh" + std::to_string (meshIndex++));
+		writer.WriteLine (L"g Mesh" + std::to_wstring (meshIndex++));
 		geometry.EnumerateVertices (transformation, [&] (const glm::dvec3& vertex) {
-			writer.WriteLine ("v %g %g %g", vertex.x, vertex.y, vertex.z);
+			writer.WriteLine (L"v %g %g %g", vertex.x, vertex.y, vertex.z);
 		});
 		geometry.EnumerateNormals (transformation, [&] (const glm::dvec3& normal) {
-			writer.WriteLine ("vn %g %g %g", normal.x, normal.y, normal.z);
+			writer.WriteLine (L"vn %g %g %g", normal.x, normal.y, normal.z);
 		});
 		EnumerateTrianglesByMaterial (geometry, materials, [&] (MaterialId materialId, const std::vector<unsigned int>& triangles) {
-			writer.WriteLine ("usemtl Material" + std::to_string (materialMap.GetMaterial (meshId, materialId)));
+			writer.WriteLine (L"usemtl Material" + std::to_wstring (materialMap.GetMaterial (meshId, materialId)));
 			for (unsigned int triangleId : triangles) {
 				const MeshTriangle& triangle = geometry.GetTriangle (triangleId);
 				writer.WriteLine (
-					"f %d//%d %d//%d %d//%d",
+					L"f %d//%d %d//%d %d//%d",
 					vertexOffset + triangle.v1, normalOffset + triangle.n1,
 					vertexOffset + triangle.v2, normalOffset + triangle.n2,
 					vertexOffset + triangle.v3, normalOffset + triangle.n3
@@ -157,10 +113,10 @@ void ExportModelToObj (const Model& model, const std::string& name, ModelWriter&
 	writer.CloseFile ();
 }
 
-void ExportModelToStl (const Model& model, const std::string& name, ModelWriter& writer)
+void ExportModelToStl (const Model& model, const std::wstring& name, ModelWriter& writer)
 {
-	writer.OpenFile (name + ".stl");
-	writer.WriteLine ("solid " + name);
+	writer.OpenFile (name + L".stl");
+	writer.WriteLine (L"solid " + name);
 	model.EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
 		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
@@ -169,20 +125,20 @@ void ExportModelToStl (const Model& model, const std::string& name, ModelWriter&
 			glm::dvec3 v2 = geometry.GetVertex (triangle.v2, transformation);
 			glm::dvec3 v3 = geometry.GetVertex (triangle.v3, transformation);
 			glm::dvec3 n = Geometry::CalculateTriangleNormal (v1, v2, v3);
-			writer.WriteLine ("facet normal %g %g %g", n.x, n.y, n.z);
-			writer.WriteLine ("    outer loop");
-			writer.WriteLine ("        vertex %g %g %g", v1.x, v1.y, v1.z);
-			writer.WriteLine ("        vertex %g %g %g", v2.x, v2.y, v2.z);
-			writer.WriteLine ("        vertex %g %g %g", v3.x, v3.y, v3.z);
-			writer.WriteLine ("    endloop");
-			writer.WriteLine ("endfacet");
+			writer.WriteLine (L"facet normal %g %g %g", n.x, n.y, n.z);
+			writer.WriteLine (L"    outer loop");
+			writer.WriteLine (L"        vertex %g %g %g", v1.x, v1.y, v1.z);
+			writer.WriteLine (L"        vertex %g %g %g", v2.x, v2.y, v2.z);
+			writer.WriteLine (L"        vertex %g %g %g", v3.x, v3.y, v3.z);
+			writer.WriteLine (L"    endloop");
+			writer.WriteLine (L"endfacet");
 		});
 	});
-	writer.WriteLine ("endsolid " + name);
+	writer.WriteLine (L"endsolid " + name);
 	writer.CloseFile ();
 }
 
-void ExportModelToOff (const Model& model, const std::string& name, ModelWriter& writer)
+void ExportModelToOff (const Model& model, const std::wstring& name, ModelWriter& writer)
 {
 	unsigned int vertexCount = 0;
 	unsigned int triangleCount = 0;
@@ -192,14 +148,14 @@ void ExportModelToOff (const Model& model, const std::string& name, ModelWriter&
 		triangleCount += geometry.TriangleCount ();
 	});
 
-	writer.OpenFile (name + ".off");
-	writer.WriteLine ("OFF");
-	writer.WriteLine ("%d %d %d", vertexCount, triangleCount, 0);
+	writer.OpenFile (name + L".off");
+	writer.WriteLine (L"OFF");
+	writer.WriteLine (L"%d %d %d", vertexCount, triangleCount, 0);
 	model.EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
 		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
 		geometry.EnumerateVertices (transformation, [&] (const glm::dvec3& vertex) {
-			writer.WriteLine ("%g %g %g", vertex.x, vertex.y, vertex.z);
+			writer.WriteLine (L"%g %g %g", vertex.x, vertex.y, vertex.z);
 		});
 	});	
 
@@ -208,7 +164,7 @@ void ExportModelToOff (const Model& model, const std::string& name, ModelWriter&
 		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
 		geometry.EnumerateTriangles ([&] (const MeshTriangle& triangle) {
 			writer.WriteLine (
-				"3 %d %d %d",
+				L"3 %d %d %d",
 				vertexOffset + triangle.v1,
 				vertexOffset + triangle.v2,
 				vertexOffset + triangle.v3
@@ -220,17 +176,16 @@ void ExportModelToOff (const Model& model, const std::string& name, ModelWriter&
 	writer.CloseFile ();
 }
 
-bool ExportModel (const Model& model, FormatId formatId, const std::string& folderPath, const std::string& modelName)
+bool ExportModel (const Model& model, FormatId formatId, const std::wstring& name, ModelWriter& writer)
 {
-	ModelFileWriter writer (folderPath);
 	if (formatId == FormatId::Obj) {
-		ExportModelToObj (model, modelName, writer);
+		ExportModelToObj (model, name, writer);
 		return true;
 	} else if (formatId == FormatId::Stl) {
-		ExportModelToStl (model, modelName, writer);
+		ExportModelToStl (model, name, writer);
 		return true;
 	} else if (formatId == FormatId::Off) {
-		ExportModelToOff (model, modelName, writer);
+		ExportModelToOff (model, name, writer);
 		return true;
 	}
 	return false;
