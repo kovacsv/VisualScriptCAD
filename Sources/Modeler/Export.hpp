@@ -35,6 +35,7 @@ void ExportModelToObj (const Model& model, const std::wstring& name, ModelWriter
 void ExportModelToStl (const Model& model, const std::wstring& name, ModelWriter& writer);
 void ExportModelToOff (const Model& model, const std::wstring& name, ModelWriter& writer);
 bool ExportModel (const Model& model, FormatId formatId, const std::wstring& name, ModelWriter& writer);
+bool ExportMesh (const Mesh& mesh, FormatId formatId, const std::wstring& name, ModelWriter& writer);
 
 }
 

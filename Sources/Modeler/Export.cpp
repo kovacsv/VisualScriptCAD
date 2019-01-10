@@ -191,4 +191,11 @@ bool ExportModel (const Model& model, FormatId formatId, const std::wstring& nam
 	return false;
 }
 
+bool ExportMesh (const Mesh& mesh, FormatId formatId, const std::wstring& name, ModelWriter& writer)
+{
+	Model model;
+	model.AddMesh (mesh);
+	return ExportModel (model, formatId, name, writer);
+}
+
 }
