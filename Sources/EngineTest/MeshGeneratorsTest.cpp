@@ -32,7 +32,7 @@ TEST (MeshGeneratorsTest)
 
 	for (const Mesh& mesh : meshes) {
 		MeshTopology topology = GetTopology (mesh);
-		ASSERT (topology.GetStatus () == MeshTopology::Status::Valid);
+		ASSERT (topology.IsValid ());
 		ASSERT (!topology.IsEmpty ());
 		ASSERT (topology.IsClosed ());
 	}

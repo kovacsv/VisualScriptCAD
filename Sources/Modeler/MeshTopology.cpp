@@ -6,7 +6,7 @@ namespace Modeler
 const unsigned int NoTriangle = (unsigned int) -1;
 
 MeshTopology::MeshTopology () :
-	status (Status::Valid)
+	isValid (true)
 {
 
 }
@@ -21,9 +21,9 @@ const std::vector<MeshTopology::Edge>& MeshTopology::GetEdges () const
 	return edges;
 }
 
-MeshTopology::Status MeshTopology::GetStatus () const
+bool MeshTopology::IsValid () const
 {
-	return status;
+	return isValid;
 }
 
 bool MeshTopology::IsEmpty () const
@@ -60,14 +60,14 @@ MeshTopologyBuilder::MeshTopologyBuilder (MeshTopology& topology) :
 
 MeshTopologyBuilder::Result MeshTopologyBuilder::AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3)
 {
-	if (topology.status == MeshTopology::Status::Invalid) {
+	if (!topology.isValid) {
 		return Result::InvalidTopology;
 	}
 
 	MeshTopology::Triangle triangle;
 	Result result = AddTriangleEdges (triangle, v1, v2, v3);
 	if (result != Result::NoError) {
-		topology.status = MeshTopology::Status::Invalid;
+		topology.isValid = false;
 		topology.Clear ();
 		return result;
 	}

@@ -15,12 +15,6 @@ class MeshTopology
 public:
 	friend class MeshTopologyBuilder;
 
-	enum class Status
-	{
-		Valid,
-		Invalid
-	};
-
 	struct Edge
 	{
 		unsigned int	beg;
@@ -44,7 +38,7 @@ public:
 	
 	MeshTopology ();
 
-	Status							GetStatus () const;
+	bool							IsValid () const;
 	bool							IsEmpty () const;
 	void							Clear ();
 
@@ -54,7 +48,7 @@ public:
 	const std::vector<Edge>&		GetEdges () const;
 
 private:
-	Status					status;
+	bool					isValid;
 	std::vector<Triangle>	triangles;
 	std::vector<Edge>		edges;
 };

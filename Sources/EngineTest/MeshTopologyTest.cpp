@@ -16,7 +16,7 @@ TEST (MeshTopologyTest_OneTriangle)
 	ASSERT (topology.GetEdges ().size () == 3);
 	ASSERT (!topology.IsEmpty ());
 	ASSERT (!topology.IsClosed ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Valid);
+	ASSERT (topology.IsValid ());
 }
 
 TEST (MeshTopologyTest_TwoTriangles)
@@ -30,7 +30,7 @@ TEST (MeshTopologyTest_TwoTriangles)
 	ASSERT (topology.GetEdges ().size () == 5);
 	ASSERT (!topology.IsEmpty ());
 	ASSERT (!topology.IsClosed ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Valid);
+	ASSERT (topology.IsValid ());
 
 	const std::vector<MeshTopology::Triangle>& triangles = topology.GetTriangles ();
 	const std::vector<MeshTopology::Edge>& edges = topology.GetEdges ();
@@ -55,7 +55,7 @@ TEST (MeshTopologyTest_TwoTrianglesNonManifold1)
 	ASSERT (builder.AddTriangle (0, 1, 2) == MeshTopologyBuilder::Result::NoError);
 	ASSERT (builder.AddTriangle (1, 2, 3) == MeshTopologyBuilder::Result::NonManifoldEdgeFound);
 	ASSERT (topology.IsEmpty ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Invalid);
+	ASSERT (!topology.IsValid ());
 }
 
 TEST (MeshTopologyTest_TwoTrianglesNonManifold2)
@@ -67,7 +67,7 @@ TEST (MeshTopologyTest_TwoTrianglesNonManifold2)
 	ASSERT (builder.AddTriangle (1, 3, 2) == MeshTopologyBuilder::Result::NoError);
 	ASSERT (builder.AddTriangle (4, 1, 2) == MeshTopologyBuilder::Result::NonManifoldEdgeFound);
 	ASSERT (topology.IsEmpty ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Invalid);
+	ASSERT (!topology.IsValid ());
 }
 
 TEST (MeshTopologyTest_TwoTrianglesNonManifold3)
@@ -79,11 +79,11 @@ TEST (MeshTopologyTest_TwoTrianglesNonManifold3)
 	ASSERT (builder.AddTriangle (1, 3, 2) == MeshTopologyBuilder::Result::NoError);
 	ASSERT (builder.AddTriangle (4, 2, 1) == MeshTopologyBuilder::Result::NonManifoldEdgeFound);
 	ASSERT (topology.IsEmpty ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Invalid);
+	ASSERT (!topology.IsValid ());
 
 	ASSERT (builder.AddTriangle (4, 2, 1) == MeshTopologyBuilder::Result::InvalidTopology);
 	ASSERT (topology.IsEmpty ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Invalid);
+	ASSERT (!topology.IsValid ());
 }
 
 TEST (MeshTopologyTest_TetrahedronTest)
@@ -97,7 +97,7 @@ TEST (MeshTopologyTest_TetrahedronTest)
 	ASSERT (builder.AddTriangle (3, 0, 2) == MeshTopologyBuilder::Result::NoError);
 	ASSERT (!topology.IsEmpty ());
 	ASSERT (topology.IsClosed ());
-	ASSERT (topology.GetStatus () == MeshTopology::Status::Valid);
+	ASSERT (topology.IsValid ());
 }
 
 }
