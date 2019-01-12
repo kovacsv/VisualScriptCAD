@@ -5,21 +5,16 @@ set (VSCAD_VERSION_2 0)
 set (VSCAD_VERSION_3 2)
 set (VSCAD_APP_NAME VisualScriptCAD)
 
-function (SetCompilerOptions module maxWarningLevel)
+function (SetCompilerOptions module)
 	set (DebugOptions)
 	set (ReleaseOptions)
 	if (MSVC)
 		set (DebugOptions -DDEBUG -D_DEBUG /ZI /JMC /sdl /GR)
 		set (ReleaseOptions /Oi /Gy)
-		if (${maxWarningLevel})
-			target_compile_options (${module} PRIVATE /W4 /WX)
-		endif ()
+		target_compile_options (${module} PRIVATE /W4 /WX)
 	else ()
 		set (DebugOptions -DDEBUG -D_DEBUG -g -ggdb)
-		if (${maxWarningLevel})
-			target_compile_options (${module} PRIVATE -Wall -Wextra -Werror)
-		endif ()
-		target_compile_options (${module} PRIVATE -std=c++11)
+		target_compile_options (${module} PRIVATE -std=c++11 -Wall -Wextra -Werror)
 	endif ()
 	target_compile_options(${module} PUBLIC "$<$<CONFIG:DEBUG>:${DebugOptions}>")
 	target_compile_options(${module} PUBLIC "$<$<CONFIG:RELEASE>:${ReleaseOptions}>")
@@ -63,7 +58,7 @@ target_include_directories (
 	${GeometryHeaderFiles}
 	${GeometrySourceFiles}
 )
-SetCompilerOptions (Geometry ON)
+SetCompilerOptions (Geometry)
 
 # Modeler
 
@@ -85,7 +80,7 @@ target_include_directories (
 )
 target_include_directories (Modeler PUBLIC ${GeometrySourcesFolder})
 target_link_libraries (Modeler Geometry)
-SetCompilerOptions (Modeler ON)
+SetCompilerOptions (Modeler)
 
 # CGALOperations
 
@@ -111,7 +106,7 @@ target_include_directories (
 )
 target_include_directories (CGALOperations PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder})
 target_link_libraries (CGALOperations Geometry Modeler libgmp-10.lib libmpfr-4.lib)
-SetCompilerOptions (CGALOperations ON)
+SetCompilerOptions (CGALOperations)
 target_compile_options (CGALOperations PRIVATE /bigobj)
 get_filename_component (CGALFolderAbsolute "${CGAL_DIR}" ABSOLUTE)
 add_custom_command (TARGET CGALOperations POST_BUILD
@@ -146,7 +141,7 @@ source_group ("Sources" FILES ${EngineTestTestFiles})
 add_executable (EngineTest ${EngineTestFiles})
 target_include_directories (EngineTest PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder} ${CGALOperationsSourcesFolder} ${TestFrameworkSourcesFolder})
 target_link_libraries (EngineTest Geometry Modeler CGALOperations)
-SetCompilerOptions (EngineTest ON)
+SetCompilerOptions (EngineTest)
 add_test (EngineTest EngineTest)
 
 # VisualScriptCAD
@@ -203,4 +198,4 @@ target_include_directories (
 )
 target_link_libraries (VisualScriptCAD Geometry Modeler CGALOperations)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
-SetCompilerOptions (VisualScriptCAD ON)
+SetCompilerOptions (VisualScriptCAD)
