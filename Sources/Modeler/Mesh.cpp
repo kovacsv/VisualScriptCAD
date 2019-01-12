@@ -1,4 +1,4 @@
-#include "Model.hpp"
+#include "Mesh.hpp"
 
 #include "IncludeGLM.hpp"
 #include "TriangleUtils.hpp"
@@ -7,10 +7,6 @@
 
 namespace Modeler
 {
-
-static std::atomic<MeshGeometryId> nextMeshGeometryId (0);
-static std::atomic<MeshId> nextMeshId (0);
-static std::atomic<MaterialId> nextMaterialId (0);
 
 const Material DefaultMaterial (glm::dvec3 (0.5f, 0.5f, 0.5f));
 
