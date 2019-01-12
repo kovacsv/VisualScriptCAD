@@ -361,11 +361,4 @@ Mesh GenerateTorus (const Material& material, const glm::dmat4& transformation, 
 	return mesh;
 }
 
-static class A {
-public:
-	A () {
-		GenerateTorus (Material (glm::dvec3 (1.0, 0.0, 0.0)), glm::dmat4 (1.0), 10.0, 1.0, 10, 10, true);
-	}
-} a;
-
 }
