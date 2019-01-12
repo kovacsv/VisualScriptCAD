@@ -517,8 +517,9 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_Export:
 			{
-				ExportDialog modelExportDialog (this, model);
+				ExportDialog modelExportDialog (this, model, userSettings.exportSettings);
 				modelExportDialog.ShowModal ();
+				userSettings.exportSettings = modelExportDialog.GetExportSettings ();
 			}
 			break;
 		case About_GitHub:

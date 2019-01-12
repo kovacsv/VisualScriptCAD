@@ -2,14 +2,9 @@
 #include "Export.hpp"
 
 #include <wx/filepicker.h>
-#include <wx/stdpaths.h>
 
 static const wxSize nameMinSize (100, -1);
 static const wxSize controlMinSize (300, -1);
-
-static ExportDialog::FormatId	formatValue = ExportDialog::FormatId::Obj;
-static std::wstring				folderValue = L"";
-static std::wstring				nameValue = L"";
 
 class wxFileWriter : public Modeler::ModelWriter
 {
@@ -46,9 +41,10 @@ private:
 	wxFile*			file;
 };
 
-ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model) :
+ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model, const ExportSettings& exportSettings) :
 	wxDialog (parent, wxID_ANY, L"Export Model", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE),
 	model (model),
+	exportSettings (exportSettings),
 	boxSizer (new wxBoxSizer (wxVERTICAL)),
 	formatChoice (new wxChoice (this, DialogIds::FormatChoiceId, wxDefaultPosition, controlMinSize)),
 	outputFolderText (new wxTextCtrl (this, DialogIds::OutputFolderId, wxEmptyString, wxDefaultPosition, controlMinSize)),
@@ -56,20 +52,14 @@ ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model) :
 	outputNameText (new wxTextCtrl (this, DialogIds::OutputNameId, wxEmptyString, wxDefaultPosition, controlMinSize)),
 	exportButton (new wxButton (this, DialogIds::ExportButtonId, L"Export"))
 {
-	if (folderValue.empty ()) {
-		folderValue = wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop);
-	}
-	if (nameValue.empty ()) {
-		nameValue = L"model";
-	}
-	outputFolderText->SetValue (folderValue);
-	outputNameText->SetValue (nameValue);
+	outputFolderText->SetValue (exportSettings.folder);
+	outputNameText->SetValue (exportSettings.name);
 
 	{
 		formatChoice->Append (L"obj");
 		formatChoice->Append (L"stl");
 		formatChoice->Append (L"off");
-		formatChoice->Select (formatValue);
+		formatChoice->Select ((int) exportSettings.format);
 
 		wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
 		horizontalSizer->Add (new wxStaticText (this, wxID_ANY, L"Format", wxDefaultPosition, nameMinSize), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
@@ -96,25 +86,22 @@ ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model) :
 	SetSizerAndFit (boxSizer);
 }
 
+const ExportSettings& ExportDialog::GetExportSettings () const
+{
+	return exportSettings;
+}
+
 void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 {
 	if (evt.GetId () == DialogIds::ExportButtonId) {
-		formatValue = (FormatId) formatChoice->GetSelection ();
-		folderValue = outputFolderText->GetValue ();
-		nameValue = outputNameText->GetValue ();
-		if (folderValue.empty () || nameValue.empty ()) {
+		exportSettings.format = (Modeler::FormatId) formatChoice->GetSelection ();
+		exportSettings.folder = outputFolderText->GetValue ();
+		exportSettings.name = outputNameText->GetValue ();
+		if (exportSettings.folder.empty () || exportSettings.name.empty ()) {
 			return;
 		}
-		wxFileWriter writer (folderValue);
-		if (formatValue == FormatId::Obj) {
-			Modeler::ExportModel (model, Modeler::FormatId::Obj, nameValue, writer);
-		} else if (formatValue == FormatId::Stl) {
-			Modeler::ExportModel (model, Modeler::FormatId::Stl, nameValue, writer);
-		} else if (formatValue == FormatId::Off) {
-			Modeler::ExportModel (model, Modeler::FormatId::Off, nameValue, writer);
-		} else {
-			throw std::logic_error ("invalid export file format");
-		}
+		wxFileWriter writer (exportSettings.folder);
+		Modeler::ExportModel (model, exportSettings.format, exportSettings.name, writer);
 		EndModal (DialogIds::ExportButtonId);
 	} else if (evt.GetId () == DialogIds::BrowseFolderButtonId) {
 		wxDirDialog dirDialog (this);

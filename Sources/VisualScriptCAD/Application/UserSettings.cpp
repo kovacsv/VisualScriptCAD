@@ -4,11 +4,39 @@
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 
-#ifdef _WIN32
-	#include <windows.h>
-#endif
+#include <locale>
+#include <codecvt>
 
 static const size_t MaxRecentFileNumber = 10;
+
+static std::wstring NormalStringToWideString (const std::string& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+	return converter.from_bytes (str);
+}
+
+static std::string WideStringToNormalString (const std::wstring& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+	return converter.to_bytes (str);
+}
+
+bool ReadStringNode (const tinyxml2::XMLNode* parent, const char* nodeName, std::wstring& text)
+{
+	const tinyxml2::XMLElement* node = parent->FirstChildElement (nodeName);
+	while (node == nullptr) {
+		return false;
+	}
+	text = NormalStringToWideString (node->GetText ());
+	return true;
+}
+
+void WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, const std::wstring& text)
+{
+	tinyxml2::XMLElement* node = doc.NewElement (nodeName);
+	node->SetText (WideStringToNormalString (text).c_str ());
+	parent->InsertEndChild (node);
+}
 
 template <typename EnumType>
 class XmlEnum
@@ -59,6 +87,10 @@ private:
 
 static const std::string UserSettingsFileName ("VisualScriptCADSettings.xml");
 static const char SettingsNodeName[] = "VisualScriptCADSettings";
+static const char RenderSettingsNodeName[] = "RenderSettings";
+static const char ExportSettingsNodeName[] = "ExportSettings";
+static const char ExportFolderNodeName[] = "ModelFolder";
+static const char ExportModelNodeName[] = "ModelName";
 static const char RecentFilesNodeName[] = "RecentFiles";
 static const char RecentFileNodeName[] = "RecentFile";
 
@@ -72,6 +104,12 @@ static const XmlEnum<AxisMode> AxisModeEnum ("AxisMode", {
 	{ AxisMode::Off, "Off" }
 });
 
+static const XmlEnum<Modeler::FormatId> ExportFormatEnum ("ModelFormat", {
+	{ Modeler::FormatId::Obj, "Obj" },
+	{ Modeler::FormatId::Stl, "Stl" },
+	{ Modeler::FormatId::Off, "Off" }
+});
+
 RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode) :
 	viewMode (viewMode),
 	axisMode (axisMode)
@@ -79,8 +117,16 @@ RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode) :
 
 }
 
+ExportSettings::ExportSettings (Modeler::FormatId format, const std::wstring& folder, const std::wstring& name) :
+	format (format),
+	folder (folder),
+	name (name)
+{
+}
+
 UserSettings::UserSettings () :
-	renderSettings (ViewMode::Polygons, AxisMode::Off)
+	renderSettings (ViewMode::Polygons, AxisMode::Off),
+	exportSettings (Modeler::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model")
 {
 	wxFileName xmlFileName (wxStandardPaths::Get ().GetTempDir (), UserSettingsFileName);
 	xmlFilePath = xmlFileName.GetFullPath ();
@@ -99,23 +145,28 @@ void UserSettings::Load ()
 		return;
 	}
 
-	ViewModeEnum.Read (settingsNode, &renderSettings.viewMode);
-	AxisModeEnum.Read (settingsNode, &renderSettings.axisMode);
+	const tinyxml2::XMLNode* renderSettingsNode = settingsNode->FirstChildElement (RenderSettingsNodeName);
+	if (renderSettingsNode != nullptr) {
+		ViewModeEnum.Read (renderSettingsNode, &renderSettings.viewMode);
+		AxisModeEnum.Read (renderSettingsNode, &renderSettings.axisMode);
+	}
 
-#ifdef _WIN32
+	const tinyxml2::XMLNode* exportSettingsNode = settingsNode->FirstChildElement (ExportSettingsNodeName);
+	if (exportSettingsNode != nullptr) {
+		ExportFormatEnum.Read (exportSettingsNode, &exportSettings.format);
+		ReadStringNode (exportSettingsNode, ExportFolderNodeName, exportSettings.folder);
+		ReadStringNode (exportSettingsNode, ExportModelNodeName, exportSettings.name);
+	}
+
 	const tinyxml2::XMLNode* recentFilesNode = settingsNode->FirstChildElement (RecentFilesNodeName);
 	if (recentFilesNode != nullptr) {
 		const tinyxml2::XMLElement* recentFileNode = recentFilesNode->FirstChildElement (RecentFileNodeName);
 		while (recentFileNode != nullptr) {
 			std::string recentFile = recentFileNode->GetText ();
-			wchar_t wideCharString[2048];
-			int size = MultiByteToWideChar (CP_UTF8, 0, recentFile.c_str (), recentFile.length (), wideCharString, 2048);
-			wideCharString[size] = 0;
-			recentFiles.push_back (wideCharString);
+			recentFiles.push_back (NormalStringToWideString (recentFile));
 			recentFileNode = recentFileNode->NextSiblingElement (RecentFileNodeName);
 		}
 	}
-#endif
 }
 
 void UserSettings::Save ()
@@ -126,21 +177,24 @@ void UserSettings::Save ()
 	tinyxml2::XMLNode* settingsNode = doc.NewElement (SettingsNodeName);
 	doc.InsertEndChild (settingsNode);
 
-	ViewModeEnum.Write (doc, settingsNode, renderSettings.viewMode);
-	AxisModeEnum.Write (doc, settingsNode, renderSettings.axisMode);
+	tinyxml2::XMLNode* renderSettingsNode = doc.NewElement (RenderSettingsNodeName);
+	ViewModeEnum.Write (doc, renderSettingsNode, renderSettings.viewMode);
+	AxisModeEnum.Write (doc, renderSettingsNode, renderSettings.axisMode);
+	settingsNode->InsertEndChild (renderSettingsNode);
 
-#ifdef _WIN32
+	tinyxml2::XMLNode* exportSettingsNode = doc.NewElement (ExportSettingsNodeName);
+	ExportFormatEnum.Write (doc, exportSettingsNode, exportSettings.format);
+	WriteStringNode (doc, exportSettingsNode, ExportFolderNodeName, exportSettings.folder);
+	WriteStringNode (doc, exportSettingsNode, ExportModelNodeName, exportSettings.name);
+	settingsNode->InsertEndChild (exportSettingsNode);
+
 	tinyxml2::XMLElement* recentFilesNode = doc.NewElement (RecentFilesNodeName);
 	for (const std::wstring& recentFile : recentFiles) {
 		tinyxml2::XMLElement* recentFileNode = doc.NewElement (RecentFileNodeName);
-		char multiByteString[2048];
-		int size = WideCharToMultiByte (CP_UTF8, 0, recentFile.c_str (), recentFile.length (), multiByteString, 2048, NULL, NULL);
-		multiByteString[size] = 0;
-		recentFileNode->SetText (multiByteString);
+		recentFileNode->SetText (WideStringToNormalString (recentFile).c_str ());
 		recentFilesNode->InsertEndChild (recentFileNode);
 	}
 	settingsNode->InsertEndChild (recentFilesNode);
-#endif
 
 	doc.SaveFile (xmlFilePath.c_str ());
 }

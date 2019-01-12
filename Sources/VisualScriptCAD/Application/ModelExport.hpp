@@ -2,19 +2,13 @@
 #define MODELEXPORT_HPP
 
 #include "Model.hpp"
+#include "UserSettings.hpp"
 
 #include <wx/wx.h>
 
 class ExportDialog : public wxDialog
 {
 public:
-	enum FormatId
-	{
-		Obj = 0,
-		Stl = 1,
-		Off = 2
-	};
-
 	enum DialogIds
 	{
 		FormatChoiceId = 1001,
@@ -24,12 +18,14 @@ public:
 		ExportButtonId = 1100
 	};
 
-	ExportDialog (wxWindow *parent, const Modeler::Model& model);
+	ExportDialog (wxWindow *parent, const Modeler::Model& model, const ExportSettings& exportSettings);
 
-	void	OnButtonClick (wxCommandEvent& evt);
+	const ExportSettings&	GetExportSettings () const;
+	void					OnButtonClick (wxCommandEvent& evt);
 
 private:
 	const Modeler::Model&	model;
+	ExportSettings			exportSettings;
 
 	wxBoxSizer*				boxSizer;
 	wxChoice*				formatChoice;

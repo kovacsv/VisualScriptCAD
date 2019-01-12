@@ -26,9 +26,9 @@ public:
 
 enum class FormatId
 {
-	Obj,
-	Stl,
-	Off
+	Obj = 0,
+	Stl = 1,
+	Off = 2
 };
 
 void ExportModelToObj (const Model& model, const std::wstring& name, ModelWriter& writer);

@@ -1,6 +1,8 @@
 #ifndef USERSETTINGS_HPP
 #define USERSETTINGS_HPP
 
+#include "Export.hpp"
+
 #include <vector>
 #include <string>
 
@@ -25,6 +27,16 @@ public:
 	AxisMode axisMode;
 };
 
+class ExportSettings
+{
+public:
+	ExportSettings (Modeler::FormatId format, const std::wstring& folder, const std::wstring& name);
+
+	Modeler::FormatId	format;
+	std::wstring		folder;
+	std::wstring		name;
+};
+
 class UserSettings
 {
 public:
@@ -37,6 +49,7 @@ public:
 
 public:
 	RenderSettings				renderSettings;
+	ExportSettings				exportSettings;
 	std::vector<std::wstring>	recentFiles;
 
 private:
