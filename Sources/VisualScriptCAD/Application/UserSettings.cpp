@@ -3,6 +3,7 @@
 
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
+#include <wx/dir.h>
 
 #include <locale>
 #include <codecvt>
@@ -128,7 +129,11 @@ UserSettings::UserSettings () :
 	renderSettings (ViewMode::Polygons, AxisMode::Off),
 	exportSettings (Modeler::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model")
 {
-	wxFileName xmlFileName (wxStandardPaths::Get ().GetTempDir (), UserSettingsFileName);
+	wxFileName xmlFileName (wxStandardPaths::Get ().GetUserDataDir (), UserSettingsFileName);
+	wxString xmlFileDir = xmlFileName.GetPath ();
+	if (!wxDir::Exists (xmlFileDir)) {
+		wxDir::Make (xmlFileDir);
+	}
 	xmlFilePath = xmlFileName.GetFullPath ();
 }
 
