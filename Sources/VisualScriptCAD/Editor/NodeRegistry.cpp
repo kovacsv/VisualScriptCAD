@@ -4,10 +4,11 @@
 #include "BI_ArithmeticUINodes.hpp"
 #include "BI_ViewerUINodes.hpp"
 #include "PointNodes.hpp"
-#include "BooleanNodes.hpp"
 #include "MaterialNode.hpp"
 #include "ShapeNodes.hpp"
 #include "TransformationNodes.hpp"
+#include "BooleanNodes.hpp"
+#include "SubdivisionNodes.hpp"
 
 static const NodeRegistry nodeRegistry;
 
@@ -123,6 +124,11 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Other Nodes", L"Viewer",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::MultiLineViewerNode (L"Viewer", position, 5)); }
 	);
+	/*
+	RegisterNode (L"Experimental Nodes", L"Subdivision",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new SubdivisionNode (L"Subdivision", position)); }
+	);
+	*/
 }
 
 bool NodeRegistry::Contains (size_t type) const

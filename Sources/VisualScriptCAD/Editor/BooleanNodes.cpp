@@ -3,7 +3,6 @@
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
 
-#include "BooleanOperations.hpp"
 #include "ModelEvaluationData.hpp"
 #include "TransformationNodes.hpp"
 #include "MaterialNode.hpp"
@@ -36,18 +35,18 @@ void BooleanNode::Initialize ()
 
 NE::ValueConstPtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
 	NE::ValueConstPtr aValue = EvaluateSingleInputSlot (NE::SlotId ("a"), env);
 	NE::ValueConstPtr bValue = EvaluateSingleInputSlot (NE::SlotId ("b"), env);
 
-	if (!NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<ShapeValue> (aValue) || !NE::IsComplexType<ShapeValue> (bValue)) {
+	if (!NE::IsComplexType<TransformationValue> (transformationValue) || !NE::IsComplexType<ShapeValue> (aValue) || !NE::IsComplexType<ShapeValue> (bValue)) {
 		return nullptr;
 	}
 	
 	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
 	
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = valueCombination->CombineValues ({transformation, aValue, bValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = valueCombination->CombineValues ({transformationValue, aValue, bValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr aShape = ShapeValue::Get (combination.GetValue (1));
 		Modeler::ShapePtr bShape = ShapeValue::Get (combination.GetValue (2));
 		Modeler::ShapePtr shape = CGALOperations::MeshBooleanOperation (aShape, bShape, operation);

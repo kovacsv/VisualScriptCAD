@@ -7,7 +7,8 @@
 namespace CGALOperations
 {
 
-bool	MeshSubdivision (const Modeler::Mesh& mesh, int steps, Modeler::Mesh& resultMesh);
+bool									MeshSubdivision (const Modeler::Mesh& mesh, const Modeler::Material& material, int steps, Modeler::Mesh& resultMesh);
+std::shared_ptr<Modeler::MeshShape>		MeshSubdivision (const Modeler::ShapeConstPtr& shape, const Modeler::Material& material, int steps);
 
 }
 

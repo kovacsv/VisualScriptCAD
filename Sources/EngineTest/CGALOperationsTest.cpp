@@ -85,7 +85,7 @@ TEST (CubeSubdivisionTest)
 {
 	Mesh cube = GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0);
 	Mesh result;
-	bool opResult = MeshSubdivision (cube, 1, result);
+	bool opResult = MeshSubdivision (cube, DefaultMaterial, 1, result);
 	ASSERT (opResult == true);
 }
 

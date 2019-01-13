@@ -36,9 +36,9 @@ static void ConvertMeshToCGALMesh (const Modeler::Mesh& mesh, CGAL_Mesh& cgalMes
 	}
 }
 
-static void ConvertCGALMeshToMesh (const CGAL_Mesh& cgalMesh, Modeler::Mesh& mesh) 
+static void ConvertCGALMeshToMesh (const CGAL_Mesh& cgalMesh, const Modeler::Material& material, Modeler::Mesh& mesh) 
 {
-	Modeler::MaterialId materialId = mesh.AddMaterial (Modeler::DefaultMaterial);
+	Modeler::MaterialId materialId = mesh.AddMaterial (material);
 	for (CGAL_Mesh::Vertex_index vertIndex : cgalMesh.vertices ()) {
 		const CGAL_Point& point = cgalMesh.point (vertIndex);
 		mesh.AddVertex (CGAL::to_double (point.x ()), CGAL::to_double (point.y ()), CGAL::to_double (point.z ()));
@@ -57,19 +57,30 @@ static void ConvertCGALMeshToMesh (const CGAL_Mesh& cgalMesh, Modeler::Mesh& mes
 	}
 }
 
-bool MeshSubdivision (const Modeler::Mesh& mesh, int steps, Modeler::Mesh& resultMesh)
+bool MeshSubdivision (const Modeler::Mesh& mesh, const Modeler::Material& material, int steps, Modeler::Mesh& resultMesh)
 {
 	bool success = true;
 	try {
 		CGAL_Mesh cgalMesh;
 		ConvertMeshToCGALMesh (mesh, cgalMesh);
 		CGAL::Subdivision_method_3::Loop_subdivision (cgalMesh, steps);
-		ConvertCGALMeshToMesh (cgalMesh, resultMesh);
+		ConvertCGALMeshToMesh (cgalMesh, material, resultMesh);
 	} catch (...) {
 		success = false;
 	}
 
 	return success;
+}
+
+std::shared_ptr<Modeler::MeshShape> MeshSubdivision (const Modeler::ShapeConstPtr& shape, const Modeler::Material& material, int steps)
+{
+	Modeler::Mesh mesh = shape->GenerateMesh ();
+	Modeler::Mesh resultMesh;
+	bool opResult = MeshSubdivision (mesh, material, steps, resultMesh);
+	if (!opResult) {
+		return nullptr;
+	}
+	return std::shared_ptr<Modeler::MeshShape> (new Modeler::MeshShape (glm::dmat4 (1.0), resultMesh));
 }
 
 }
