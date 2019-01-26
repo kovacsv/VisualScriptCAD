@@ -4,6 +4,9 @@
 #include "NE_Stream.hpp"
 #include "IncludeGLM.hpp"
 
+NE::Stream::Status	ReadVector (NE::InputStream& inputStream, glm::vec2& val);
+NE::Stream::Status	WriteVector (NE::OutputStream& outputStream, const glm::vec2& val);
+
 NE::Stream::Status	ReadVector (NE::InputStream& inputStream, glm::vec3& val);
 NE::Stream::Status	WriteVector (NE::OutputStream& outputStream, const glm::vec3& val);
 

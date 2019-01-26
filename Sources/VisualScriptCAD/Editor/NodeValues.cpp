@@ -2,9 +2,54 @@
 #include "NE_StringUtils.hpp"
 #include "ReadWrite.hpp"
 
+NE::DynamicSerializationInfo	Point2DValue::serializationInfo (NE::ObjectId ("{6AEC122C-5F57-4EDF-8911-3F6B1ABC445D}"), NE::ObjectVersion (1), Point2DValue::CreateSerializableInstance);
 NE::DynamicSerializationInfo	PointValue::serializationInfo (NE::ObjectId ("{6A357CF8-F6BB-4760-962E-B1864DF157F7}"), NE::ObjectVersion (1), PointValue::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TransformationValue::serializationInfo (NE::ObjectId ("{395C8CD0-EF53-4619-AB1A-DB31068DF50C}"), NE::ObjectVersion (1), TransformationValue::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ShapeValue::serializationInfo (NE::ObjectId ("{3C6EA711-831F-4A16-AC74-6A43A1AB7ACD}"), NE::ObjectVersion (1), ShapeValue::CreateSerializableInstance);
+
+Point2DValue::Point2DValue () :
+	Point2DValue (glm::vec2 (0.0))
+{
+
+}
+
+Point2DValue::Point2DValue (const glm::vec2& val) :
+	NE::GenericValue<glm::vec2> (val)
+{
+
+}
+
+NE::ValuePtr Point2DValue::Clone () const
+{
+	return NE::ValuePtr (new Point2DValue (val));
+}
+
+std::wstring Point2DValue::ToString (const NE::StringSettings& stringSettings) const
+{
+	std::wstring result = L"";
+	result += L"Point (";
+	result += NE::DoubleToString (val.x, stringSettings);
+	result += L", ";
+	result += NE::DoubleToString (val.y, stringSettings);
+	result += L")";
+	return result;
+}
+
+NE::Stream::Status Point2DValue::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	NE::GenericValue<glm::vec2>::Read (inputStream);
+	ReadVector (inputStream, val);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status Point2DValue::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	NE::GenericValue<glm::vec2>::Write (outputStream);
+	WriteVector (outputStream, val);
+	return outputStream.GetStatus ();
+}
 
 PointValue::PointValue () :
 	PointValue (glm::vec3 (0.0))

@@ -9,6 +9,7 @@
 
 NE::SerializationInfo			PointNodeBase::serializationInfo (NE::ObjectVersion (1));
 NE::DynamicSerializationInfo	PointNode::serializationInfo (NE::ObjectId ("{F387DF9E-CFAE-47D9-ABD5-F1195473A5C5}"), NE::ObjectVersion (1), PointNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	Point2DNode::serializationInfo (NE::ObjectId ("{83495D36-2E33-4BEB-A152-F097CEC6D4DA}"), NE::ObjectVersion (1), Point2DNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	LinePointsNode::serializationInfo (NE::ObjectId ("{6228348D-9DE5-43DA-A3D8-7AA59BEE551A}"), NE::ObjectVersion (1), LinePointsNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ArcPointsNode::serializationInfo (NE::ObjectId ("{968F0889-E537-4A0F-9D76-4E0378868AB2}"), NE::ObjectVersion (1), ArcPointsNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	PointTranslationNode::serializationInfo (NE::ObjectId ("{23F99EC7-E0E1-42FB-88BD-239A27F1E24E}"), NE::ObjectVersion (1), PointTranslationNode::CreateSerializableInstance);
@@ -51,6 +52,70 @@ NE::Stream::Status PointNodeBase::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	BI::BasicUINode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+Point2DNode::Point2DNode () :
+	Point2DNode (L"", NUIE::Point ())
+{
+
+}
+
+Point2DNode::Point2DNode (const std::wstring& name, const NUIE::Point& position) :
+	PointNodeBase (name, position)
+{
+
+}
+
+void Point2DNode::Initialize ()
+{
+	PointNodeBase::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), L"X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), L"Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
+}
+
+NE::ValueConstPtr Point2DNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValueConstPtr x = EvaluateSingleInputSlot (NE::SlotId ("x"), env);
+	NE::ValueConstPtr y = EvaluateSingleInputSlot (NE::SlotId ("y"), env);
+	if (!NE::IsComplexType<NE::NumberValue> (x) || !NE::IsComplexType<NE::NumberValue> (y)) {
+		return nullptr;
+	}
+
+	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	valueCombination->CombineValues ({x, y}, [&] (const NE::ValueCombination& combination) {
+		glm::vec2 point (
+			NE::NumberValue::ToFloat (combination.GetValue (0)),
+			NE::NumberValue::ToFloat (combination.GetValue (1))
+		);
+		result->Push (NE::ValuePtr (new Point2DValue (point)));
+		return true;
+	});
+
+	return result;
+}
+
+void Point2DNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+{
+	PointNodeBase::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<Point2DNode, NE::FloatValue> (parameterList, L"X", NUIE::ParameterType::Float, NE::SlotId ("x"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<Point2DNode, NE::FloatValue> (parameterList, L"Y", NUIE::ParameterType::Float, NE::SlotId ("y"));
+}
+
+NE::Stream::Status Point2DNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	PointNodeBase::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status Point2DNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	PointNodeBase::Write (outputStream);
 	return outputStream.GetStatus ();
 }
 

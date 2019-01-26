@@ -63,6 +63,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Arithmetic Nodes", L"Division",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DivisionNode (L"Division", position)); }
 	);
+	RegisterNode (L"Point Nodes", L"Point 2D",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new Point2DNode (L"Point", position)); }
+	);
 	RegisterNode (L"Point Nodes", L"Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointNode (L"Point", position)); }
 	);

@@ -1,5 +1,21 @@
 #include "ReadWrite.hpp"
 
+NE::Stream::Status ReadVector (NE::InputStream& inputStream, glm::vec2& val)
+{
+	for (glm::vec2::length_type i = 0; i < 2; i++) {
+		inputStream.Read (val[i]);
+	}
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status WriteVector (NE::OutputStream& outputStream, const glm::vec2& val)
+{
+	for (glm::vec2::length_type i = 0; i < 2; i++) {
+		outputStream.Write (val[i]);
+	}
+	return outputStream.GetStatus ();
+}
+
 NE::Stream::Status ReadVector (NE::InputStream& inputStream, glm::vec3& val)
 {
 	for (glm::vec3::length_type i = 0; i < 3; i++) {

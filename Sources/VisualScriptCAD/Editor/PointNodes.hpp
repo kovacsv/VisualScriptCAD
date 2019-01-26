@@ -26,6 +26,22 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
+class Point2DNode : public PointNodeBase
+{
+	DYNAMIC_SERIALIZABLE (Point2DNode);
+
+public:
+	Point2DNode ();
+	Point2DNode (const std::wstring& name, const NUIE::Point& position);
+
+	virtual void				Initialize () override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
+	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
+
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+};
+
 class PointNode : public PointNodeBase
 {
 	DYNAMIC_SERIALIZABLE (PointNode);

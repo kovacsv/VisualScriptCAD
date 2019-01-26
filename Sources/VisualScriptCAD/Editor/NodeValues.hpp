@@ -5,6 +5,20 @@
 #include "Shape.hpp"
 #include "IncludeGLM.hpp"
 
+class Point2DValue : public NE::GenericValue<glm::vec2>
+{
+	DYNAMIC_SERIALIZABLE (Point2DValue);
+
+public:
+	Point2DValue ();
+	Point2DValue (const glm::vec2& val);
+
+	virtual NE::ValuePtr		Clone () const override;
+	virtual std::wstring		ToString (const NE::StringSettings& stringSettings) const override;
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+};
+
 class PointValue : public NE::GenericValue<glm::vec3>
 {
 	DYNAMIC_SERIALIZABLE (PointValue);
