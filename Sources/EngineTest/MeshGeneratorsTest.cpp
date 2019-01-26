@@ -1,6 +1,7 @@
 #include "SimpleTest.hpp"
 #include "MeshGenerators.hpp"
 #include "MeshTopology.hpp"
+#include "Triangulation.hpp"
 
 using namespace Modeler;
 
@@ -36,6 +37,35 @@ TEST (MeshGeneratorsTest)
 		ASSERT (!topology.IsEmpty ());
 		ASSERT (topology.IsClosed ());
 	}
+}
+
+TEST (PrismGeneratorTest)
+{
+	class CGALTriangulator : public Triangulator
+	{
+	public:
+		virtual bool TriangulatePolygon (const std::vector<glm::dvec2>& points, std::vector<std::array<size_t, 3>>& result) override
+		{
+			return CGALOperations::TriangulatePolygon (points, result);
+		}
+	};
+
+	std::vector<glm::dvec2> basePolygon = {
+		glm::dvec2 (0.0, 0.0),
+		glm::dvec2 (2.0, 0.0),
+		glm::dvec2 (2.0, 2.0),
+		glm::dvec2 (1.0, 2.0),
+		glm::dvec2 (1.0, 1.0),
+		glm::dvec2 (0.0, 1.0)
+	};
+
+	CGALTriangulator triangulator;
+	Mesh mesh = GeneratePrism (DefaultMaterial, glm::dmat4 (1.0), basePolygon, 1.0, triangulator);
+
+	MeshTopology topology = GetTopology (mesh);
+	ASSERT (topology.IsValid ());
+	ASSERT (!topology.IsEmpty ());
+	ASSERT (topology.IsClosed ());
 }
 
 }

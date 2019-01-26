@@ -54,6 +54,11 @@ static glm::dvec3 SphericalToCartesian (double radius, double theta, double phi)
 	);
 };
 
+Triangulator::~Triangulator ()
+{
+
+}
+
 Mesh GenerateBox (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize)
 {
 	Mesh mesh;
@@ -356,6 +361,55 @@ Mesh GenerateTorus (const Material& material, const glm::dmat4& transformation, 
 				mesh.AddTriangle (curr, ntop, top, materialId);
 			}
 		}
+	}
+
+	return mesh;
+}
+
+Mesh GeneratePrism (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, Triangulator& triangulator)
+{
+	Mesh mesh;
+	MaterialId materialId = mesh.AddMaterial (material);
+	mesh.SetTransformation (transformation);
+
+	unsigned int polygonVertexCount = (unsigned int) basePolygon.size ();
+	std::vector<std::array<size_t, 3>> baseTriangles;
+	if (!triangulator.TriangulatePolygon (basePolygon, baseTriangles)) {
+		return mesh;
+	}
+
+	for (const glm::dvec2& point : basePolygon) {
+		mesh.AddVertex (point.x, point.y, 0.0);
+	}
+
+	for (const glm::dvec2& point : basePolygon) {
+		mesh.AddVertex (point.x, point.y, height);
+	}
+
+	for (const std::array<size_t, 3>& triangle : baseTriangles) {
+		mesh.AddTriangle (
+			(unsigned int) triangle[0],
+			(unsigned int) triangle[2],
+			(unsigned int) triangle[1],
+			materialId
+		);
+	}
+
+	for (const std::array<size_t, 3>& triangle : baseTriangles) {
+		mesh.AddTriangle (
+			polygonVertexCount + (unsigned int) triangle[0],
+			polygonVertexCount + (unsigned int) triangle[1],
+			polygonVertexCount + (unsigned int) triangle[2],
+			materialId
+		);
+	}
+
+	for (unsigned int i = 0; i < polygonVertexCount; i++) {
+		unsigned int curr = i;
+		unsigned int next = (i == polygonVertexCount - 1) ? 0 : i + 1;
+		unsigned int ntop = next + polygonVertexCount;
+		unsigned int top = curr + polygonVertexCount;
+		AddRectangle (mesh, curr, next, ntop, top, materialId);
 	}
 
 	return mesh;
