@@ -7,7 +7,7 @@
 namespace CGALOperations
 {
 
-void TriangulatePolygon (const std::vector<glm::dvec2>& points);
+// TODO
 
 }
 
