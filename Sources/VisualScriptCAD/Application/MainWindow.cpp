@@ -363,6 +363,7 @@ void MainWindow::OnCommand (wxCommandEvent& evt)
 void MainWindow::OnClose (wxCloseEvent&)
 {
 	if (ConfirmLosingUnsavedChanges ()) {
+		userSettings.isMaximized = IsMaximized ();
 		userSettings.Save ();
 		Destroy ();
 	}
@@ -586,6 +587,9 @@ bool MainWindow::ConfirmLosingUnsavedChanges ()
 
 void MainWindow::SyncUserSettings ()
 {
+	if (userSettings.isMaximized) {
+		Maximize ();
+	}
 	modelControl->SetRenderSettings (userSettings.renderSettings);
 	UpdateMenuBar ();
 }

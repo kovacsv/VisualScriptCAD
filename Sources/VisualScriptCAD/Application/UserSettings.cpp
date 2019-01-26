@@ -22,7 +22,7 @@ static std::string WideStringToNormalString (const std::wstring& str)
 	return converter.to_bytes (str);
 }
 
-bool ReadStringNode (const tinyxml2::XMLNode* parent, const char* nodeName, std::wstring& text)
+static bool ReadStringNode (const tinyxml2::XMLNode* parent, const char* nodeName, std::wstring& text)
 {
 	const tinyxml2::XMLElement* node = parent->FirstChildElement (nodeName);
 	while (node == nullptr) {
@@ -32,11 +32,26 @@ bool ReadStringNode (const tinyxml2::XMLNode* parent, const char* nodeName, std:
 	return true;
 }
 
-void WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, const std::wstring& text)
+static void WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, const std::wstring& text)
 {
 	tinyxml2::XMLElement* node = doc.NewElement (nodeName);
 	node->SetText (WideStringToNormalString (text).c_str ());
 	parent->InsertEndChild (node);
+}
+
+static bool ReadBooleanNode (const tinyxml2::XMLNode* parent, const char* nodeName, bool& value)
+{
+	std::wstring nodeValue;
+	if (!ReadStringNode (parent, nodeName, nodeValue)) {
+		return false;
+	}
+	value = (nodeValue == L"true" ? true : false);
+	return true;
+}
+
+static void WriteBooleanNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, bool value)
+{
+	WriteStringNode (doc, parent, nodeName, value ? L"true" : L"false");
 }
 
 template <typename EnumType>
@@ -94,6 +109,7 @@ static const char ExportFolderNodeName[] = "ModelFolder";
 static const char ExportModelNodeName[] = "ModelName";
 static const char RecentFilesNodeName[] = "RecentFiles";
 static const char RecentFileNodeName[] = "RecentFile";
+static const char IsMaximizedNodeName[] = "IsMaximized";
 
 static const XmlEnum<ViewMode> ViewModeEnum ("ViewMode", {
 	{ ViewMode::Lines, "Lines" },
@@ -127,7 +143,8 @@ ExportSettings::ExportSettings (Modeler::FormatId format, const std::wstring& fo
 
 UserSettings::UserSettings () :
 	renderSettings (ViewMode::Polygons, AxisMode::Off),
-	exportSettings (Modeler::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model")
+	exportSettings (Modeler::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
+	isMaximized (true)
 {
 	wxFileName xmlFileName (wxStandardPaths::Get ().GetUserDataDir (), UserSettingsFileName);
 	wxString xmlFileDir = xmlFileName.GetPath ();
@@ -172,6 +189,8 @@ void UserSettings::Load ()
 			recentFileNode = recentFileNode->NextSiblingElement (RecentFileNodeName);
 		}
 	}
+
+	ReadBooleanNode (settingsNode, IsMaximizedNodeName, isMaximized);
 }
 
 void UserSettings::Save ()
@@ -200,6 +219,8 @@ void UserSettings::Save ()
 		recentFilesNode->InsertEndChild (recentFileNode);
 	}
 	settingsNode->InsertEndChild (recentFilesNode);
+
+	WriteBooleanNode (doc, settingsNode, IsMaximizedNodeName, isMaximized);
 
 	doc.SaveFile (xmlFilePath.c_str ());
 }
