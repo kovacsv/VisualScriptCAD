@@ -35,9 +35,9 @@ void BooleanNode::Initialize ()
 
 NE::ValueConstPtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr transformationValue = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValueConstPtr aValue = EvaluateSingleInputSlot (NE::SlotId ("a"), env);
-	NE::ValueConstPtr bValue = EvaluateSingleInputSlot (NE::SlotId ("b"), env);
+	NE::ValueConstPtr transformationValue = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr aValue = EvaluateInputSlot (NE::SlotId ("a"), env);
+	NE::ValueConstPtr bValue = EvaluateInputSlot (NE::SlotId ("b"), env);
 
 	if (!NE::IsComplexType<TransformationValue> (transformationValue) || !NE::IsComplexType<ShapeValue> (aValue) || !NE::IsComplexType<ShapeValue> (bValue)) {
 		return nullptr;

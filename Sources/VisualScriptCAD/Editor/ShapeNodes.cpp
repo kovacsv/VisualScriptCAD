@@ -48,11 +48,11 @@ void BoxNode::Initialize ()
 
 NE::ValueConstPtr BoxNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValueConstPtr aValue = EvaluateSingleInputSlot (NE::SlotId ("a"), env);
-	NE::ValueConstPtr bValue = EvaluateSingleInputSlot (NE::SlotId ("b"), env);
-	NE::ValueConstPtr cValue = EvaluateSingleInputSlot (NE::SlotId ("c"), env);
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr aValue = EvaluateInputSlot (NE::SlotId ("a"), env);
+	NE::ValueConstPtr bValue = EvaluateInputSlot (NE::SlotId ("b"), env);
+	NE::ValueConstPtr cValue = EvaluateInputSlot (NE::SlotId ("c"), env);
 
 	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (aValue) || !NE::IsComplexType<NE::NumberValue> (bValue) || !NE::IsComplexType<NE::NumberValue> (cValue)) {
 		return nullptr;
@@ -129,11 +129,11 @@ void CylinderNode::Initialize ()
 
 NE::ValueConstPtr CylinderNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValueConstPtr radiusValue = EvaluateSingleInputSlot (NE::SlotId ("radius"), env);
-	NE::ValueConstPtr heightValue = EvaluateSingleInputSlot (NE::SlotId ("height"), env);
-	NE::ValueConstPtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr radiusValue = EvaluateInputSlot (NE::SlotId ("radius"), env);
+	NE::ValueConstPtr heightValue = EvaluateInputSlot (NE::SlotId ("height"), env);
+	NE::ValueConstPtr segmentationValue = EvaluateInputSlot (NE::SlotId ("segmentation"), env);
 
 	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (radiusValue) || !NE::IsComplexType<NE::NumberValue> (heightValue) || !NE::IsComplexType<NE::NumberValue> (segmentationValue)) {
 		return nullptr;
@@ -213,12 +213,12 @@ void ConeNode::Initialize ()
 
 NE::ValueConstPtr ConeNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValueConstPtr topRadiusValue = EvaluateSingleInputSlot (NE::SlotId ("topradius"), env);
-	NE::ValueConstPtr bottomRadiusValue = EvaluateSingleInputSlot (NE::SlotId ("bottomradius"), env);
-	NE::ValueConstPtr heightValue = EvaluateSingleInputSlot (NE::SlotId ("height"), env);
-	NE::ValueConstPtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr topRadiusValue = EvaluateInputSlot (NE::SlotId ("topradius"), env);
+	NE::ValueConstPtr bottomRadiusValue = EvaluateInputSlot (NE::SlotId ("bottomradius"), env);
+	NE::ValueConstPtr heightValue = EvaluateInputSlot (NE::SlotId ("height"), env);
+	NE::ValueConstPtr segmentationValue = EvaluateInputSlot (NE::SlotId ("segmentation"), env);
 
 	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (topRadiusValue) || !NE::IsComplexType<NE::NumberValue> (bottomRadiusValue) || !NE::IsComplexType<NE::NumberValue> (heightValue) || !NE::IsComplexType<NE::NumberValue> (segmentationValue)) {
 		return nullptr;
@@ -298,10 +298,10 @@ void SphereNode::Initialize ()
 
 NE::ValueConstPtr SphereNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValueConstPtr radiusValue = EvaluateSingleInputSlot (NE::SlotId ("radius"), env);
-	NE::ValueConstPtr segmentationValue = EvaluateSingleInputSlot (NE::SlotId ("segmentation"), env);
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr radiusValue = EvaluateInputSlot (NE::SlotId ("radius"), env);
+	NE::ValueConstPtr segmentationValue = EvaluateInputSlot (NE::SlotId ("segmentation"), env);
 
 	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (radiusValue) || !NE::IsComplexType<NE::NumberValue> (segmentationValue)) {
 		return nullptr;
@@ -379,12 +379,12 @@ void TorusNode::Initialize ()
 
 NE::ValueConstPtr TorusNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
-	NE::ValueConstPtr outerRadiusValue = EvaluateSingleInputSlot (NE::SlotId ("outerradius"), env);
-	NE::ValueConstPtr innerRadiusValue = EvaluateSingleInputSlot (NE::SlotId ("innerradius"), env);
-	NE::ValueConstPtr outerSegmentationValue = EvaluateSingleInputSlot (NE::SlotId ("outersegmentation"), env);
-	NE::ValueConstPtr innerSegmentationValue = EvaluateSingleInputSlot (NE::SlotId ("innersegmentation"), env);
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr outerRadiusValue = EvaluateInputSlot (NE::SlotId ("outerradius"), env);
+	NE::ValueConstPtr innerRadiusValue = EvaluateInputSlot (NE::SlotId ("innerradius"), env);
+	NE::ValueConstPtr outerSegmentationValue = EvaluateInputSlot (NE::SlotId ("outersegmentation"), env);
+	NE::ValueConstPtr innerSegmentationValue = EvaluateInputSlot (NE::SlotId ("innersegmentation"), env);
 
 	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (outerRadiusValue) || !NE::IsComplexType<NE::NumberValue> (innerRadiusValue) || !NE::IsComplexType<NE::NumberValue> (outerSegmentationValue) || !NE::IsComplexType<NE::NumberValue> (innerSegmentationValue)) {
 		return nullptr;
@@ -474,10 +474,10 @@ NE::ValueConstPtr PrismNode::Calculate (NE::EvaluationEnv& env) const
 		}
 	};
 
-	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
-	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
 	NE::ValueConstPtr basePointsValue = NE::FlattenValue (EvaluateInputSlot (NE::SlotId ("basepoints"), env));
-	NE::ValueConstPtr heightValue = EvaluateSingleInputSlot (NE::SlotId ("height"), env);
+	NE::ValueConstPtr heightValue = EvaluateInputSlot (NE::SlotId ("height"), env);
 
 	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<Point2DValue> (basePointsValue) || !NE::IsComplexType<NE::NumberValue> (heightValue)) {
 		return nullptr;

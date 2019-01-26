@@ -80,9 +80,9 @@ void MaterialNode::Initialize ()
 
 NE::ValueConstPtr MaterialNode::Calculate (NE::EvaluationEnv& env) const
 {
-	NE::ValueConstPtr red = EvaluateSingleInputSlot (NE::SlotId ("red"), env);
-	NE::ValueConstPtr green = EvaluateSingleInputSlot (NE::SlotId ("green"), env);
-	NE::ValueConstPtr blue = EvaluateSingleInputSlot (NE::SlotId ("blue"), env);
+	NE::ValueConstPtr red = EvaluateInputSlot (NE::SlotId ("red"), env);
+	NE::ValueConstPtr green = EvaluateInputSlot (NE::SlotId ("green"), env);
+	NE::ValueConstPtr blue = EvaluateInputSlot (NE::SlotId ("blue"), env);
 	if (!NE::IsComplexType<NE::NumberValue> (red) || !NE::IsComplexType<NE::NumberValue> (green) || !NE::IsComplexType<NE::NumberValue> (blue)) {
 		return nullptr;
 	}
