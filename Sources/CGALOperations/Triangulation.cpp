@@ -57,6 +57,9 @@ static void MarkDomains (const CGAL_Triangulation& triangulation, const CGAL_Tri
 			for (int i = 0; i < 3; i++) {
 				CGAL_Triangulation::Edge edge (face, i);
 				CGAL_Triangulation::Face_handle neigFace = face->neighbor (i);
+				if (neigFace == nullptr) {
+					throw std::logic_error ("invalid face handle found");
+				}
 				if (neigFace->info ().nestingLevel == -1) {
 					if (triangulation.is_constrained (edge)) {
 						border.push (edge);
