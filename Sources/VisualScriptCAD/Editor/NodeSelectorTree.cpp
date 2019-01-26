@@ -131,7 +131,7 @@ void NodeSelectorTree::OnBeginDrag (wxTreeEvent& evt)
 	}
 
 	wxTextDataObject textDataObject (nodeRegistry.GetNodeData (treeItemData->nodeType)->GetNodeName ());
-	wxDropSource dropSource (textDataObject, nodeTree);
+	wxDropSource dropSource (textDataObject, nodeTree, wxStockCursor::wxCURSOR_CROSS);
 	dropSource.DoDragDrop (wxDrag_CopyOnly);
 }
 
