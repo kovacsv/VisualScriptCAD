@@ -12,9 +12,9 @@
 #include <CGAL/subdivision_method_3.h>
 #pragma warning (pop)
 
-typedef CGAL::Simple_cartesian<double>						CGAL_Kernel;
-typedef CGAL_Kernel::Point_3								CGAL_Point;
-typedef CGAL::Surface_mesh<CGAL_Point>						CGAL_Mesh;
+typedef CGAL::Simple_cartesian<double>	CGAL_Kernel;
+typedef CGAL_Kernel::Point_3			CGAL_Point;
+typedef CGAL::Surface_mesh<CGAL_Point>	CGAL_Mesh;
 
 namespace CGALOperations
 {
