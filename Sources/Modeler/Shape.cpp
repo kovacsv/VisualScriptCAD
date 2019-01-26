@@ -1,6 +1,5 @@
 #include "Shape.hpp"
 #include "Geometry.hpp"
-#include "MeshGenerators.hpp"
 
 namespace Modeler
 {
@@ -205,6 +204,39 @@ std::wstring TorusShape::ToString () const
 Mesh TorusShape::GenerateMesh () const
 {
 	return GenerateTorus (material, transformation, outerRadius, innerRadius, outerSegmentation, innerSegmentation, isSmooth);
+}
+
+PrismShape::PrismShape (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, const TriangulatorPtr& triangulator) :
+	Shape (transformation),
+	material (material),
+	basePolygon (basePolygon),
+	height (height),
+	triangulator (triangulator)
+{
+}
+
+PrismShape::~PrismShape ()
+{
+}
+
+bool PrismShape::Check () const
+{
+	return basePolygon.size () >= 3 && Geometry::IsGreater (height, 0.0);
+}
+
+ShapePtr PrismShape::Clone () const
+{
+	return ShapePtr (new PrismShape (*this));
+}
+
+std::wstring PrismShape::ToString () const
+{
+	return L"Prism";
+}
+
+Mesh PrismShape::GenerateMesh () const
+{
+	return GeneratePrism (material, transformation, basePolygon, height, *triangulator);
 }
 
 MeshShape::MeshShape (const glm::dmat4& transformation, const Mesh& mesh) :

@@ -17,6 +17,8 @@ public:
 	virtual bool TriangulatePolygon (const std::vector<glm::dvec2>& points, std::vector<std::array<size_t, 3>>& result) = 0;
 };
 
+typedef std::shared_ptr<Triangulator> TriangulatorPtr;
+
 Mesh GenerateBox (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize);
 Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth);
 Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, double topRadius, double bottomRadius, double height, int segmentation, bool isSmooth);

@@ -2,6 +2,7 @@
 #define MODELER_SHAPE_HPP
 
 #include "Mesh.hpp"
+#include "MeshGenerators.hpp"
 
 #include <memory>
 
@@ -124,6 +125,24 @@ private:
 	int			outerSegmentation;
 	int			innerSegmentation;
 	bool		isSmooth;
+};
+
+class PrismShape : public Shape
+{
+public:
+	PrismShape (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, const TriangulatorPtr& triangulator);
+	virtual ~PrismShape ();
+
+	virtual bool			Check () const override;
+	virtual ShapePtr		Clone () const override;
+	virtual std::wstring	ToString () const override;
+	virtual Mesh			GenerateMesh () const override;
+
+private:
+	Material					material;
+	std::vector<glm::dvec2>		basePolygon;
+	double						height;
+	TriangulatorPtr				triangulator;
 };
 
 class MeshShape : public Shape
