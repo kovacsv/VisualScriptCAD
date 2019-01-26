@@ -5,6 +5,7 @@
 
 #include "ModelEvaluationData.hpp"
 #include "TransformationNodes.hpp"
+#include "Triangulation.hpp"
 #include "MaterialNode.hpp"
 
 #include "IncludeGLM.hpp"
@@ -14,6 +15,7 @@ NE::DynamicSerializationInfo	CylinderNode::serializationInfo (NE::ObjectId ("{6C
 NE::DynamicSerializationInfo	ConeNode::serializationInfo (NE::ObjectId ("{586F0D6E-CBEB-4C19-8B9E-7358E3E75FD2}"), NE::ObjectVersion (1), ConeNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	SphereNode::serializationInfo (NE::ObjectId ("{686712CE-BF1B-438E-8C0A-B687A158A0BB}"), NE::ObjectVersion (1), SphereNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TorusNode::serializationInfo (NE::ObjectId ("{E17CF103-A4B6-4498-BB7E-7A566C1F7D26}"), NE::ObjectVersion (1), TorusNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	PrismNode::serializationInfo (NE::ObjectId ("{9D1E49DE-FD64-4079-A75B-DE1900FD2C2F}"), NE::ObjectVersion (1), PrismNode::CreateSerializableInstance);
 
 static bool IsSmooth (int segmentation)
 {
@@ -433,6 +435,98 @@ NE::Stream::Status TorusNode::Read (NE::InputStream& inputStream)
 }
 
 NE::Stream::Status TorusNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	ShapeNode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+PrismNode::PrismNode () :
+	PrismNode (L"", NUIE::Point ())
+{
+
+}
+
+PrismNode::PrismNode (const std::wstring& name, const NUIE::Point& position) :
+	ShapeNode (name, position)
+{
+
+}
+
+void PrismNode::Initialize ()
+{
+	ShapeNode::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("basepoints"), L"Base Points", nullptr, NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), L"Height", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+}
+
+NE::ValueConstPtr PrismNode::Calculate (NE::EvaluationEnv& env) const
+{
+	class CGALTriangulator : public Modeler::Triangulator
+	{
+	public:
+		virtual bool TriangulatePolygon (const std::vector<glm::dvec2>& points, std::vector<std::array<size_t, 3>>& result) override
+		{
+			return CGALOperations::TriangulatePolygon (points, result);
+		}
+	};
+
+	NE::ValueConstPtr material = EvaluateSingleInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateSingleInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr basePointsValue = NE::FlattenValue (EvaluateInputSlot (NE::SlotId ("basepoints"), env));
+	NE::ValueConstPtr heightValue = EvaluateSingleInputSlot (NE::SlotId ("height"), env);
+
+	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<Point2DValue> (basePointsValue) || !NE::IsComplexType<NE::NumberValue> (heightValue)) {
+		return nullptr;
+	}
+
+	Modeler::TriangulatorPtr triangulator (new CGALTriangulator ());
+	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
+
+	std::vector<glm::dvec2> basePoints;
+	NE::FlatEnumerate (basePointsValue, [&] (const NE::ValueConstPtr& value) {
+		basePoints.push_back (Point2DValue::Get (value));
+	});
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	bool isValid = valueCombination->CombineValues ({material, transformation, heightValue}, [&] (const NE::ValueCombination& combination) {
+		Modeler::ShapePtr shape (new Modeler::PrismShape (
+			MaterialValue::Get (combination.GetValue (0)),
+			TransformationValue::Get (combination.GetValue (1)),
+			basePoints,
+			NE::NumberValue::ToDouble (combination.GetValue (2)),
+			triangulator
+		));
+		if (!shape->Check ()) {
+			return false;
+		}
+		result->Push (NE::ValuePtr (new ShapeValue (shape)));
+		return true;
+	});
+
+	if (!isValid) {
+		return nullptr;
+	}
+	return result;
+}
+
+void PrismNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+{
+	ShapeNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<PrismNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
+}
+
+NE::Stream::Status PrismNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	ShapeNode::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status PrismNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	ShapeNode::Write (outputStream);

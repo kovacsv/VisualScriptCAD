@@ -221,6 +221,10 @@ PrismShape::~PrismShape ()
 
 bool PrismShape::Check () const
 {
+	std::vector<std::array<size_t, 3>> triangles;
+	if (triangulator == nullptr || !triangulator->TriangulatePolygon (basePolygon, triangles)) {
+		return false;
+	}
 	return basePolygon.size () >= 3 && Geometry::IsGreater (height, 0.0);
 }
 
