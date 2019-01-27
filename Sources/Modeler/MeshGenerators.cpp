@@ -373,17 +373,19 @@ Mesh GeneratePrism (const Material& material, const glm::dmat4& transformation, 
 	mesh.SetTransformation (transformation);
 
 	unsigned int polygonVertexCount = (unsigned int) basePolygon.size ();
+	double halfHeight = height / 2.0;
+
 	std::vector<std::array<size_t, 3>> baseTriangles;
 	if (!triangulator.TriangulatePolygon (basePolygon, baseTriangles)) {
 		return mesh;
 	}
 
 	for (const glm::dvec2& point : basePolygon) {
-		mesh.AddVertex (point.x, point.y, 0.0);
+		mesh.AddVertex (point.x, point.y, -halfHeight);
 	}
 
 	for (const glm::dvec2& point : basePolygon) {
-		mesh.AddVertex (point.x, point.y, height);
+		mesh.AddVertex (point.x, point.y, halfHeight);
 	}
 
 	for (const std::array<size_t, 3>& triangle : baseTriangles) {
