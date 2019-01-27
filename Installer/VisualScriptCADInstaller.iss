@@ -1,5 +1,5 @@
 #define MyAppName "VisualScriptCAD"
-#define MyAppVersion "0.0.3"
+#define MyAppVersion "0.0.4"
 #define MyAppPublisher "Viktor Kovacs"
 #define MyAppURL "http://www.kovacsv.hu/"
 #define MyAppExeName "VisualScriptCAD.exe"
