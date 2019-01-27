@@ -4,7 +4,7 @@
 #include "RenderModelConverter.hpp"
 #include "ModelEvaluationData.hpp"
 #include "InfoDialog.hpp"
-#include "ModelExport.hpp"
+#include "ExportDialog.hpp"
 #include "IconStore.hpp"
 #include "Version.hpp"
 #include "VersionInfo.hpp"

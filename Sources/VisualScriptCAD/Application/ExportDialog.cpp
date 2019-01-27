@@ -1,4 +1,4 @@
-#include "ModelExport.hpp"
+#include "ExportDialog.hpp"
 #include "Export.hpp"
 
 #include <wx/filepicker.h>

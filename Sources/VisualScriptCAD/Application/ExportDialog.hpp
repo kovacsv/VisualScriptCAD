@@ -1,5 +1,5 @@
-#ifndef MODELEXPORT_HPP
-#define MODELEXPORT_HPP
+#ifndef EXPORTDIALOG_HPP
+#define EXPORTDIALOG_HPP
 
 #include "Model.hpp"
 #include "UserSettings.hpp"
