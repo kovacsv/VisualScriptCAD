@@ -1,6 +1,9 @@
 #include "Camera.hpp"
 #include "Geometry.hpp"
 
+namespace Modeler
+{
+
 Camera::Camera (const glm::vec3& eye,
 				const glm::vec3& center,
 				const glm::vec3& up,
@@ -118,4 +121,6 @@ void Camera::ZoomToSphere (const glm::vec3& sphereCenter, float sphereRadius, in
 	eye = center + centerToEyeDirection * distance;
 
 	// TODO: different center
+}
+
 }

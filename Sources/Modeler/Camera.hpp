@@ -3,6 +3,9 @@
 
 #include "IncludeGLM.hpp"
 
+namespace Modeler
+{
+
 class Camera
 {
 public:
@@ -33,5 +36,7 @@ private:
 	float		nearPlane;
 	float		farPlane;
 };
+
+}
 
 #endif

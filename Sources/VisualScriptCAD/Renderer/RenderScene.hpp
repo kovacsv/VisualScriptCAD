@@ -187,7 +187,7 @@ private:
 	RenderModel			model;
 	RenderLineModel		lineModel;
 	RenderLight			light;
-	Camera				camera;
+	Modeler::Camera		camera;
 };
 
 #endif
