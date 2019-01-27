@@ -456,9 +456,18 @@ PrismNode::PrismNode (const std::wstring& name, const NUIE::Point& position) :
 void PrismNode::Initialize ()
 {
 	ShapeNode::Initialize ();
+
+	NE::ListValuePtr basePointsDefaultValue (new NE::ListValue ());
+	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (0.0, 0.0))));
+	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (2.0, 0.0))));
+	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (2.0, 2.0))));
+	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (1.0, 2.0))));
+	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (1.0, 1.0))));
+	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (0.0, 1.0))));
+
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("basepoints"), L"Base Points", nullptr, NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("basepoints"), L"Base Points", basePointsDefaultValue, NE::OutputSlotConnectionMode::Multiple)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), L"Height", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
 }
