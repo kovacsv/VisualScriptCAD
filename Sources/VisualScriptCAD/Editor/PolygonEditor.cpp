@@ -16,6 +16,7 @@ PolygonEditorPanel::PolygonEditorPanel (wxWindow* parent, StatusUpdater* statusU
 	memoryBitmap (GetClientSize ()),
 	memoryDC (memoryBitmap),
 	mousePos (0, 0),
+	selVertex (-1),
 	scale (0.01)
 {
 
@@ -38,17 +39,27 @@ void PolygonEditorPanel::OnResize (wxSizeEvent&)
 void PolygonEditorPanel::OnLeftClick (wxMouseEvent& evt)
 {
 	if (closed) {
-		polygon.clear ();
-		closed = false;
+		if (selVertex == -1) {
+			polygon.clear ();
+			polygon.push_back (MouseCoordToPolygonPoint (evt.GetPosition ()));
+			closed = false;
+		}
+	} else {
+		if (selVertex == 0 && polygon.size () > 2) {
+			closed = true;
+		} else if (selVertex == -1) {
+			polygon.push_back (MouseCoordToPolygonPoint (evt.GetPosition ()));
+		}
 	}
-	polygon.push_back (MouseCoordToPolygonPoint (evt.GetPosition ()));
+	DetectVertexUnderMouse (evt.GetPosition ());
 	Draw ();
 }
 
 void PolygonEditorPanel::OnMouseMove (wxMouseEvent& evt)
 {
 	mousePos = evt.GetPosition ();
-	statusUpdater->UpdateStatus (MouseCoordToPolygonPoint (mousePos));
+	DetectVertexUnderMouse (evt.GetPosition ());
+	statusUpdater->UpdateStatus (MouseCoordToPolygonPoint (evt.GetPosition ()));
 	Draw ();
 }
 
@@ -94,6 +105,11 @@ void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 		points.push_back (mousePos);
 		dc.DrawLines (points.size (), &points[0]);
 	}
+	if (selVertex != -1) {
+		wxPoint selPoint = points[selVertex];
+		dc.SetBrush (wxBrush (wxColour (150, 175, 200)));
+		dc.DrawCircle (selPoint, 5);
+	}
 }
 
 glm::dvec2 PolygonEditorPanel::MouseCoordToPolygonPoint (const wxPoint& point)
@@ -136,6 +152,18 @@ wxPoint PolygonEditorPanel::CenteredCoordToMouseCoord (const wxPoint& point)
 	);
 }
 
+void PolygonEditorPanel::DetectVertexUnderMouse (const wxPoint& point)
+{
+	selVertex = -1;
+	for (int i = 0; i < (int) polygon.size (); i++) {
+		const glm::dvec2& polygonPoint = polygon[i];
+		wxPoint polygonMousePoint = PolygonPointToMouseCoord (polygonPoint);
+		if (abs (polygonMousePoint.x - point.x) < 10 && abs (polygonMousePoint.y - point.y) < 10) {
+			selVertex = i;
+		}
+	}
+}
+
 PolygonEditorDialog::StatusUpdater::StatusUpdater (PolygonEditorDialog* dialog) :
 	dialog (dialog)
 {
@@ -176,7 +204,7 @@ void PolygonEditorDialog::OnButtonClick (wxCommandEvent& evt)
 BEGIN_EVENT_TABLE (PolygonEditorPanel, wxPanel)
 EVT_PAINT (PolygonEditorPanel::OnPaint)
 EVT_SIZE (PolygonEditorPanel::OnResize)
-EVT_LEFT_UP (PolygonEditorPanel::OnLeftClick)
+EVT_LEFT_DOWN (PolygonEditorPanel::OnLeftClick)
 EVT_MOTION (PolygonEditorPanel::OnMouseMove)
 END_EVENT_TABLE ()
 

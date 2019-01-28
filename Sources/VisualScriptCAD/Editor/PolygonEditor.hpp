@@ -33,6 +33,7 @@ private:
 
 	wxPoint		MouseCoordToCenteredCoord (const wxPoint& point);
 	wxPoint		CenteredCoordToMouseCoord (const wxPoint& point);
+	void		DetectVertexUnderMouse (const wxPoint& point);
 
 	StatusUpdater*				statusUpdater;
 
@@ -42,6 +43,7 @@ private:
 	wxBitmap					memoryBitmap;
 	wxMemoryDC					memoryDC;
 	wxPoint						mousePos;
+	int							selVertex;
 	double						scale;
 
 	DECLARE_EVENT_TABLE ();
