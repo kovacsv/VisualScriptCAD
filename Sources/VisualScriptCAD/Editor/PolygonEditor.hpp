@@ -17,11 +17,14 @@ public:
 
 	PolygonEditorPanel (wxWindow* parent, StatusUpdater* statusUpdater);
 
-	void		OnPaint (wxPaintEvent& evt);
-	void		OnResize (wxSizeEvent& evt);
+	void							OnPaint (wxPaintEvent& evt);
+	void							OnResize (wxSizeEvent& evt);
 
-	void		OnLeftClick (wxMouseEvent& evt);
-	void		OnMouseMove (wxMouseEvent& evt);
+	void							OnLeftClick (wxMouseEvent& evt);
+	void							OnMouseMove (wxMouseEvent& evt);
+
+	bool							HasPolygon () const;
+	const std::vector<glm::dvec2>&	GetPolygon () const;
 
 private:
 	void		Draw ();
@@ -65,7 +68,11 @@ public:
 
 	PolygonEditorDialog (wxWindow *parent);
 
-	void					OnButtonClick (wxCommandEvent& evt);
+	void							OnButtonClick (wxCommandEvent& evt);
+	void							OnClose (wxCloseEvent& evt);
+	
+	bool							HasPolygon () const;
+	const std::vector<glm::dvec2>&	GetPolygon () const;
 
 private:
 	StatusUpdater			statusUpdater;

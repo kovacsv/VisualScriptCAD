@@ -95,6 +95,7 @@ public:
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
+	virtual void				RegisterCommands (NUIE::NodeCommandRegistrator& commandRegistrator) const;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
 
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;

@@ -63,6 +63,16 @@ void PolygonEditorPanel::OnMouseMove (wxMouseEvent& evt)
 	Draw ();
 }
 
+bool PolygonEditorPanel::HasPolygon () const
+{
+	return closed;
+}
+
+const std::vector<glm::dvec2>& PolygonEditorPanel::GetPolygon () const
+{
+	return polygon;
+}
+
 void PolygonEditorPanel::Draw ()
 {
 	memoryDC.SetPen (*wxTRANSPARENT_PEN);
@@ -201,6 +211,21 @@ void PolygonEditorDialog::OnButtonClick (wxCommandEvent& evt)
 	}
 }
 
+void PolygonEditorDialog::OnClose (wxCloseEvent&)
+{
+	EndModal (wxID_CANCEL);
+}
+
+bool PolygonEditorDialog::HasPolygon () const
+{
+	return editorPanel->HasPolygon ();
+}
+
+const std::vector<glm::dvec2>& PolygonEditorDialog::GetPolygon () const
+{
+	return editorPanel->GetPolygon ();
+}
+
 BEGIN_EVENT_TABLE (PolygonEditorPanel, wxPanel)
 EVT_PAINT (PolygonEditorPanel::OnPaint)
 EVT_SIZE (PolygonEditorPanel::OnResize)
@@ -210,4 +235,5 @@ END_EVENT_TABLE ()
 
 BEGIN_EVENT_TABLE (PolygonEditorDialog, wxDialog)
 EVT_BUTTON (wxID_ANY, PolygonEditorDialog::OnButtonClick)
+EVT_CLOSE (PolygonEditorDialog::OnClose)
 END_EVENT_TABLE ()

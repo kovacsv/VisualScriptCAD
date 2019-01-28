@@ -3,6 +3,7 @@
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
 
+#include "PolygonEditor.hpp"
 #include "ModelEvaluationData.hpp"
 #include "TransformationNodes.hpp"
 #include "Triangulation.hpp"
@@ -520,6 +521,47 @@ NE::ValueConstPtr PrismNode::Calculate (NE::EvaluationEnv& env) const
 		return nullptr;
 	}
 	return result;
+}
+
+void PrismNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegistrator) const
+{
+	class SetBasePolygonCommand : public NUIE::NodeCommand
+	{
+	public:
+		SetBasePolygonCommand () :
+			NUIE::NodeCommand (L"Set Base Polygon", false)
+		{
+
+		}
+
+		virtual bool IsApplicableTo (const NUIE::UINodeConstPtr& uiNode) override
+		{
+			return NE::Node::IsTypeConst<PrismNode> (uiNode);
+		}
+
+		virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
+		{
+			PolygonEditorDialog polygonEditor (nullptr);
+			if (polygonEditor.ShowModal () == wxID_OK && polygonEditor.HasPolygon ()) {
+				NE::ListValuePtr basePointsDefaultValue (new NE::ListValue ());
+				for (const glm::dvec2& point : polygonEditor.GetPolygon ()) { 
+					basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (point)));
+				}
+
+				std::shared_ptr<PrismNode> prismNode = std::dynamic_pointer_cast<PrismNode> (uiNode);
+				prismNode->GetInputSlot (NE::SlotId ("basepoints"))->SetDefaultValue (basePointsDefaultValue);
+
+				uiManager.InvalidateNodeValue (prismNode);
+				uiManager.InvalidateNodeDrawing (prismNode);
+			}
+		}
+
+	private:
+		bool enable;
+	};
+
+	ShapeNode::RegisterCommands (commandRegistrator);
+	commandRegistrator.RegisterNodeCommand (NUIE::NodeCommandPtr (new SetBasePolygonCommand ()));
 }
 
 void PrismNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
