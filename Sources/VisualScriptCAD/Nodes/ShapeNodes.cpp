@@ -541,15 +541,24 @@ void PrismNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegistrat
 
 		virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
 		{
-			PolygonEditorDialog polygonEditor (nullptr);
+			std::shared_ptr<PrismNode> prismNode = std::dynamic_pointer_cast<PrismNode> (uiNode);
+			NE::InputSlotPtr inputSlot = prismNode->GetInputSlot (NE::SlotId ("basepoints"));
+			
+			std::vector<glm::dvec2> initPolygon;
+			NE::ValueConstPtr defaultPolygon = NE::FlattenValue (inputSlot->GetDefaultValue ());
+			if (NE::IsComplexType<Point2DValue> (defaultPolygon)) {
+				NE::FlatEnumerate (defaultPolygon, [&] (const NE::ValueConstPtr& value) {
+					initPolygon.push_back (Point2DValue::Get (value));
+				});
+			}
+
+			PolygonEditorDialog polygonEditor (nullptr, initPolygon);
 			if (polygonEditor.ShowModal () == wxID_OK && polygonEditor.HasPolygon ()) {
 				NE::ListValuePtr basePointsDefaultValue (new NE::ListValue ());
 				for (const glm::dvec2& point : polygonEditor.GetPolygon ()) { 
 					basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (point)));
 				}
-
-				std::shared_ptr<PrismNode> prismNode = std::dynamic_pointer_cast<PrismNode> (uiNode);
-				prismNode->GetInputSlot (NE::SlotId ("basepoints"))->SetDefaultValue (basePointsDefaultValue);
+				inputSlot->SetDefaultValue (basePointsDefaultValue);
 
 				uiManager.InvalidateNodeValue (prismNode);
 				uiManager.InvalidateNodeDrawing (prismNode);

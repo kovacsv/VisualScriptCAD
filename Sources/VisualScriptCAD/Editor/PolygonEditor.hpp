@@ -15,7 +15,7 @@ public:
 		virtual void UpdateStatus (const glm::dvec2& position) = 0;
 	};
 
-	PolygonEditorPanel (wxWindow* parent, StatusUpdater* statusUpdater);
+	PolygonEditorPanel (wxWindow* parent, const std::vector<glm::dvec2>& polygon, StatusUpdater* statusUpdater);
 
 	void							OnPaint (wxPaintEvent& evt);
 	void							OnResize (wxSizeEvent& evt);
@@ -66,7 +66,7 @@ public:
 		PolygonEditorDialog* dialog;
 	};
 
-	PolygonEditorDialog (wxWindow *parent);
+	PolygonEditorDialog (wxWindow *parent, const std::vector<glm::dvec2>& polygon);
 
 	void							OnButtonClick (wxCommandEvent& evt);
 	void							OnClose (wxCloseEvent& evt);

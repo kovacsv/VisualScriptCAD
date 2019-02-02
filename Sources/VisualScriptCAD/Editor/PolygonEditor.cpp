@@ -8,11 +8,11 @@ PolygonEditorPanel::StatusUpdater::~StatusUpdater ()
 
 }
 
-PolygonEditorPanel::PolygonEditorPanel (wxWindow* parent, StatusUpdater* statusUpdater) :
+PolygonEditorPanel::PolygonEditorPanel (wxWindow* parent, const std::vector<glm::dvec2>& polygon, StatusUpdater* statusUpdater) :
 	wxPanel (parent, wxID_ANY, wxDefaultPosition, wxSize (300, 300)),
 	statusUpdater (statusUpdater),
-	polygon (),
-	closed (false),
+	polygon (polygon),
+	closed (!polygon.empty ()),
 	memoryBitmap (GetClientSize ()),
 	memoryDC (memoryBitmap),
 	mousePos (0, 0),
@@ -187,11 +187,11 @@ void PolygonEditorDialog::StatusUpdater::UpdateStatus (const glm::dvec2& positio
 	dialog->statusBar->SetStatusText (stream.str ());
 }
 
-PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent) :
+PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent, const std::vector<glm::dvec2>& polygon) :
 	wxDialog (parent, wxID_ANY, L"Edit Polygon", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 	statusUpdater (this),
 	boxSizer (new wxBoxSizer (wxVERTICAL)),
-	editorPanel (new PolygonEditorPanel (this, &statusUpdater)),
+	editorPanel (new PolygonEditorPanel (this, polygon, &statusUpdater)),
 	okButton (new wxButton (this, wxID_OK, L"OK")),
 	statusBar (new wxStatusBar (this))
 {
