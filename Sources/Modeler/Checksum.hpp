@@ -27,7 +27,10 @@ public:
 	size_t	GenerateHashValue () const;
 
 private:
-	int checksum;
+	void	AddInteger (int val);
+	
+	int		checksum;
+	int		counter;
 };
 
 }

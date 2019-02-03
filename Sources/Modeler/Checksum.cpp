@@ -13,7 +13,8 @@ namespace Modeler
 {
 
 Checksum::Checksum () :
-	checksum (0)
+	checksum (0),
+	counter (0)
 {
 
 }
@@ -25,27 +26,25 @@ Checksum::~Checksum ()
 
 void Checksum::Add (int val)
 {
-	// BSD checksum algorithm
-	checksum = (checksum >> 1) + ((checksum & 1) << 31);
-	checksum = (checksum + val) & 0xffffffff;
+	AddInteger (val);
 }
 
 void Checksum::Add (unsigned int val)
 {
-	Add (int (val));
+	AddInteger (int (val));
 }
 
 void Checksum::Add (int64_t val)
 {
-	Add ((int) (val & 0xffffffff));
-	Add ((int) ((val >> 32) & 0xffffffff));
+	AddInteger ((int) (val & 0xffffffff));
+	AddInteger ((int) ((val >> 32) & 0xffffffff));
 }
 
 void Checksum::Add (float val)
 {
 	int intVal = 0;
 	memcpy (&intVal, &val, sizeof (intVal));
-	Add (intVal);
+	AddInteger (intVal);
 }
 
 void Checksum::Add (double val)
@@ -67,7 +66,7 @@ void Checksum::Add (const Checksum& val)
 
 bool Checksum::operator== (const Checksum& rhs) const
 {
-	return checksum == rhs.checksum;
+	return checksum == rhs.checksum && counter == rhs.counter;
 }
 
 bool Checksum::operator!= (const Checksum& rhs) const
@@ -77,7 +76,15 @@ bool Checksum::operator!= (const Checksum& rhs) const
 
 size_t Checksum::GenerateHashValue () const
 {
-	return std::hash<int> {} (checksum);
+	return std::hash<int> {} (checksum) + 49157 * std::hash<int> {} (counter);
+}
+
+void Checksum::AddInteger (int val)
+{
+	// BSD checksum algorithm
+	checksum = (checksum >> 1) + ((checksum & 1) << 31);
+	checksum = (checksum + val) & 0xffffffff;
+	counter++;
 }
 
 }
