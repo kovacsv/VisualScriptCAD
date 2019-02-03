@@ -13,7 +13,7 @@ PolygonEditor::PolygonEditor (const std::vector<glm::dvec2>& polygon) :
 	closed (!polygon.empty ()),
 	mouseScreenPosition (0, 0),
 	selectedVertex (-1),
-	scale (0.01)
+	scale (1)
 {
 }
 
@@ -28,8 +28,19 @@ void PolygonEditor::UpdateMousePosition (const wxPoint& point)
 	selectedVertex = DetectVertexUnderMouse (mouseScreenPosition);
 }
 
+void PolygonEditor::UpdateScale (int change)
+{
+	int newScale = scale + change;
+	if (newScale >= 1 && newScale <= 100) {
+		scale = newScale;
+	}
+}
+
 glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
 {
+	if (selectedVertex != -1) {
+		return polygon[selectedVertex];
+	}
 	return MouseCoordToPolygonPoint (mouseScreenPosition);
 }
 
@@ -71,6 +82,11 @@ int PolygonEditor::GetSelectedVertex () const
 	return selectedVertex;
 }
 
+int PolygonEditor::GetScale () const
+{
+	return scale;
+}
+
 const wxPoint& PolygonEditor::GetMouseScreenPosition () const
 {
 	return mouseScreenPosition;
@@ -78,18 +94,20 @@ const wxPoint& PolygonEditor::GetMouseScreenPosition () const
 
 glm::dvec2 PolygonEditor::MouseCoordToPolygonPoint (const wxPoint& point) const
 {
+	double dScale = scale / 100.0;
 	wxPoint centeredPoint = MouseCoordToCenteredCoord (point);
 	return glm::dvec2 (
-		centeredPoint.x * scale,
-		centeredPoint.y * scale
+		centeredPoint.x * dScale,
+		centeredPoint.y * dScale
 	);
 }
 
 wxPoint PolygonEditor::PolygonPointToMouseCoord (const glm::dvec2& point) const
 {
+	double dScale = scale / 100.0;
 	wxPoint centeredPoint (
-		point.x / scale,
-		point.y / scale
+		point.x / dScale,
+		point.y / dScale
 	);
 	return CenteredCoordToMouseCoord (centeredPoint);
 }
@@ -160,7 +178,15 @@ void PolygonEditorPanel::OnLeftClick (wxMouseEvent& evt)
 void PolygonEditorPanel::OnMouseMove (wxMouseEvent& evt)
 {
 	polygonEditor.UpdateMousePosition (evt.GetPosition ());
-	statusUpdater->UpdateStatus (polygonEditor.GetMousePositionAsPolygonPoint ());
+	UpdateStatus ();
+	Draw ();
+}
+
+void PolygonEditorPanel::OnMouseWheel (wxMouseEvent& evt)
+{
+	int scaleChange = evt.GetWheelRotation () > 0 ? -1 : 1;
+	polygonEditor.UpdateScale (scaleChange);
+	UpdateStatus ();
 	Draw ();
 }
 
@@ -224,17 +250,29 @@ void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 	}
 }
 
+void PolygonEditorPanel::UpdateStatus ()
+{
+	statusUpdater->UpdateStatus (polygonEditor.GetScale (), polygonEditor.GetMousePositionAsPolygonPoint ());
+}
+
 PolygonEditorDialog::StatusUpdater::StatusUpdater (PolygonEditorDialog* dialog) :
 	dialog (dialog)
 {
 
 }
 
-void PolygonEditorDialog::StatusUpdater::UpdateStatus (const glm::dvec2& position)
+void PolygonEditorDialog::StatusUpdater::UpdateStatus (int scale, const glm::dvec2& position)
 {
-	std::wostringstream stream;
-	stream << std::fixed << std::setprecision (2) << position.x << L", " << position.y;
-	dialog->statusBar->SetStatusText (stream.str ());
+	{
+		std::wostringstream stream;
+		stream << scale << "%";
+		dialog->statusBar->SetStatusText (stream.str (), 0);
+	}
+	{
+		std::wostringstream stream;
+		stream << std::fixed << std::setprecision (2) << position.x << L", " << position.y;
+		dialog->statusBar->SetStatusText (stream.str (), 1);
+	}
 }
 
 PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent, const std::vector<glm::dvec2>& polygon) :
@@ -245,6 +283,8 @@ PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent, const std::vector<gl
 	okButton (new wxButton (this, wxID_OK, L"OK")),
 	statusBar (new wxStatusBar (this))
 {
+	statusBar->SetFieldsCount (2);
+
 	boxSizer->Add (editorPanel, 1, wxEXPAND | wxALL, 0);
 	boxSizer->Add (okButton, 0, wxEXPAND | wxALL, 0);
 	boxSizer->Add (statusBar, 0, wxEXPAND | wxALL, 0);
@@ -281,6 +321,7 @@ EVT_PAINT (PolygonEditorPanel::OnPaint)
 EVT_SIZE (PolygonEditorPanel::OnResize)
 EVT_LEFT_DOWN (PolygonEditorPanel::OnLeftClick)
 EVT_MOTION (PolygonEditorPanel::OnMouseMove)
+EVT_MOUSEWHEEL (PolygonEditorPanel::OnMouseWheel)
 END_EVENT_TABLE ()
 
 BEGIN_EVENT_TABLE (PolygonEditorDialog, wxDialog)

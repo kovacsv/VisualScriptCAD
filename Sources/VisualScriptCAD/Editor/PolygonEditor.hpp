@@ -11,6 +11,8 @@ public:
 
 	void							UpdateScreenSize (const wxSize& newScreenSize);
 	void							UpdateMousePosition (const wxPoint& point);
+	void							UpdateScale (int change);
+
 	glm::dvec2						GetMousePositionAsPolygonPoint () const;
 	void							AddVertex (const wxPoint& point);
 
@@ -20,6 +22,7 @@ public:
 	bool							HasSelectedVertex () const;
 	int								GetSelectedVertex () const;
 
+	int								GetScale () const;
 	const wxPoint&					GetMouseScreenPosition () const;
 
 	glm::dvec2						MouseCoordToPolygonPoint (const wxPoint& point) const;
@@ -30,14 +33,14 @@ private:
 	wxPoint							CenteredCoordToMouseCoord (const wxPoint& point) const;
 	int								DetectVertexUnderMouse (const wxPoint& point) const;
 
-	std::vector<glm::dvec2>		polygon;
-	bool						closed;
+	std::vector<glm::dvec2>			polygon;
+	bool							closed;
 
-	wxSize						screenSize;
-	wxPoint						mouseScreenPosition;
+	wxSize							screenSize;
+	wxPoint							mouseScreenPosition;
 
-	int							selectedVertex;
-	double						scale;
+	int								selectedVertex;
+	int								scale;
 };
 
 class PolygonEditorPanel : public wxPanel
@@ -48,7 +51,7 @@ public:
 	public:
 		virtual ~StatusUpdater ();
 
-		virtual void UpdateStatus (const glm::dvec2& position) = 0;
+		virtual void UpdateStatus (int scale, const glm::dvec2& position) = 0;
 	};
 
 	PolygonEditorPanel (wxWindow* parent, const std::vector<glm::dvec2>& polygon, StatusUpdater* statusUpdater);
@@ -58,19 +61,21 @@ public:
 
 	void							OnLeftClick (wxMouseEvent& evt);
 	void							OnMouseMove (wxMouseEvent& evt);
+	void							OnMouseWheel (wxMouseEvent& evt);
 
 	bool							HasPolygon () const;
 	const std::vector<glm::dvec2>&	GetPolygon () const;
 
 private:
-	void		Draw ();
-	void		DrawCoordSystem (wxDC& dc);
-	void		DrawPolygon (wxDC& dc);
+	void							Draw ();
+	void							DrawCoordSystem (wxDC& dc);
+	void							DrawPolygon (wxDC& dc);
+	void							UpdateStatus ();
 
-	StatusUpdater*				statusUpdater;
-	PolygonEditor				polygonEditor;
-	wxBitmap					memoryBitmap;
-	wxMemoryDC					memoryDC;
+	StatusUpdater*					statusUpdater;
+	PolygonEditor					polygonEditor;
+	wxBitmap						memoryBitmap;
+	wxMemoryDC						memoryDC;
 
 	DECLARE_EVENT_TABLE ();
 };
@@ -83,7 +88,7 @@ public:
 	public:
 		StatusUpdater (PolygonEditorDialog* dialog);
 
-		virtual void UpdateStatus (const glm::dvec2& position) override;
+		virtual void UpdateStatus (int scale, const glm::dvec2& position) override;
 
 	private:
 		PolygonEditorDialog* dialog;
