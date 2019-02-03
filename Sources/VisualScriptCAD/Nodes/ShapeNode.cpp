@@ -82,12 +82,8 @@ void ShapeNode::AddItem (NE::EvaluationEnv& env) const
 	}
 
 	NE::ValueConstPtr value = GetCalculatedValue ();
-	if (!NE::Value::IsType<NE::ListValue> (value)) {
-		return;
-	}
-
 	std::shared_ptr<ModelEvaluationData> evalData = env.GetData<ModelEvaluationData> ();
-	NE::Value::Cast<NE::ListValue> (value)->Enumerate ([&] (const NE::ValueConstPtr& innerValue) {
+	NE::FlatEnumerate (value, [&] (const NE::ValueConstPtr& innerValue) {
 		const ShapeValue* shapeValue = NE::Value::Cast<ShapeValue> (innerValue.get ());
 		if (shapeValue != nullptr && shapeValue->GetValue () != nullptr) {
 			Modeler::ShapePtr shape = shapeValue->GetValue ();
