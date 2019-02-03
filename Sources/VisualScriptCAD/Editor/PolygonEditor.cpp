@@ -8,18 +8,132 @@ PolygonEditorPanel::StatusUpdater::~StatusUpdater ()
 
 }
 
+PolygonEditor::PolygonEditor (const std::vector<glm::dvec2>& polygon) :
+	polygon (polygon),
+	closed (!polygon.empty ()),
+	mouseScreenPosition (0, 0),
+	selectedVertex (-1),
+	scale (0.01)
+{
+}
+
+void PolygonEditor::UpdateScreenSize (const wxSize& newScreenSize)
+{
+	screenSize = newScreenSize;
+}
+
+void PolygonEditor::UpdateMousePosition (const wxPoint& point)
+{
+	mouseScreenPosition = point;
+	selectedVertex = DetectVertexUnderMouse (mouseScreenPosition);
+}
+
+glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
+{
+	return MouseCoordToPolygonPoint (mouseScreenPosition);
+}
+
+void PolygonEditor::AddVertex (const wxPoint& point)
+{
+	if (closed) {
+		if (selectedVertex == -1) {
+			polygon.clear ();
+			polygon.push_back (MouseCoordToPolygonPoint (point));
+			closed = false;
+		}
+	} else {
+		if (selectedVertex == 0 && polygon.size () > 2) {
+			closed = true;
+		} else if (selectedVertex == -1) {
+			polygon.push_back (MouseCoordToPolygonPoint (point));
+		}
+	}
+	UpdateMousePosition (point);
+}
+
+bool PolygonEditor::HasPolygon () const
+{
+	return closed;
+}
+
+const std::vector<glm::dvec2>& PolygonEditor::GetPolygon () const
+{
+	return polygon;
+}
+
+bool PolygonEditor::HasSelectedVertex () const
+{
+	return selectedVertex != -1;
+}
+
+int PolygonEditor::GetSelectedVertex () const
+{
+	return selectedVertex;
+}
+
+const wxPoint& PolygonEditor::GetMouseScreenPosition () const
+{
+	return mouseScreenPosition;
+}
+
+glm::dvec2 PolygonEditor::MouseCoordToPolygonPoint (const wxPoint& point) const
+{
+	wxPoint centeredPoint = MouseCoordToCenteredCoord (point);
+	return glm::dvec2 (
+		centeredPoint.x * scale,
+		centeredPoint.y * scale
+	);
+}
+
+wxPoint PolygonEditor::PolygonPointToMouseCoord (const glm::dvec2& point) const
+{
+	wxPoint centeredPoint (
+		point.x / scale,
+		point.y / scale
+	);
+	return CenteredCoordToMouseCoord (centeredPoint);
+}
+
+wxPoint PolygonEditor::MouseCoordToCenteredCoord (const wxPoint& point) const
+{
+	int width = screenSize.GetWidth () - 2;
+	int height = screenSize.GetHeight () - 2;
+	return wxPoint (
+		(point.x - width / 2),
+		-(point.y - height / 2)
+	);
+}
+
+wxPoint PolygonEditor::CenteredCoordToMouseCoord (const wxPoint& point) const
+{
+	int width = screenSize.GetWidth () - 2;
+	int height = screenSize.GetHeight () - 2;
+	return wxPoint (
+		(point.x + width / 2),
+		height - (point.y + height / 2)
+	);
+}
+
+int PolygonEditor::DetectVertexUnderMouse (const wxPoint& point) const
+{
+	for (int i = 0; i < (int) polygon.size (); i++) {
+		const glm::dvec2& polygonPoint = polygon[i];
+		wxPoint polygonMousePoint = PolygonPointToMouseCoord (polygonPoint);
+		if (abs (polygonMousePoint.x - point.x) < 10 && abs (polygonMousePoint.y - point.y) < 10) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 PolygonEditorPanel::PolygonEditorPanel (wxWindow* parent, const std::vector<glm::dvec2>& polygon, StatusUpdater* statusUpdater) :
 	wxPanel (parent, wxID_ANY, wxDefaultPosition, wxSize (300, 300)),
 	statusUpdater (statusUpdater),
-	polygon (polygon),
-	closed (!polygon.empty ()),
+	polygonEditor (polygon),
 	memoryBitmap (GetClientSize ()),
-	memoryDC (memoryBitmap),
-	mousePos (0, 0),
-	selVertex (-1),
-	scale (0.01)
+	memoryDC (memoryBitmap)
 {
-
+	polygonEditor.UpdateScreenSize (GetClientSize ());
 }
 
 void PolygonEditorPanel::OnPaint (wxPaintEvent& /*evt*/)
@@ -31,6 +145,7 @@ void PolygonEditorPanel::OnPaint (wxPaintEvent& /*evt*/)
 
 void PolygonEditorPanel::OnResize (wxSizeEvent&)
 {
+	polygonEditor.UpdateScreenSize (GetClientSize ());
 	memoryBitmap = wxBitmap (GetClientSize ());
 	memoryDC.SelectObject (memoryBitmap);
 	Draw ();
@@ -38,39 +153,25 @@ void PolygonEditorPanel::OnResize (wxSizeEvent&)
 
 void PolygonEditorPanel::OnLeftClick (wxMouseEvent& evt)
 {
-	if (closed) {
-		if (selVertex == -1) {
-			polygon.clear ();
-			polygon.push_back (MouseCoordToPolygonPoint (evt.GetPosition ()));
-			closed = false;
-		}
-	} else {
-		if (selVertex == 0 && polygon.size () > 2) {
-			closed = true;
-		} else if (selVertex == -1) {
-			polygon.push_back (MouseCoordToPolygonPoint (evt.GetPosition ()));
-		}
-	}
-	DetectVertexUnderMouse (evt.GetPosition ());
+	polygonEditor.AddVertex (evt.GetPosition ());
 	Draw ();
 }
 
 void PolygonEditorPanel::OnMouseMove (wxMouseEvent& evt)
 {
-	mousePos = evt.GetPosition ();
-	DetectVertexUnderMouse (evt.GetPosition ());
-	statusUpdater->UpdateStatus (MouseCoordToPolygonPoint (evt.GetPosition ()));
+	polygonEditor.UpdateMousePosition (evt.GetPosition ());
+	statusUpdater->UpdateStatus (polygonEditor.GetMousePositionAsPolygonPoint ());
 	Draw ();
 }
 
 bool PolygonEditorPanel::HasPolygon () const
 {
-	return closed;
+	return polygonEditor.HasPolygon ();
 }
 
 const std::vector<glm::dvec2>& PolygonEditorPanel::GetPolygon () const
 {
-	return polygon;
+	return polygonEditor.GetPolygon ();
 }
 
 void PolygonEditorPanel::Draw ()
@@ -100,77 +201,26 @@ void PolygonEditorPanel::DrawCoordSystem (wxDC& dc)
 
 void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 {
+	const std::vector<glm::dvec2>& polygon = polygonEditor.GetPolygon ();
 	if (polygon.empty ()) {
 		return;
 	}
 	std::vector<wxPoint> points;
 	for (const glm::dvec2& polygonPoint : polygon) {
-		points.push_back (PolygonPointToMouseCoord (polygonPoint));
+		points.push_back (polygonEditor.PolygonPointToMouseCoord (polygonPoint));
 	}
 	dc.SetPen (wxPen (wxColour (0, 0, 0)));
-	if (closed) {
+	if (polygonEditor.HasPolygon ()) {
 		dc.SetBrush (wxBrush (wxColour (230, 230, 230)));
 		dc.DrawPolygon (points.size (), &points[0]);
 	} else {
-		points.push_back (mousePos);
+		points.push_back (polygonEditor.GetMouseScreenPosition ());
 		dc.DrawLines (points.size (), &points[0]);
 	}
-	if (selVertex != -1) {
-		wxPoint selPoint = points[selVertex];
+	if (polygonEditor.HasSelectedVertex ()) {
+		wxPoint selPoint = points[polygonEditor.GetSelectedVertex ()];
 		dc.SetBrush (wxBrush (wxColour (150, 175, 200)));
 		dc.DrawCircle (selPoint, 5);
-	}
-}
-
-glm::dvec2 PolygonEditorPanel::MouseCoordToPolygonPoint (const wxPoint& point)
-{
-	wxPoint centeredPoint = MouseCoordToCenteredCoord (point);
-	return glm::dvec2 (
-		centeredPoint.x * scale,
-		centeredPoint.y * scale
-	);
-}
-
-wxPoint PolygonEditorPanel::PolygonPointToMouseCoord (const glm::dvec2& point)
-{
-	wxPoint centeredPoint (
-		point.x / scale,
-		point.y / scale
-	);
-	return CenteredCoordToMouseCoord (centeredPoint);
-}
-
-wxPoint PolygonEditorPanel::MouseCoordToCenteredCoord (const wxPoint& point)
-{
-	wxRect clientRect = GetClientRect ();
-	int width = clientRect.GetWidth () - 2;
-	int height = clientRect.GetHeight () - 2;
-	return wxPoint (
-		(point.x - width / 2),
-		-(point.y - height / 2)
-	);
-}
-
-wxPoint PolygonEditorPanel::CenteredCoordToMouseCoord (const wxPoint& point)
-{
-	wxRect clientRect = GetClientRect ();
-	int width = clientRect.GetWidth () - 2;
-	int height = clientRect.GetHeight () - 2;
-	return wxPoint (
-		(point.x + width / 2),
-		height - (point.y + height / 2)
-	);
-}
-
-void PolygonEditorPanel::DetectVertexUnderMouse (const wxPoint& point)
-{
-	selVertex = -1;
-	for (int i = 0; i < (int) polygon.size (); i++) {
-		const glm::dvec2& polygonPoint = polygon[i];
-		wxPoint polygonMousePoint = PolygonPointToMouseCoord (polygonPoint);
-		if (abs (polygonMousePoint.x - point.x) < 10 && abs (polygonMousePoint.y - point.y) < 10) {
-			selVertex = i;
-		}
 	}
 }
 

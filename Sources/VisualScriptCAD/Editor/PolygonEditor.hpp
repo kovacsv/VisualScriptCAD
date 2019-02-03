@@ -4,6 +4,42 @@
 #include "IncludeGLM.hpp"
 #include <wx/wx.h>
 
+class PolygonEditor
+{
+public:
+	PolygonEditor (const std::vector<glm::dvec2>& polygon);
+
+	void							UpdateScreenSize (const wxSize& newScreenSize);
+	void							UpdateMousePosition (const wxPoint& point);
+	glm::dvec2						GetMousePositionAsPolygonPoint () const;
+	void							AddVertex (const wxPoint& point);
+
+	bool							HasPolygon () const;
+	const std::vector<glm::dvec2>&	GetPolygon () const;
+
+	bool							HasSelectedVertex () const;
+	int								GetSelectedVertex () const;
+
+	const wxPoint&					GetMouseScreenPosition () const;
+
+	glm::dvec2						MouseCoordToPolygonPoint (const wxPoint& point) const;
+	wxPoint							PolygonPointToMouseCoord (const glm::dvec2& point) const;
+
+private:
+	wxPoint							MouseCoordToCenteredCoord (const wxPoint& point) const;
+	wxPoint							CenteredCoordToMouseCoord (const wxPoint& point) const;
+	int								DetectVertexUnderMouse (const wxPoint& point) const;
+
+	std::vector<glm::dvec2>		polygon;
+	bool						closed;
+
+	wxSize						screenSize;
+	wxPoint						mouseScreenPosition;
+
+	int							selectedVertex;
+	double						scale;
+};
+
 class PolygonEditorPanel : public wxPanel
 {
 public:
@@ -31,23 +67,10 @@ private:
 	void		DrawCoordSystem (wxDC& dc);
 	void		DrawPolygon (wxDC& dc);
 
-	glm::dvec2	MouseCoordToPolygonPoint (const wxPoint& point);
-	wxPoint		PolygonPointToMouseCoord (const glm::dvec2& point);
-
-	wxPoint		MouseCoordToCenteredCoord (const wxPoint& point);
-	wxPoint		CenteredCoordToMouseCoord (const wxPoint& point);
-	void		DetectVertexUnderMouse (const wxPoint& point);
-
 	StatusUpdater*				statusUpdater;
-
-	std::vector<glm::dvec2>		polygon;
-	bool						closed;
-
+	PolygonEditor				polygonEditor;
 	wxBitmap					memoryBitmap;
 	wxMemoryDC					memoryDC;
-	wxPoint						mousePos;
-	int							selVertex;
-	double						scale;
 
 	DECLARE_EVENT_TABLE ();
 };
