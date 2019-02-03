@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <limits>
 
 static void SetTextValidator (wxTextCtrl* textCtrl, const std::wstring& validChars)
 {
@@ -113,6 +114,35 @@ void PolygonEditor::UpdateScale (int change)
 	if (newScale >= 1 && newScale <= 100) {
 		scale = newScale;
 	}
+}
+
+void PolygonEditor::AutoScale ()
+{
+	if (!HasPolygon ()) {
+		return;
+	}
+
+	static const double INF = std::numeric_limits<double>::max ();
+	double maxX = -INF;
+	double maxY = -INF;
+	for (const glm::dvec2& point : polygon) {
+		maxX = std::max (maxX, std::fabs (point.x));
+		maxY = std::max (maxY, std::fabs (point.y));
+	}
+
+	double dScale = scale / 100.0;
+	double neededSize = std::max (
+		(maxX * 2.0) / dScale,
+		(maxY * 2.0) / dScale
+	);
+
+	int newScale = std::ceil (neededSize / std::min (screenSize.x, screenSize.y));
+	if (newScale < 1) {
+		newScale = 1;
+	} else if (newScale > 100) {
+		newScale = 100;
+	}
+	scale = newScale;
 }
 
 glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
@@ -234,13 +264,14 @@ int PolygonEditor::DetectVertexUnderMouse (const wxPoint& point) const
 }
 
 PolygonEditorPanel::PolygonEditorPanel (wxWindow* parent, const std::vector<glm::dvec2>& polygon, StatusUpdater* statusUpdater) :
-	wxPanel (parent, wxID_ANY, wxDefaultPosition, wxSize (300, 300)),
+	wxPanel (parent, wxID_ANY, wxDefaultPosition, wxSize (500, 300)),
 	statusUpdater (statusUpdater),
 	polygonEditor (polygon),
 	memoryBitmap (GetClientSize ()),
 	memoryDC (memoryBitmap)
 {
 	polygonEditor.UpdateScreenSize (GetClientSize ());
+	polygonEditor.AutoScale ();
 }
 
 void PolygonEditorPanel::OnPaint (wxPaintEvent& /*evt*/)

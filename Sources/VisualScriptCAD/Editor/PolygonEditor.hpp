@@ -12,6 +12,7 @@ public:
 	void							UpdateScreenSize (const wxSize& newScreenSize);
 	void							UpdateMousePosition (const wxPoint& point);
 	void							UpdateScale (int change);
+	void							AutoScale ();
 
 	glm::dvec2						GetMousePositionAsPolygonPoint () const;
 	void							HandleMouseClick (const wxPoint& point);
