@@ -4,6 +4,84 @@
 #include <sstream>
 #include <iomanip>
 
+static void SetTextValidator (wxTextCtrl* textCtrl, const std::wstring& validChars)
+{
+	wxTextValidator validator (wxFILTER_INCLUDE_CHAR_LIST);
+	wxArrayString includeList;
+
+	for (const wchar_t& character : validChars) {
+		includeList.Add (character);
+	}
+
+	validator.SetIncludes (includeList);
+	textCtrl->SetValidator (validator);
+}
+
+class PointPositionDialog : public wxDialog
+{
+public:
+	PointPositionDialog (wxWindow* parent, const glm::dvec2& position) :
+		wxDialog (parent, wxID_ANY, L"Set Point Position"),
+		position (position),
+		gridSizer (new wxGridSizer (2, 5, 5)),
+		boxSizer (new wxBoxSizer (wxVERTICAL)),
+		okButton (new wxButton (this, wxID_OK, L"OK")),
+		xPositionControl (new wxTextCtrl (this, wxID_ANY, std::to_wstring (position.x))),
+		yPositionControl (new wxTextCtrl (this, wxID_ANY, std::to_wstring (position.y)))
+	{
+		SetTextValidator (xPositionControl, L"0123456789.-");
+		SetTextValidator (yPositionControl, L"0123456789.-");
+
+		gridSizer->SetRows (2);
+		gridSizer->Add (new wxStaticText (this, wxID_ANY, L"Position X"));
+		gridSizer->Add (xPositionControl);
+		gridSizer->Add (new wxStaticText (this, wxID_ANY, L"Position Y"));
+		gridSizer->Add (yPositionControl);
+
+		boxSizer->Add (gridSizer, 1, wxEXPAND | wxALL, 5);
+		boxSizer->Add (okButton, 0, wxEXPAND | wxALL, 5);
+
+		SetSizerAndFit (boxSizer);
+		CenterOnParent ();
+	}
+
+	void OnOkButtonClick (wxCommandEvent&)
+	{
+		if (xPositionControl->IsEmpty () || yPositionControl->IsEmpty ()) {
+			return;
+		}
+		position.x = std::stod (xPositionControl->GetValue ().ToStdWstring ());
+		position.y = std::stod (yPositionControl->GetValue ().ToStdWstring ());
+		EndModal (wxID_OK);
+	}
+
+	void OnClose (wxCloseEvent&)
+	{
+		EndModal (wxID_CANCEL);
+	}
+
+	const glm::dvec2& GetPoint ()
+	{
+		return position;
+	}
+
+private:
+	glm::dvec2		position;
+		
+	wxGridSizer*	gridSizer;
+	wxBoxSizer*		boxSizer;
+	wxButton*		okButton;
+	wxTextCtrl*		xPositionControl;
+	wxTextCtrl*		yPositionControl;
+
+	DECLARE_EVENT_TABLE ();
+};
+
+BEGIN_EVENT_TABLE (PointPositionDialog, wxDialog)
+EVT_BUTTON (wxID_OK, PointPositionDialog::OnOkButtonClick)
+EVT_CLOSE (PointPositionDialog::OnClose)
+END_EVENT_TABLE ()
+
 PolygonEditorPanel::StatusUpdater::~StatusUpdater ()
 {
 
@@ -81,6 +159,16 @@ bool PolygonEditor::HasSelectedVertex () const
 int PolygonEditor::GetSelectedVertex () const
 {
 	return selectedVertex;
+}
+
+glm::dvec2 PolygonEditor::GetSelectedVertexPosition () const
+{
+	return polygon[selectedVertex];
+}
+
+void PolygonEditor::SetSelectedVertexPosition (const glm::dvec2 position)
+{
+	polygon[selectedVertex] = position;
 }
 
 int PolygonEditor::GetScale () const
@@ -176,6 +264,23 @@ void PolygonEditorPanel::OnLeftClick (wxMouseEvent& evt)
 	Draw ();
 }
 
+void PolygonEditorPanel::OnRightClick (wxMouseEvent& evt)
+{
+	polygonEditor.UpdateMousePosition (evt.GetPosition ());
+	if (polygonEditor.HasPolygon () && polygonEditor.HasSelectedVertex ()) {
+		wxMenu popupMenu;
+		popupMenu.Append (1, L"Set Point Position");
+		int selectedItem = GetPopupMenuSelectionFromUser (popupMenu, evt.GetPosition ());
+		if (selectedItem == 1) {
+			PointPositionDialog pointPositionDialog (this, polygonEditor.GetSelectedVertexPosition ());
+			if (pointPositionDialog.ShowModal () == wxID_OK) {
+				polygonEditor.SetSelectedVertexPosition (pointPositionDialog.GetPoint ());
+			}
+		}
+	}
+	Draw ();
+}
+
 void PolygonEditorPanel::OnMouseMove (wxMouseEvent& evt)
 {
 	polygonEditor.UpdateMousePosition (evt.GetPosition ());
@@ -204,6 +309,11 @@ std::vector<glm::dvec2> PolygonEditorPanel::GetPolygon () const
 		std::reverse (polygon.begin (), polygon.end ());
 	}
 	return polygon;
+}
+
+void PolygonEditorPanel::UpdateStatus ()
+{
+	statusUpdater->UpdateStatus (polygonEditor.GetScale (), polygonEditor.GetMousePositionAsPolygonPoint ());
 }
 
 void PolygonEditorPanel::Draw ()
@@ -256,11 +366,6 @@ void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 	}
 }
 
-void PolygonEditorPanel::UpdateStatus ()
-{
-	statusUpdater->UpdateStatus (polygonEditor.GetScale (), polygonEditor.GetMousePositionAsPolygonPoint ());
-}
-
 PolygonEditorDialog::StatusUpdater::StatusUpdater (PolygonEditorDialog* dialog) :
 	dialog (dialog)
 {
@@ -290,6 +395,7 @@ PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent, const std::vector<gl
 	statusBar (new wxStatusBar (this))
 {
 	statusBar->SetFieldsCount (2);
+	editorPanel->UpdateStatus ();
 
 	boxSizer->Add (editorPanel, 1, wxEXPAND | wxALL, 0);
 	boxSizer->Add (okButton, 0, wxEXPAND | wxALL, 0);
@@ -326,6 +432,7 @@ BEGIN_EVENT_TABLE (PolygonEditorPanel, wxPanel)
 EVT_PAINT (PolygonEditorPanel::OnPaint)
 EVT_SIZE (PolygonEditorPanel::OnResize)
 EVT_LEFT_DOWN (PolygonEditorPanel::OnLeftClick)
+EVT_RIGHT_DOWN (PolygonEditorPanel::OnRightClick)
 EVT_MOTION (PolygonEditorPanel::OnMouseMove)
 EVT_MOUSEWHEEL (PolygonEditorPanel::OnMouseWheel)
 END_EVENT_TABLE ()

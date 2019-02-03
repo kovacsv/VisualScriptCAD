@@ -22,6 +22,9 @@ public:
 	bool							HasSelectedVertex () const;
 	int								GetSelectedVertex () const;
 
+	glm::dvec2						GetSelectedVertexPosition () const;
+	void							SetSelectedVertexPosition (const glm::dvec2 position);
+
 	int								GetScale () const;
 	const wxPoint&					GetMouseScreenPosition () const;
 
@@ -60,17 +63,19 @@ public:
 	void							OnResize (wxSizeEvent& evt);
 
 	void							OnLeftClick (wxMouseEvent& evt);
+	void							OnRightClick (wxMouseEvent& evt);
 	void							OnMouseMove (wxMouseEvent& evt);
 	void							OnMouseWheel (wxMouseEvent& evt);
 
 	bool							HasPolygon () const;
 	std::vector<glm::dvec2>			GetPolygon () const;
 
+	void							UpdateStatus ();
+
 private:
 	void							Draw ();
 	void							DrawCoordSystem (wxDC& dc);
 	void							DrawPolygon (wxDC& dc);
-	void							UpdateStatus ();
 
 	StatusUpdater*					statusUpdater;
 	PolygonEditor					polygonEditor;
