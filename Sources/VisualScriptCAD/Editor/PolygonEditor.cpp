@@ -44,7 +44,7 @@ glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
 	return MouseCoordToPolygonPoint (mouseScreenPosition);
 }
 
-void PolygonEditor::AddVertex (const wxPoint& point)
+void PolygonEditor::HandleMouseClick (const wxPoint& point)
 {
 	if (closed) {
 		if (selectedVertex == -1) {
@@ -171,7 +171,7 @@ void PolygonEditorPanel::OnResize (wxSizeEvent&)
 
 void PolygonEditorPanel::OnLeftClick (wxMouseEvent& evt)
 {
-	polygonEditor.AddVertex (evt.GetPosition ());
+	polygonEditor.HandleMouseClick (evt.GetPosition ());
 	Draw ();
 }
 

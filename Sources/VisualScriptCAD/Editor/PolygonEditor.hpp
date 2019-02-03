@@ -14,7 +14,7 @@ public:
 	void							UpdateScale (int change);
 
 	glm::dvec2						GetMousePositionAsPolygonPoint () const;
-	void							AddVertex (const wxPoint& point);
+	void							HandleMouseClick (const wxPoint& point);
 
 	bool							HasPolygon () const;
 	const std::vector<glm::dvec2>&	GetPolygon () const;
