@@ -103,7 +103,6 @@ TEST (CutTriangleWithPlane_GeneralCut3)
 	ASSERT (result.frontTriangles.size () == 2 && result.backTriangles.size () == 1);
 }
 
-
 TEST (BarycentricInterpolationTest)
 {
 	glm::dvec3 v1 (0.0, 0.0, 0.0);
@@ -117,6 +116,13 @@ TEST (BarycentricInterpolationTest)
 	ASSERT (IsEqualVec (BarycentricInterpolation (v1, v2, v3, val1, val2, val3, v1), val1));
 	ASSERT (IsEqualVec (BarycentricInterpolation (v1, v2, v3, val1, val2, val3, v2), val2));
 	ASSERT (IsEqualVec (BarycentricInterpolation (v1, v2, v3, val1, val2, val3, v3), val3));
+}
+
+TEST (OrientationTest)
+{
+	ASSERT (GetTriangleOrientation2D ({0.0, 0.0}, {1.0, 0.0}, {1.0, 1.0}) == Orientation::CounterClockwise);
+	ASSERT (GetTriangleOrientation2D ({0.0, 0.0}, {1.0, 1.0}, {1.0, 0.0}) == Orientation::Clockwise);
+	ASSERT (GetTriangleOrientation2D ({0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}) == Orientation::Invalid);
 }
 
 }

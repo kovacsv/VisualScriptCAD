@@ -1,4 +1,5 @@
 #include "PolygonEditor.hpp"
+#include "TriangleUtils.hpp"
 
 #include <sstream>
 #include <iomanip>
@@ -195,9 +196,14 @@ bool PolygonEditorPanel::HasPolygon () const
 	return polygonEditor.HasPolygon ();
 }
 
-const std::vector<glm::dvec2>& PolygonEditorPanel::GetPolygon () const
+std::vector<glm::dvec2> PolygonEditorPanel::GetPolygon () const
 {
-	return polygonEditor.GetPolygon ();
+	std::vector<glm::dvec2> polygon = polygonEditor.GetPolygon ();
+	Geometry::Orientation orientation = Geometry::GetPolygonOrientation2D (polygon);
+	if (orientation != Geometry::Orientation::CounterClockwise) {
+		std::reverse (polygon.begin (), polygon.end ());
+	}
+	return polygon;
 }
 
 void PolygonEditorPanel::Draw ()
@@ -311,7 +317,7 @@ bool PolygonEditorDialog::HasPolygon () const
 	return editorPanel->HasPolygon ();
 }
 
-const std::vector<glm::dvec2>& PolygonEditorDialog::GetPolygon () const
+std::vector<glm::dvec2> PolygonEditorDialog::GetPolygon () const
 {
 	return editorPanel->GetPolygon ();
 }

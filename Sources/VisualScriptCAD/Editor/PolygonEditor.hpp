@@ -64,7 +64,7 @@ public:
 	void							OnMouseWheel (wxMouseEvent& evt);
 
 	bool							HasPolygon () const;
-	const std::vector<glm::dvec2>&	GetPolygon () const;
+	std::vector<glm::dvec2>			GetPolygon () const;
 
 private:
 	void							Draw ();
@@ -96,11 +96,11 @@ public:
 
 	PolygonEditorDialog (wxWindow *parent, const std::vector<glm::dvec2>& polygon);
 
-	void							OnButtonClick (wxCommandEvent& evt);
-	void							OnClose (wxCloseEvent& evt);
+	void						OnButtonClick (wxCommandEvent& evt);
+	void						OnClose (wxCloseEvent& evt);
 	
-	bool							HasPolygon () const;
-	const std::vector<glm::dvec2>&	GetPolygon () const;
+	bool						HasPolygon () const;
+	std::vector<glm::dvec2>		GetPolygon () const;
 
 private:
 	StatusUpdater			statusUpdater;

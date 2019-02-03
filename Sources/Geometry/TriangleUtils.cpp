@@ -148,6 +148,39 @@ glm::dvec3 BarycentricInterpolation (const glm::dvec3& v1, const glm::dvec3& v2,
 
 	glm::dvec3 interpolated = (interpolated1 + interpolated2 + interpolated3) / area;
 	return interpolated;
+}
+
+Orientation GetTriangleOrientation2D (const glm::dvec2& v1, const glm::dvec2& v2, const glm::dvec2& v3)
+{
+	double m00 = v1.x;
+	double m01 = v1.y;
+	double m10 = v2.x;
+	double m11 = v2.y;
+	double m20 = v3.x;
+	double m21 = v3.y;
+
+	double determinant = m00 * m11 + m01 * m20 + m10 * m21 - m11 * m20 - m01 * m10 - m00 * m21;
+	if (IsGreater (determinant, 0.0)) {
+		return Orientation::CounterClockwise;
+	} else if (IsLower (determinant, 0.0)) {
+		return Orientation::Clockwise;
+	}
+
+	return Orientation::Invalid;
+}
+
+Orientation GetPolygonOrientation2D (const std::vector<glm::dvec2>& points)
+{
+	if (points.size () < 3) {
+		return Orientation::Invalid;
+	}
+	for (size_t i = 0; i < points.size () - 2; i++) {
+		Orientation orientation = GetTriangleOrientation2D (points[i], points[i + 1], points[i + 2]);
+		if (orientation != Orientation::Invalid) {
+			return orientation;
+		}
+	}
+	return Orientation::Invalid;
 };
 
 }

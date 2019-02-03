@@ -1,5 +1,6 @@
 #include "Shape.hpp"
 #include "Geometry.hpp"
+#include "TriangleUtils.hpp"
 
 namespace Modeler
 {
@@ -222,6 +223,9 @@ PrismShape::~PrismShape ()
 bool PrismShape::Check () const
 {
 	if (basePolygon.size () < 3 || !Geometry::IsGreater (height, 0.0)) {
+		return false;
+	}
+	if (Geometry::GetPolygonOrientation2D (basePolygon) != Geometry::Orientation::CounterClockwise) {
 		return false;
 	}
 	std::vector<std::array<size_t, 3>> triangles;
