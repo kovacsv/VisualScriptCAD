@@ -56,11 +56,6 @@ public:
 		EndModal (wxID_OK);
 	}
 
-	void OnClose (wxCloseEvent&)
-	{
-		EndModal (wxID_CANCEL);
-	}
-
 	const glm::dvec2& GetPoint ()
 	{
 		return position;
@@ -80,7 +75,6 @@ private:
 
 BEGIN_EVENT_TABLE (PointPositionDialog, wxDialog)
 EVT_BUTTON (wxID_OK, PointPositionDialog::OnOkButtonClick)
-EVT_CLOSE (PointPositionDialog::OnClose)
 END_EVENT_TABLE ()
 
 PolygonEditorPanel::StatusUpdater::~StatusUpdater ()
@@ -433,7 +427,7 @@ PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent, const std::vector<gl
 	boxSizer->Add (statusBar, 0, wxEXPAND | wxALL, 0);
 	SetSizerAndFit (boxSizer);
 
-	
+	SetEscapeId (wxID_CANCEL);
 	// CenterOnParent ();
 }
 
@@ -442,11 +436,6 @@ void PolygonEditorDialog::OnButtonClick (wxCommandEvent& evt)
 	if (evt.GetId () == wxID_OK) {
 		EndModal (wxID_OK);
 	}
-}
-
-void PolygonEditorDialog::OnClose (wxCloseEvent&)
-{
-	EndModal (wxID_CANCEL);
 }
 
 bool PolygonEditorDialog::HasPolygon () const
@@ -470,5 +459,4 @@ END_EVENT_TABLE ()
 
 BEGIN_EVENT_TABLE (PolygonEditorDialog, wxDialog)
 EVT_BUTTON (wxID_ANY, PolygonEditorDialog::OnButtonClick)
-EVT_CLOSE (PolygonEditorDialog::OnClose)
 END_EVENT_TABLE ()
