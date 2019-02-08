@@ -570,6 +570,7 @@ void MainWindow::OnKeyDown (wxKeyEvent& evt)
 			break;
 	}
 	nodeEditorControl->OnKeyDown (evt);
+	evt.Skip ();
 }
 
 bool MainWindow::ConfirmLosingUnsavedChanges ()
