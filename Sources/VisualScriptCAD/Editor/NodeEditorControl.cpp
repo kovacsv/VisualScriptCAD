@@ -6,16 +6,6 @@
 #include "ModelEvaluationData.hpp"
 #include "NodeRegistry.hpp"
 
-class NodeEditorEventHandlers : public WXAS::NodeEditorEventHandlers
-{
-public:
-	NodeEditorEventHandlers (wxPanel* panel) :
-		WXAS::NodeEditorEventHandlers (panel)
-	{
-
-	}
-};
-
 class NodeEditorUIEnvironment : public WXAS::NodeEditorUIEnvironment
 {
 public:
@@ -63,9 +53,9 @@ NodeEditorControl::NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE
 	std::shared_ptr<WXAS::NodeEditorUIEnvironment> uiEnvironment = std::shared_ptr<WXAS::NodeEditorUIEnvironment> (
 		new NodeEditorUIEnvironment (
 			nodeEditorControl,
-			std::shared_ptr<NE::StringSettings> (new NE::BasicStringSettings (L'.', L',', 2)),
-			std::shared_ptr<NUIE::SkinParams> (new NUIE::DefaultSkinParams ()),
-			std::shared_ptr<NUIE::EventHandlers> (new NodeEditorEventHandlers (nodeEditorControl)),
+			NE::StringSettingsPtr (new NE::BasicStringSettings (NE::GetDefaultStringSettings ())),
+			NUIE::SkinParamsPtr (new NUIE::BasicSkinParams (NUIE::GetDefaultSkinParams ())),
+			NUIE::EventHandlersPtr (new WXAS::NodeEditorEventHandlers (nodeEditorControl)),
 			evalEnv, synchronizer
 		)
 	);
