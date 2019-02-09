@@ -4,7 +4,49 @@
 #include "TransformationNodes.hpp"
 #include "ModelEvaluationData.hpp"
 
+NE::DynamicSerializationInfo	ShapeValue::serializationInfo (NE::ObjectId ("{3C6EA711-831F-4A16-AC74-6A43A1AB7ACD}"), NE::ObjectVersion (1), ShapeValue::CreateSerializableInstance);
 NE::SerializationInfo			ShapeNode::serializationInfo (NE::ObjectVersion (1));
+
+
+ShapeValue::ShapeValue () :
+	ShapeValue (nullptr)
+{
+
+}
+
+ShapeValue::ShapeValue (const Modeler::ShapePtr& val) :
+	NE::GenericValue<Modeler::ShapePtr> (val)
+{
+
+}
+
+NE::ValuePtr ShapeValue::Clone () const
+{
+	return NE::ValuePtr (new ShapeValue (val->Clone ()));
+}
+
+std::wstring ShapeValue::ToString (const NE::StringSettings&) const
+{
+	return val->ToString ();
+}
+
+NE::Stream::Status ShapeValue::Read (NE::InputStream& inputStream)
+{
+	DBGBREAK ();
+	NE::ObjectHeader header (inputStream);
+	NE::GenericValue<Modeler::ShapePtr>::Read (inputStream);
+	//val.Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status ShapeValue::Write (NE::OutputStream& outputStream) const
+{
+	DBGBREAK ();
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	NE::GenericValue<Modeler::ShapePtr>::Write (outputStream);
+	//val.Write (outputStream);
+	return outputStream.GetStatus ();
+}
 
 ShapeNode::ShapeNode () :
 	ShapeNode (L"", NUIE::Point ())

@@ -1,5 +1,5 @@
-#ifndef READWRITE_HPP
-#define READWRITE_HPP
+#ifndef GLMREADWRITE_HPP
+#define GLMREADWRITE_HPP
 
 #include "NE_Stream.hpp"
 #include "IncludeGLM.hpp"

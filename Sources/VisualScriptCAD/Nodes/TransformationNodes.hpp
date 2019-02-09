@@ -4,7 +4,7 @@
 #include "NE_GenericValue.hpp"
 #include "BI_BasicUINode.hpp"
 #include "ShapeNode.hpp"
-#include "NodeValues.hpp"
+#include "Basic3DNodeValues.hpp"
 #include "IncludeGLM.hpp"
 
 class TransformationNode : public BI::BasicUINode

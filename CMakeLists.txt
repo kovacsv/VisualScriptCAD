@@ -144,6 +144,29 @@ target_link_libraries (EngineTest Geometry Modeler CGALOperations)
 SetCompilerOptions (EngineTest)
 add_test (EngineTest EngineTest)
 
+# Basic3DNodes
+
+set (Basic3DNodesSourcesFolder Sources/Basic3DNodes)
+file (GLOB Basic3DNodesHeaderFiles ${Basic3DNodesSourcesFolder}/*.hpp)
+file (GLOB Basic3DNodesSourceFiles ${Basic3DNodesSourcesFolder}/*.cpp)
+set (
+	Basic3DNodesFiles
+	${Basic3DNodesHeaderFiles}
+	${Basic3DNodesSourceFiles}
+)
+source_group ("Sources" FILES ${Basic3DNodesFiles})
+add_library (Basic3DNodes STATIC ${Basic3DNodesFiles})
+target_include_directories (
+	Basic3DNodes PUBLIC
+	${GLMSourcesFolder}
+	${GeometrySourcesFolder}
+	${Basic3DNodesHeaderFiles}
+	${Basic3DNodesSourceFiles}
+)
+target_include_directories (Basic3DNodes PUBLIC ${GeometrySourcesFolder} ${VSE_DEVKIT_DIR}/include)
+target_link_libraries (Basic3DNodes Geometry)
+SetCompilerOptions (Basic3DNodes)
+
 # VisualScriptCAD
 
 link_directories (${WXWIDGETS_DIR}/lib/vc_x64_lib)
@@ -189,6 +212,7 @@ target_include_directories (
 	${GeometrySourcesFolder}
 	${ModelerSourcesFolder}
 	${CGALOperationsSourcesFolder}
+	${Basic3DNodesSourcesFolder}
 	${GladSourcesFolder}/include
 	${TinyXMLSourcesFolder}
 	${VisualScriptCADSourcesFolder}/Nodes
@@ -200,6 +224,6 @@ target_include_directories (
 	${WXWIDGETS_DIR}/include/msvc
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (VisualScriptCAD Geometry Modeler CGALOperations)
+target_link_libraries (VisualScriptCAD Geometry Modeler CGALOperations Basic3DNodes)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
 SetCompilerOptions (VisualScriptCAD)

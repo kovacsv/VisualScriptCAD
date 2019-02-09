@@ -4,6 +4,7 @@
 #include "Model.hpp"
 #include "Shape.hpp"
 #include "ShapeNode.hpp"
+#include "Basic3DNodeValues.hpp"
 
 class BoxNode : public ShapeNode
 {

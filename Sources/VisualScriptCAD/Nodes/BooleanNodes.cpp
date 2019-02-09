@@ -3,6 +3,7 @@
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
 
+#include "Basic3DNodeValues.hpp"
 #include "ModelEvaluationData.hpp"
 #include "TransformationNodes.hpp"
 #include "MaterialNode.hpp"

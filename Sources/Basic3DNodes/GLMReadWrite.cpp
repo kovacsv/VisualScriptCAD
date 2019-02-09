@@ -1,4 +1,4 @@
-#include "ReadWrite.hpp"
+#include "GLMReadWrite.hpp"
 
 NE::Stream::Status ReadVector (NE::InputStream& inputStream, glm::vec2& val)
 {

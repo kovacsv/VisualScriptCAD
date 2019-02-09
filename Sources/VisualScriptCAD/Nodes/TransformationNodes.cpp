@@ -2,7 +2,7 @@
 #include "NE_SingleValues.hpp"
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
-#include "ReadWrite.hpp"
+#include "GLMReadWrite.hpp"
 
 NE::SerializationInfo			TransformationNode::serializationInfo (NE::ObjectVersion (1));
 NE::DynamicSerializationInfo	TranslationNode::serializationInfo (NE::ObjectId ("{7F1B6F2F-2DE7-48FC-A926-5137FB9CFFF5}"), NE::ObjectVersion (1), TranslationNode::CreateSerializableInstance);

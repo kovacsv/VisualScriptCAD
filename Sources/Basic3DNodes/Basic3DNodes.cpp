@@ -1,11 +1,10 @@
-#include "PointNodes.hpp"
+#include "Basic3DNodes.hpp"
 #include "NE_StringUtils.hpp"
 #include "NE_SingleValues.hpp"
 #include "BI_BuiltInFeatures.hpp"
 #include "NUIE_NodeCommonParameters.hpp"
 #include "Geometry.hpp"
-#include "NodeValues.hpp"
-#include "ReadWrite.hpp"
+#include "Basic3DNodeValues.hpp"
 
 NE::SerializationInfo			PointNodeBase::serializationInfo (NE::ObjectVersion (1));
 NE::DynamicSerializationInfo	PointNode::serializationInfo (NE::ObjectId ("{F387DF9E-CFAE-47D9-ABD5-F1195473A5C5}"), NE::ObjectVersion (1), PointNode::CreateSerializableInstance);

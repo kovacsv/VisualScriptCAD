@@ -3,9 +3,9 @@
 #include "BI_InputUINodes.hpp"
 #include "BI_ArithmeticUINodes.hpp"
 #include "BI_ViewerUINodes.hpp"
-#include "PointNodes.hpp"
 #include "MaterialNode.hpp"
 #include "ShapeNodes.hpp"
+#include "Basic3DNodes.hpp"
 #include "TransformationNodes.hpp"
 #include "BooleanNodes.hpp"
 

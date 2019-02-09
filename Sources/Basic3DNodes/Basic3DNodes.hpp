@@ -1,6 +1,4 @@
-#ifndef POINTNODES_HPP
-#define POINTNODES_HPP
-
+#ifndef BASIC3DNODES_HPP
 #include "NE_Stream.hpp"
 #include "NE_StringSettings.hpp"
 #include "NE_GenericValue.hpp"
@@ -8,7 +6,7 @@
 #include "NE_StringSettings.hpp"
 #include "NE_GenericValue.hpp"
 #include "BI_BasicUINode.hpp"
-#include "IncludeGLM.hpp"
+#include "Basic3DNodeValues.hpp"
 
 class PointNodeBase : public BI::BasicUINode
 {
