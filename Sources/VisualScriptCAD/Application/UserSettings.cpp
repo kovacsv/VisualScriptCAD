@@ -229,7 +229,7 @@ void UserSettings::AddRecentFile (const std::wstring& filePath)
 {
 	auto found = std::find (recentFiles.begin (), recentFiles.end (), filePath);
 	if (found != recentFiles.end ()) {
-		return;
+		recentFiles.erase (found);
 	}
 
 	recentFiles.push_back (filePath);

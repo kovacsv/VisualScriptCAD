@@ -532,7 +532,8 @@ void MainWindow::ProcessCommand (CommandId commandId)
 
 	if (commandId >= CommandId::File_OpenRecent_First && commandId < CommandId::File_OpenRecent_First + userSettings.recentFiles.size ()) {
 		if (ConfirmLosingUnsavedChanges ()) {
-			OpenFile (userSettings.recentFiles[commandId - CommandId::File_OpenRecent_First]);
+			std::wstring recentFilePath = userSettings.recentFiles[commandId - CommandId::File_OpenRecent_First];
+			OpenFile (recentFilePath);
 		}
 	}
 
