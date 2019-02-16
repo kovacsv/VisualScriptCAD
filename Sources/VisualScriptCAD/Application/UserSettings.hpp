@@ -51,9 +51,6 @@ public:
 	ExportSettings				exportSettings;
 	std::vector<std::wstring>	recentFiles;
 	bool						isMaximized;
-
-private:
-	std::string xmlFilePath;
 };
 
 #endif

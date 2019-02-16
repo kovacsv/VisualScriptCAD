@@ -8,52 +8,6 @@
 #include <locale>
 #include <codecvt>
 
-static const size_t MaxRecentFileNumber = 10;
-
-static std::wstring NormalStringToWideString (const std::string& str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-	return converter.from_bytes (str);
-}
-
-static std::string WideStringToNormalString (const std::wstring& str)
-{
-	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
-	return converter.to_bytes (str);
-}
-
-static bool ReadStringNode (const tinyxml2::XMLNode* parent, const char* nodeName, std::wstring& text)
-{
-	const tinyxml2::XMLElement* node = parent->FirstChildElement (nodeName);
-	while (node == nullptr) {
-		return false;
-	}
-	text = NormalStringToWideString (node->GetText ());
-	return true;
-}
-
-static void WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, const std::wstring& text)
-{
-	tinyxml2::XMLElement* node = doc.NewElement (nodeName);
-	node->SetText (WideStringToNormalString (text).c_str ());
-	parent->InsertEndChild (node);
-}
-
-static bool ReadBooleanNode (const tinyxml2::XMLNode* parent, const char* nodeName, bool& value)
-{
-	std::wstring nodeValue;
-	if (!ReadStringNode (parent, nodeName, nodeValue)) {
-		return false;
-	}
-	value = (nodeValue == L"true" ? true : false);
-	return true;
-}
-
-static void WriteBooleanNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, bool value)
-{
-	WriteStringNode (doc, parent, nodeName, value ? L"true" : L"false");
-}
-
 template <typename EnumType>
 class XmlEnum
 {
@@ -101,7 +55,63 @@ private:
 	std::vector<std::pair<EnumType, std::string>>	enumStrings;
 };
 
-static const std::string UserSettingsFileName ("VisualScriptCADSettings.xml");
+static const size_t MaxRecentFileNumber = 10;
+
+static std::wstring NormalStringToWideString (const std::string& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+	return converter.from_bytes (str);
+}
+
+static std::string WideStringToNormalString (const std::wstring& str)
+{
+	std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> converter;
+	return converter.to_bytes (str);
+}
+
+static bool ReadStringNode (const tinyxml2::XMLNode* parent, const char* nodeName, std::wstring& text)
+{
+	const tinyxml2::XMLElement* node = parent->FirstChildElement (nodeName);
+	while (node == nullptr) {
+		return false;
+	}
+	text = NormalStringToWideString (node->GetText ());
+	return true;
+}
+
+static void WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, const std::wstring& text)
+{
+	tinyxml2::XMLElement* node = doc.NewElement (nodeName);
+	node->SetText (WideStringToNormalString (text).c_str ());
+	parent->InsertEndChild (node);
+}
+
+static bool ReadBooleanNode (const tinyxml2::XMLNode* parent, const char* nodeName, bool& value)
+{
+	std::wstring nodeValue;
+	if (!ReadStringNode (parent, nodeName, nodeValue)) {
+		return false;
+	}
+	value = (nodeValue == L"true" ? true : false);
+	return true;
+}
+
+static void WriteBooleanNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, bool value)
+{
+	WriteStringNode (doc, parent, nodeName, value ? L"true" : L"false");
+}
+
+static std::string GetXmlFilePath ()
+{
+	static const std::string UserSettingsFileName ("VisualScriptCADSettings.xml");
+	wxFileName xmlFileName (wxStandardPaths::Get ().GetUserDataDir (), UserSettingsFileName);
+	wxString xmlFileDir = xmlFileName.GetPath ();
+	if (!wxDir::Exists (xmlFileDir)) {
+		wxDir::Make (xmlFileDir);
+	}
+	return xmlFileName.GetFullPath ().ToStdString ();
+}
+
 static const char SettingsNodeName[] = "VisualScriptCADSettings";
 static const char RenderSettingsNodeName[] = "RenderSettings";
 static const char ExportSettingsNodeName[] = "ExportSettings";
@@ -146,16 +156,13 @@ UserSettings::UserSettings () :
 	exportSettings (Modeler::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
 	isMaximized (true)
 {
-	wxFileName xmlFileName (wxStandardPaths::Get ().GetUserDataDir (), UserSettingsFileName);
-	wxString xmlFileDir = xmlFileName.GetPath ();
-	if (!wxDir::Exists (xmlFileDir)) {
-		wxDir::Make (xmlFileDir);
-	}
-	xmlFilePath = xmlFileName.GetFullPath ();
+
 }
 
 void UserSettings::Load ()
 {
+	std::string xmlFilePath = GetXmlFilePath ();
+
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLError error = doc.LoadFile (xmlFilePath.c_str ());
 	if (error != tinyxml2::XMLError::XML_SUCCESS) {
@@ -222,6 +229,7 @@ void UserSettings::Save ()
 
 	WriteBooleanNode (doc, settingsNode, IsMaximizedNodeName, isMaximized);
 
+	std::string xmlFilePath = GetXmlFilePath ();
 	doc.SaveFile (xmlFilePath.c_str ());
 }
 
