@@ -1,5 +1,6 @@
 #include "ExportDialog.hpp"
 #include "Export.hpp"
+#include "WXAS_ControlUtilities.hpp"
 
 #include <wx/filepicker.h>
 
@@ -94,6 +95,7 @@ const ExportSettings& ExportDialog::GetExportSettings () const
 void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 {
 	if (evt.GetId () == DialogIds::ExportButtonId) {
+		WXAS::BusyCursorGuard busyCursor;
 		exportSettings.format = (Modeler::FormatId) formatChoice->GetSelection ();
 		exportSettings.folder = outputFolderText->GetValue ();
 		exportSettings.name = outputNameText->GetValue ();

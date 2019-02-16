@@ -626,6 +626,7 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 	NewFile ();
 	bool success = false;
 	try {
+		WXAS::BusyCursorGuard busyCursor;
 		success = editor->Open (fileName, &fileIO, &appHeaderIO);
 	} catch (...) {
 	}

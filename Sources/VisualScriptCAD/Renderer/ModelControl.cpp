@@ -1,6 +1,7 @@
 #include "ModelControl.hpp"
 #include "ShaderProgram.hpp"
 #include "RenderModelConverter.hpp"
+#include "WXAS_ControlUtilities.hpp"
 
 static const int canvasAttributes[] = {
 	WX_GL_RGBA,
@@ -63,6 +64,7 @@ void ModelControl::Clear ()
 
 void ModelControl::FitToWindow ()
 {
+	WXAS::BusyCursorGuard busyCursor;
 	const wxSize clientSize = GetClientSize ();
 	renderScene.FitToWindow (clientSize.x, clientSize.y);
 	Refresh ();
