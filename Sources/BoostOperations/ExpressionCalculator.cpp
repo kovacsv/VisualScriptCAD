@@ -197,7 +197,8 @@ class BoostExpressionCalculator
 public:
 	typedef double result_type;
 
-	BoostExpressionCalculator ()
+	BoostExpressionCalculator (const std::unordered_map<std::wstring, double>& identifierMap) :
+		identifierMap (identifierMap)
 	{
 
 	}
@@ -219,8 +220,11 @@ public:
 
 	result_type operator() (const Identifier& identifier)
 	{
-		(void) identifier;
-		return 0.0;
+		auto found = identifierMap.find (identifier.name);
+		if (found == identifierMap.end ()) {
+			throw std::logic_error ("invalid identifier");
+		}
+		return found->second;
 	}
 
 	result_type operator() (const PrefixOperator& prefixOperator)
@@ -273,12 +277,14 @@ public:
 		}
 		return result;
 	}
+
+	const std::unordered_map<std::wstring, double>& identifierMap;
 };
 
 namespace BoostOperations
 {
 
-double EvaluateExpression (const std::wstring& exp)
+double EvaluateExpression (const std::wstring& exp, const std::unordered_map<std::wstring, double>& identifierMap)
 {
 	std::wstring::const_iterator first = exp.begin ();
 	std::wstring::const_iterator last = exp.end ();
@@ -290,7 +296,7 @@ double EvaluateExpression (const std::wstring& exp)
 		throw std::logic_error ("failed to parse expression");
 	}
 
-	BoostExpressionCalculator calculator;
+	BoostExpressionCalculator calculator (identifierMap);
 	return calculator (resultExpression);
 }
 
