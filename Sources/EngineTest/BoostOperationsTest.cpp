@@ -43,11 +43,13 @@ TEST (ExpressionTest_BinaryOperators)
 	ASSERT (CheckExpression (L"2 / 3", 2.0 / 3.0));
 	ASSERT (CheckExpression (L"2 ^ 3", pow (2.0, 3.0)));
 	ASSERT (CheckExpression (L"4 ^ 3 ^ 2", 262144.0));
+	ASSERT (CheckExpression (L" 2    +  3", 2.0 + 3.0));
 }
 
 TEST (ExpressionTest_InvalidExpressions)
 {
 	ASSERT (CheckInvalidExpression (L"2 +"));
+	ASSERT (CheckInvalidExpression (L"2 2"));
 	ASSERT (CheckInvalidExpression (L"a + b"));
 	ASSERT (CheckInvalidExpression (L"1.0 / 0.0"));
 }
