@@ -82,6 +82,27 @@ target_include_directories (Modeler PUBLIC ${GeometrySourcesFolder})
 target_link_libraries (Modeler Geometry)
 SetCompilerOptions (Modeler)
 
+# BoostOperations
+
+set (BoostOperationsSourcesFolder Sources/BoostOperations)
+file (GLOB BoostOperationsHeaderFiles ${BoostOperationsSourcesFolder}/*.hpp)
+file (GLOB BoostOperationsSourceFiles ${BoostOperationsSourcesFolder}/*.cpp)
+set (
+	BoostOperationsFiles
+	${BoostOperationsHeaderFiles}
+	${BoostOperationsSourceFiles}
+)
+source_group ("Sources" FILES ${BoostOperationsFiles})
+add_library (BoostOperations STATIC ${BoostOperationsFiles})
+target_include_directories (
+	BoostOperations PUBLIC
+	${BoostOperationsHeaderFiles}
+	${BoostOperationsSourceFiles}
+	${BOOST_INCLUDEDIR}
+)
+target_include_directories (BoostOperations PUBLIC ${GeometrySourcesFolder})
+SetCompilerOptions (BoostOperations)
+
 # CGALOperations
 
 set (CGALOperationsSourcesFolder Sources/CGALOperations)
@@ -139,8 +160,8 @@ set (
 source_group ("Framework" FILES ${TestFrameworkFiles})
 source_group ("Sources" FILES ${EngineTestTestFiles})
 add_executable (EngineTest ${EngineTestFiles})
-target_include_directories (EngineTest PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder} ${CGALOperationsSourcesFolder} ${TestFrameworkSourcesFolder})
-target_link_libraries (EngineTest Geometry Modeler CGALOperations)
+target_include_directories (EngineTest PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder}  ${BoostOperationsSourcesFolder} ${CGALOperationsSourcesFolder} ${TestFrameworkSourcesFolder})
+target_link_libraries (EngineTest Geometry Modeler BoostOperations CGALOperations)
 SetCompilerOptions (EngineTest)
 add_test (EngineTest EngineTest)
 
