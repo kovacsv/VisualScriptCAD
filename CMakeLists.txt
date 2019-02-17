@@ -160,7 +160,7 @@ set (
 source_group ("Framework" FILES ${TestFrameworkFiles})
 source_group ("Sources" FILES ${EngineTestTestFiles})
 add_executable (EngineTest ${EngineTestFiles})
-target_include_directories (EngineTest PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder}  ${BoostOperationsSourcesFolder} ${CGALOperationsSourcesFolder} ${TestFrameworkSourcesFolder})
+target_include_directories (EngineTest PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder} ${BoostOperationsSourcesFolder} ${CGALOperationsSourcesFolder} ${TestFrameworkSourcesFolder})
 target_link_libraries (EngineTest Geometry Modeler BoostOperations CGALOperations)
 SetCompilerOptions (EngineTest)
 add_test (EngineTest EngineTest)
@@ -232,6 +232,7 @@ target_include_directories (
 	VisualScriptCAD PUBLIC
 	${GeometrySourcesFolder}
 	${ModelerSourcesFolder}
+	${BoostOperationsSourcesFolder}
 	${CGALOperationsSourcesFolder}
 	${Basic3DNodesSourcesFolder}
 	${GladSourcesFolder}/include
@@ -245,6 +246,6 @@ target_include_directories (
 	${WXWIDGETS_DIR}/include/msvc
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (VisualScriptCAD Geometry Modeler CGALOperations Basic3DNodes)
+target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations Basic3DNodes)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
 SetCompilerOptions (VisualScriptCAD)
