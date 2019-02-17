@@ -96,6 +96,7 @@ source_group ("Sources" FILES ${BoostOperationsFiles})
 add_library (BoostOperations STATIC ${BoostOperationsFiles})
 target_include_directories (
 	BoostOperations PUBLIC
+	${GLMSourcesFolder}
 	${BoostOperationsHeaderFiles}
 	${BoostOperationsSourceFiles}
 	${BOOST_INCLUDEDIR}
