@@ -12,6 +12,13 @@ static void AddRectangle (Mesh& mesh, unsigned int v1, unsigned int v2, unsigned
 	mesh.AddTriangle (v1, v3, v4, mat);
 }
 
+static void AddConvexPolygon (Mesh& mesh, const std::vector<unsigned int>& vertices, MaterialId mat)
+{
+	for (size_t i = 0; i < vertices.size () - 2; i++) {
+		mesh.AddTriangle (vertices[0], vertices[i + 1], vertices[i + 2], mat);
+	}
+}
+
 static void AddCenteredConvexPolygon (Mesh& mesh, unsigned int centerVertex, const std::vector<unsigned int>& vertices, const glm::dvec3& normal, MaterialId mat)
 {
 	unsigned int normalIndex = mesh.AddNormal (normal);
@@ -53,6 +60,12 @@ static glm::dvec3 SphericalToCartesian (double radius, double theta, double phi)
 		radius * cos (theta)
 	);
 };
+
+static void AddVertexAtDistance (Mesh& mesh, double a, double b, double c, double distance)
+{
+	glm::dvec3 vertex (a, b, c);
+	mesh.AddVertex (glm::normalize (vertex) * distance);
+}
 
 Triangulator::~Triangulator ()
 {
@@ -412,6 +425,145 @@ Mesh GeneratePrism (const Material& material, const glm::dmat4& transformation, 
 		unsigned int ntop = next + polygonVertexCount;
 		unsigned int top = curr + polygonVertexCount;
 		AddRectangle (mesh, curr, next, ntop, top, materialId);
+	}
+
+	return mesh;
+}
+
+Mesh GeneratePlatonicSolid (const Material& material, const glm::dmat4& transformation, PlatonicSolidType type, double radius)
+{
+	Mesh mesh;
+	MaterialId materialId = mesh.AddMaterial (material);
+	mesh.SetTransformation (transformation);
+
+	if (type == PlatonicSolidType::Tetrahedron) {
+		double a = 1.0;
+
+		AddVertexAtDistance (mesh, +a, +a, +a, radius);
+		AddVertexAtDistance (mesh, -a, -a, +a, radius);
+		AddVertexAtDistance (mesh, -a, +a, -a, radius);
+		AddVertexAtDistance (mesh, +a, -a, -a, radius);
+
+		mesh.AddTriangle (0, 1, 3, materialId);
+		mesh.AddTriangle (0, 2, 1, materialId);
+		mesh.AddTriangle (0, 3, 2, materialId);
+		mesh.AddTriangle (1, 2, 3, materialId);
+	} else if (type == PlatonicSolidType::Hexahedron) {
+		double a = 1.0;
+
+		AddVertexAtDistance (mesh, +a, +a, +a, radius);
+		AddVertexAtDistance (mesh, +a, +a, -a, radius);
+		AddVertexAtDistance (mesh, +a, -a, +a, radius);
+		AddVertexAtDistance (mesh, +a, -a, -a, radius);
+		AddVertexAtDistance (mesh, -a, +a, +a, radius);
+		AddVertexAtDistance (mesh, -a, +a, -a, radius);
+		AddVertexAtDistance (mesh, -a, -a, +a, radius);
+		AddVertexAtDistance (mesh, -a, -a, -a, radius);
+
+		AddRectangle (mesh, 0, 1, 5, 4, materialId);
+		AddRectangle (mesh, 0, 2, 3, 1, materialId);
+		AddRectangle (mesh, 0, 4, 6, 2, materialId);
+		AddRectangle (mesh, 1, 3, 7, 5, materialId);
+		AddRectangle (mesh, 2, 6, 7, 3, materialId);
+		AddRectangle (mesh, 4, 5, 7, 6, materialId);
+	} else if (type == PlatonicSolidType::Octahedron) {
+		double a = 1.0;
+		double b = 0.0;
+
+		AddVertexAtDistance (mesh, +a, +b, +b, radius);
+		AddVertexAtDistance (mesh, -a, +b, +b, radius);
+		AddVertexAtDistance (mesh, +b, +a, +b, radius);
+		AddVertexAtDistance (mesh, +b, -a, +b, radius);
+		AddVertexAtDistance (mesh, +b, +b, +a, radius);
+		AddVertexAtDistance (mesh, +b, +b, -a, radius);
+
+		mesh.AddTriangle (0, 2, 4, materialId);
+		mesh.AddTriangle (0, 3, 5, materialId);
+		mesh.AddTriangle (0, 4, 3, materialId);
+		mesh.AddTriangle (0, 5, 2, materialId);
+		mesh.AddTriangle (1, 2, 5, materialId);
+		mesh.AddTriangle (1, 3, 4, materialId);
+		mesh.AddTriangle (1, 4, 2, materialId);
+		mesh.AddTriangle (1, 5, 3, materialId);
+	} else if (type == PlatonicSolidType::Dodecahedron) {
+		double a = 1.0;
+		double b = 0.0;
+		double c = (1.0 + sqrt (5.0)) / 2.0;
+		double d = 1.0 / c;
+
+		AddVertexAtDistance (mesh, +a, +a, +a, radius);
+		AddVertexAtDistance (mesh, +a, +a, -a, radius);
+		AddVertexAtDistance (mesh, +a, -a, +a, radius);
+		AddVertexAtDistance (mesh, -a, +a, +a, radius);
+		AddVertexAtDistance (mesh, +a, -a, -a, radius);
+		AddVertexAtDistance (mesh, -a, +a, -a, radius);
+		AddVertexAtDistance (mesh, -a, -a, +a, radius);
+		AddVertexAtDistance (mesh, -a, -a, -a, radius);
+		AddVertexAtDistance (mesh, +b, +d, +c, radius);
+		AddVertexAtDistance (mesh, +b, +d, -c, radius);
+		AddVertexAtDistance (mesh, +b, -d, +c, radius);
+		AddVertexAtDistance (mesh, +b, -d, -c, radius);
+		AddVertexAtDistance (mesh, +d, +c, +b, radius);
+		AddVertexAtDistance (mesh, +d, -c, +b, radius);
+		AddVertexAtDistance (mesh, -d, +c, +b, radius);
+		AddVertexAtDistance (mesh, -d, -c, +b, radius);
+		AddVertexAtDistance (mesh, +c, +b, +d, radius);
+		AddVertexAtDistance (mesh, -c, +b, +d, radius);
+		AddVertexAtDistance (mesh, +c, +b, -d, radius);
+		AddVertexAtDistance (mesh, -c, +b, -d, radius);
+
+		AddConvexPolygon (mesh, { 0, 8, 10, 2, 16 }, materialId);
+		AddConvexPolygon (mesh, { 0, 16, 18, 1, 12 }, materialId);
+		AddConvexPolygon (mesh, { 0, 12, 14, 3, 8 }, materialId);
+		AddConvexPolygon (mesh, { 1, 9, 5, 14, 12 }, materialId);
+		AddConvexPolygon (mesh, { 1, 18, 4, 11, 9 }, materialId);
+		AddConvexPolygon (mesh, { 2, 10, 6, 15, 13 }, materialId);
+		AddConvexPolygon (mesh, { 2, 13, 4, 18, 16 }, materialId);
+		AddConvexPolygon (mesh, { 3, 14, 5, 19, 17 }, materialId);
+		AddConvexPolygon (mesh, { 3, 17, 6, 10, 8 }, materialId);
+		AddConvexPolygon (mesh, { 4, 13, 15, 7, 11 }, materialId);
+		AddConvexPolygon (mesh, { 5, 9, 11, 7, 19 }, materialId);
+		AddConvexPolygon (mesh, { 6, 17, 19, 7, 15 }, materialId);
+	} else if (type == PlatonicSolidType::Icosahedron) {
+		double a = 1.0;
+		double b = 0.0;
+		double c = (1.0 + sqrt (5.0)) / 2.0;
+
+		AddVertexAtDistance (mesh, +b, +a, +c, radius);
+		AddVertexAtDistance (mesh, +b, +a, -c, radius);
+		AddVertexAtDistance (mesh, +b, -a, +c, radius);
+		AddVertexAtDistance (mesh, +b, -a, -c, radius);
+		AddVertexAtDistance (mesh, +a, +c, +b, radius);
+		AddVertexAtDistance (mesh, +a, -c, +b, radius);
+		AddVertexAtDistance (mesh, -a, +c, +b, radius);
+		AddVertexAtDistance (mesh, -a, -c, +b, radius);
+		AddVertexAtDistance (mesh, +c, +b, +a, radius);
+		AddVertexAtDistance (mesh, +c, +b, -a, radius);
+		AddVertexAtDistance (mesh, -c, +b, +a, radius);
+		AddVertexAtDistance (mesh, -c, +b, -a, radius);
+
+		mesh.AddTriangle (0, 2, 8, materialId);
+		mesh.AddTriangle (0, 4, 6, materialId);
+		mesh.AddTriangle (0, 6, 10, materialId);
+		mesh.AddTriangle (0, 8, 4, materialId);
+		mesh.AddTriangle (0, 10, 2, materialId);
+		mesh.AddTriangle (1, 3, 11, materialId);
+		mesh.AddTriangle (1, 4, 9, materialId);
+		mesh.AddTriangle (1, 6, 4, materialId);
+		mesh.AddTriangle (1, 9, 3, materialId);
+		mesh.AddTriangle (1, 11, 6, materialId);
+		mesh.AddTriangle (2, 5, 8, materialId);
+		mesh.AddTriangle (2, 7, 5, materialId);
+		mesh.AddTriangle (2, 10, 7, materialId);
+		mesh.AddTriangle (3, 5, 7, materialId);
+		mesh.AddTriangle (3, 7, 11, materialId);
+		mesh.AddTriangle (3, 9, 5, materialId);
+		mesh.AddTriangle (4, 8, 9, materialId);
+		mesh.AddTriangle (5, 9, 8, materialId);
+		mesh.AddTriangle (6, 11, 10, materialId);
+		mesh.AddTriangle (7, 10, 11, materialId);
+	} else {
+		throw std::logic_error ("invalid platonic solid type");
 	}
 
 	return mesh;

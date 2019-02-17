@@ -145,6 +145,23 @@ private:
 	TriangulatorPtr				triangulator;
 };
 
+class PlatonicShape : public Shape
+{
+public:
+	PlatonicShape (const Material& material, const glm::dmat4& transformation, PlatonicSolidType type, double radius);
+	virtual ~PlatonicShape ();
+
+	virtual bool			Check () const override;
+	virtual ShapePtr		Clone () const override;
+	virtual std::wstring	ToString () const override;
+	virtual Mesh			GenerateMesh () const override;
+
+private:
+	Material			material;
+	PlatonicSolidType	type;
+	double				radius;
+};
+
 class MeshShape : public Shape
 {
 public:

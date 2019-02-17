@@ -17,6 +17,7 @@ NE::DynamicSerializationInfo	ConeNode::serializationInfo (NE::ObjectId ("{586F0D
 NE::DynamicSerializationInfo	SphereNode::serializationInfo (NE::ObjectId ("{686712CE-BF1B-438E-8C0A-B687A158A0BB}"), NE::ObjectVersion (1), SphereNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TorusNode::serializationInfo (NE::ObjectId ("{E17CF103-A4B6-4498-BB7E-7A566C1F7D26}"), NE::ObjectVersion (1), TorusNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	PrismNode::serializationInfo (NE::ObjectId ("{9D1E49DE-FD64-4079-A75B-DE1900FD2C2F}"), NE::ObjectVersion (1), PrismNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	PlatonicNode::serializationInfo (NE::ObjectId ("{F7321055-D370-4468-A895-32FA3AD1BF40}"), NE::ObjectVersion (1), PlatonicNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TransformShapeNode::serializationInfo (NE::ObjectId ("{3BA3AD96-09FD-49D2-8299-2143A0A8ECFA}"), NE::ObjectVersion (1), TransformShapeNode::CreateSerializableInstance);
 
 static bool IsSmooth (int segmentation)
@@ -592,6 +593,167 @@ NE::Stream::Status PrismNode::Write (NE::OutputStream& outputStream) const
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	ShapeNode::Write (outputStream);
 	return outputStream.GetStatus ();
+}
+
+static void SetPlatonicNodeType (Modeler::PlatonicSolidType type, NUIE::NodeUIManager& uiManager, std::shared_ptr<PlatonicNode>& platonicNode)
+{
+	platonicNode->SetType (type);
+	uiManager.InvalidateNodeValue (platonicNode);
+	uiManager.InvalidateNodeDrawing (platonicNode);
+}
+
+PlatonicNode::PlatonicNode () :
+	PlatonicNode (L"", NUIE::Point ())
+{
+
+}
+
+PlatonicNode::PlatonicNode (const std::wstring& name, const NUIE::Point& position) :
+	ShapeNode (name, position),
+	type (Modeler::PlatonicSolidType::Tetrahedron)
+{
+
+}
+
+void PlatonicNode::Initialize ()
+{
+	ShapeNode::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (0.6f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+}
+
+NE::ValueConstPtr PlatonicNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr radiusValue = EvaluateInputSlot (NE::SlotId ("radius"), env);
+
+	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (radiusValue)) {
+		return nullptr;
+	}
+
+	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	bool isValid = valueCombination->CombineValues ({material, transformation, radiusValue}, [&] (const NE::ValueCombination& combination) {
+		Modeler::ShapePtr shape (new Modeler::PlatonicShape (
+			MaterialValue::Get (combination.GetValue (0)),
+			TransformationValue::Get (combination.GetValue (1)),
+			type,
+			NE::NumberValue::ToDouble (combination.GetValue (2))
+		));
+		if (!shape->Check ()) {
+			return false;
+		}
+		result->Push (NE::ValuePtr (new ShapeValue (shape)));
+		return true;
+	});
+
+	if (!isValid) {
+		return nullptr;
+	}
+	return result;
+}
+
+void PlatonicNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegistrator) const
+{
+	class SetTypeCommand : public NUIE::NodeCommand
+	{
+	public:
+		SetTypeCommand (const std::wstring& name, bool isChecked, Modeler::PlatonicSolidType type) :
+			NUIE::NodeCommand (name, isChecked),
+			type (type)
+		{
+
+		}
+
+		virtual bool IsApplicableTo (const NUIE::UINodeConstPtr& uiNode) override
+		{
+			return NE::Node::IsTypeConst<PlatonicNode> (uiNode);
+		}
+
+		virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment&, NUIE::UINodePtr& uiNode) override
+		{
+			std::shared_ptr<PlatonicNode> platonicNode = std::dynamic_pointer_cast<PlatonicNode> (uiNode);
+			SetPlatonicNodeType (type, uiManager, platonicNode);
+		}
+
+	private:
+		Modeler::PlatonicSolidType type;
+	};
+
+	ShapeNode::RegisterCommands (commandRegistrator);
+	NUIE::NodeGroupCommandPtr setShapeTypeGroup (new NUIE::NodeGroupCommand<NUIE::NodeCommandPtr> (L"Set Type"));
+	setShapeTypeGroup->AddChildCommand (NUIE::NodeCommandPtr (new SetTypeCommand (L"Tetrahedron", type == Modeler::PlatonicSolidType::Tetrahedron, Modeler::PlatonicSolidType::Tetrahedron)));
+	setShapeTypeGroup->AddChildCommand (NUIE::NodeCommandPtr (new SetTypeCommand (L"Octahedron", type == Modeler::PlatonicSolidType::Octahedron, Modeler::PlatonicSolidType::Octahedron)));
+	setShapeTypeGroup->AddChildCommand (NUIE::NodeCommandPtr (new SetTypeCommand (L"Hexahedron", type == Modeler::PlatonicSolidType::Hexahedron, Modeler::PlatonicSolidType::Hexahedron)));
+	setShapeTypeGroup->AddChildCommand (NUIE::NodeCommandPtr (new SetTypeCommand (L"Dodecahedron", type == Modeler::PlatonicSolidType::Dodecahedron, Modeler::PlatonicSolidType::Dodecahedron)));
+	setShapeTypeGroup->AddChildCommand (NUIE::NodeCommandPtr (new SetTypeCommand (L"Icosahedron", type == Modeler::PlatonicSolidType::Icosahedron, Modeler::PlatonicSolidType::Icosahedron)));
+	commandRegistrator.RegisterNodeGroupCommand (setShapeTypeGroup);
+
+}
+
+void PlatonicNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+{
+	class ShapeTypeParameter : public NUIE::EnumerationNodeParameter<PlatonicNode>
+	{
+	public:
+		ShapeTypeParameter () :
+			NUIE::EnumerationNodeParameter<PlatonicNode> (L"Type", { L"Tetrahedron", L"Octahedron", L"Hexahedron", L"Dodecahedron", L"Icosahedron" })
+		{
+
+		}
+
+		virtual NE::ValueConstPtr GetValueInternal (const NUIE::UINodeConstPtr& uiNode) const override
+		{
+			std::shared_ptr<const PlatonicNode> platonicNode = std::dynamic_pointer_cast<const PlatonicNode> (uiNode);
+			int typeInt = (int) platonicNode->GetType ();
+			return NE::ValuePtr (new NE::IntValue (typeInt));
+		}
+
+		virtual bool SetValueInternal (NUIE::NodeUIManager& uiManager, NE::EvaluationEnv&, NUIE::UINodePtr& uiNode, const NE::ValueConstPtr& value) override
+		{
+			std::shared_ptr<PlatonicNode> platonicNode = std::dynamic_pointer_cast<PlatonicNode> (uiNode);
+			int typeInt = NE::IntValue::Get (value);
+			Modeler::PlatonicSolidType type = (Modeler::PlatonicSolidType) typeInt;
+			SetPlatonicNodeType (type, uiManager, platonicNode);
+			return true;
+		}
+	};
+
+	ShapeNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<PlatonicNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
+	parameterList.AddParameter (NUIE::NodeParameterPtr (new ShapeTypeParameter ()));
+}
+
+NE::Stream::Status PlatonicNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	ShapeNode::Read (inputStream);
+	int typeInt = 0;
+	inputStream.Read (typeInt);
+	type = (Modeler::PlatonicSolidType) typeInt;
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status PlatonicNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	ShapeNode::Write (outputStream);
+	outputStream.Write ((int) type);
+	return outputStream.GetStatus ();
+}
+
+Modeler::PlatonicSolidType PlatonicNode::GetType () const
+{
+	return type;
+}
+
+void PlatonicNode::SetType (Modeler::PlatonicSolidType newType)
+{
+	type = newType;
 }
 
 TransformShapeNode::TransformShapeNode () :

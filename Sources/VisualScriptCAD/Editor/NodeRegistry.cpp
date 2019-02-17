@@ -94,6 +94,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Shape Nodes", L"Prism",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismNode (L"Prism", position)); }
 	);
+	RegisterNode (L"Shape Nodes", L"Platonic",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PlatonicNode (L"Platonic", position)); }
+	);
 	RegisterNode (L"Transformation Nodes", L"Translation",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationNode (L"Translation", position)); }
 	);

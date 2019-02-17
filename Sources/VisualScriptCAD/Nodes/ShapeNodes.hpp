@@ -103,6 +103,29 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
+class PlatonicNode : public ShapeNode
+{
+	DYNAMIC_SERIALIZABLE (PlatonicNode);
+
+public:
+	PlatonicNode ();
+	PlatonicNode (const std::wstring& name, const NUIE::Point& position);
+
+	virtual void				Initialize () override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
+	virtual void				RegisterCommands (NUIE::NodeCommandRegistrator& commandRegistrator) const;
+	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
+
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+
+	Modeler::PlatonicSolidType	GetType () const;
+	void						SetType (Modeler::PlatonicSolidType newType);
+
+private:
+	Modeler::PlatonicSolidType	type;
+};
+
 class TransformShapeNode : public ShapeNode
 {
 	DYNAMIC_SERIALIZABLE (TransformShapeNode);

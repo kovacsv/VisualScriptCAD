@@ -28,7 +28,12 @@ TEST (MeshGeneratorsTest)
 		GenerateCone (DefaultMaterial, glm::dmat4 (1.0), 0.0, 2.0, 1.0, 10, false),
 		GenerateCone (DefaultMaterial, glm::dmat4 (1.0), 1.0, 0.0, 1.0, 10, false),
 		GenerateSphere (DefaultMaterial, glm::dmat4 (1.0), 1.0, 10, false),
-		GenerateTorus (DefaultMaterial, glm::dmat4 (1.0), 3.0, 0.5, 10, 10, false)
+		GenerateTorus (DefaultMaterial, glm::dmat4 (1.0), 3.0, 0.5, 10, 10, false),
+		GeneratePlatonicSolid (DefaultMaterial, glm::dmat4 (1.0), PlatonicSolidType::Tetrahedron, 1.0),
+		GeneratePlatonicSolid (DefaultMaterial, glm::dmat4 (1.0), PlatonicSolidType::Hexahedron, 1.0),
+		GeneratePlatonicSolid (DefaultMaterial, glm::dmat4 (1.0), PlatonicSolidType::Octahedron, 1.0),
+		GeneratePlatonicSolid (DefaultMaterial, glm::dmat4 (1.0), PlatonicSolidType::Dodecahedron, 1.0),
+		GeneratePlatonicSolid (DefaultMaterial, glm::dmat4 (1.0), PlatonicSolidType::Icosahedron, 1.0)
 	};
 
 	for (const Mesh& mesh : meshes) {

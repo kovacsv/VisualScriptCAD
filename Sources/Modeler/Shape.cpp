@@ -250,6 +250,41 @@ Mesh PrismShape::GenerateMesh () const
 	return GeneratePrism (material, transformation, basePolygon, height, *triangulator);
 }
 
+PlatonicShape::PlatonicShape (const Material& material, const glm::dmat4& transformation, PlatonicSolidType type, double radius) :
+	Shape (transformation),
+	material (material),
+	type (type),
+	radius (radius)
+{
+}
+
+PlatonicShape::~PlatonicShape ()
+{
+}
+
+bool PlatonicShape::Check () const
+{
+	if (!Geometry::IsGreater (radius, 0.0)) {
+		return false;
+	}
+	return true;
+}
+
+ShapePtr PlatonicShape::Clone () const
+{
+	return ShapePtr (new PlatonicShape (*this));
+}
+
+std::wstring PlatonicShape::ToString () const
+{
+	return L"Platonic";
+}
+
+Mesh PlatonicShape::GenerateMesh () const
+{
+	return GeneratePlatonicSolid (material, transformation, type, radius);
+}
+
 MeshShape::MeshShape (const glm::dmat4& transformation, const Mesh& mesh) :
 	Shape (transformation),
 	mesh (mesh)
