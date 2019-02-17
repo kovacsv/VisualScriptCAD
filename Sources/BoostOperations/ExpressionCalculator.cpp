@@ -19,7 +19,6 @@ namespace ascii = boost::spirit::ascii;
 
 struct Nil {};
 struct PrefixOperator;
-struct PostfixOperator;
 struct BinaryOperator;
 struct ExpOperator;
 struct Number;
@@ -30,7 +29,6 @@ struct Expression;
 typedef boost::variant<
 	Nil,
 	boost::recursive_wrapper<PrefixOperator>,
-	boost::recursive_wrapper<PostfixOperator>,
 	boost::recursive_wrapper<ExpOperator>,
 	boost::recursive_wrapper<Number>,
 	boost::recursive_wrapper<Identifier>,
@@ -42,12 +40,6 @@ struct PrefixOperator
 {
 	std::wstring operatorString;
 	Operand operand;
-};
-
-struct PostfixOperator
-{
-	Operand operand;
-	std::wstring operatorString;
 };
 
 struct BinaryOperator
@@ -87,12 +79,6 @@ BOOST_FUSION_ADAPT_STRUCT(
 	PrefixOperator, 
 	(std::wstring, operatorString)
 	(Operand, operand) 
-)
-
-BOOST_FUSION_ADAPT_STRUCT( 
-	PostfixOperator, 
-	(Operand, operand) 
-	(std::wstring, operatorString)
 )
 
 BOOST_FUSION_ADAPT_STRUCT( 
