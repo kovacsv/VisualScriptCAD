@@ -114,6 +114,9 @@ BOOST_FUSION_ADAPT_STRUCT(
 	(std::vector<BinaryOperator>, tail)
 )
 
+namespace BoostOperations
+{
+
 template <typename Iterator>
 struct BoostExpressionGrammar : qi::grammar<Iterator, Expression (), ascii::space_type>
 {
@@ -183,7 +186,7 @@ class BoostExpressionCalculator
 public:
 	typedef double result_type;
 
-	BoostExpressionCalculator (const std::unordered_map<std::wstring, double>& identifierMap) :
+	BoostExpressionCalculator (const IdentifierMap& identifierMap) :
 		identifierMap (identifierMap)
 	{
 
@@ -264,13 +267,10 @@ public:
 		return result;
 	}
 
-	const std::unordered_map<std::wstring, double>& identifierMap;
+	const IdentifierMap& identifierMap;
 };
 
-namespace BoostOperations
-{
-
-double EvaluateExpression (const std::wstring& exp, const std::unordered_map<std::wstring, double>& identifierMap)
+double EvaluateExpression (const std::wstring& exp, const IdentifierMap& identifierMap)
 {
 	std::wstring::const_iterator first = exp.begin ();
 	std::wstring::const_iterator last = exp.end ();
@@ -284,6 +284,17 @@ double EvaluateExpression (const std::wstring& exp, const std::unordered_map<std
 
 	BoostExpressionCalculator calculator (identifierMap);
 	return calculator (resultExpression);
+}
+
+bool EvaluateExpression (const std::wstring& exp, const IdentifierMap& identifierMap, double& result)
+{
+	bool success = true;
+	try {
+		result = EvaluateExpression (exp, identifierMap);
+	} catch (...) {
+		success = false;
+	}
+	return success;
 }
 
 }

@@ -7,7 +7,10 @@
 namespace BoostOperations
 {
 
-double EvaluateExpression (const std::wstring& exp, const std::unordered_map<std::wstring, double>& identifierMap);
+using IdentifierMap = std::unordered_map<std::wstring, double>;
+
+double	EvaluateExpression (const std::wstring& exp, const IdentifierMap& identifierMap);
+bool	EvaluateExpression (const std::wstring& exp, const IdentifierMap& identifierMap, double& result);
 
 }
 

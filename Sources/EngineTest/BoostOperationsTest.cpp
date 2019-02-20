@@ -7,21 +7,19 @@ using namespace BoostOperations;
 namespace BoostOperationsTest
 {
 
-static bool CheckExpression (const std::wstring& exp, double refValue, const std::unordered_map<std::wstring, double>& identifierMap = {})
+static bool CheckExpression (const std::wstring& exp, double refValue, const IdentifierMap& identifierMap = {})
 {
-	double val = EvaluateExpression (exp, identifierMap);
+	double val = 0.0;
+	if (!EvaluateExpression (exp, identifierMap, val)) {
+		return false;
+	}
 	return Geometry::IsEqual (val, refValue);
 }
 
-static bool CheckInvalidExpression (const std::wstring& exp, const std::unordered_map<std::wstring, double>& identifierMap = {})
+static bool CheckInvalidExpression (const std::wstring& exp, const IdentifierMap& identifierMap = {})
 {
-	double wasThrow = false;
-	try {
-		EvaluateExpression (exp, identifierMap);
-	} catch (...) {
-		wasThrow = true;
-	}
-	return wasThrow;
+	double dummy = 0.0;
+	return !EvaluateExpression (exp, identifierMap, dummy);
 }
 
 TEST (ExpressionTest_DoubleParser)
@@ -66,7 +64,7 @@ TEST (ExpressionTest_Parentheses)
 
 TEST (ExpressionTest_Identifiers)
 {
-	std::unordered_map<std::wstring, double> identifierMap;
+	IdentifierMap identifierMap;
 	identifierMap.insert ({ L"apple", 2.0 });
 	identifierMap.insert ({ L"banana", 3.0 });
 
