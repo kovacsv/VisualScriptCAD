@@ -1,0 +1,35 @@
+#include "ExpressionEditor.hpp"
+#include "ExpressionCalculator.hpp"
+
+ExpressionEditorDialog::ExpressionEditorDialog (wxWindow* parent, const std::wstring& expression) :
+	wxDialog (parent, wxID_ANY, L"Edit Expression", wxDefaultPosition, wxSize (300, 200), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
+	boxSizer (new wxBoxSizer (wxVERTICAL)),
+	expressionControl (new wxTextCtrl (this, wxID_ANY, expression, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE)),
+	okButton (new wxButton (this, wxID_OK, L"OK")),
+	expression (expression)
+{
+	boxSizer->Add (expressionControl, 1, wxEXPAND | wxALL, 0);
+	boxSizer->Add (okButton, 0, wxEXPAND | wxALL, 0);
+	SetSizer (boxSizer);
+
+	SetEscapeId (wxID_CANCEL);
+	// CenterOnParent ();
+}
+
+void ExpressionEditorDialog::OnButtonClick (wxCommandEvent& evt)
+{
+	if (evt.GetId () == wxID_OK) {
+		EndModal (wxID_OK);
+	}
+}
+
+void ExpressionEditorDialog::OnText (wxCommandEvent&)
+{
+	expression = expressionControl->GetValue ();
+	okButton->Enable (BoostOperations::ParseExpression (expression));
+}
+
+BEGIN_EVENT_TABLE (ExpressionEditorDialog, wxDialog)
+EVT_BUTTON (wxID_ANY, ExpressionEditorDialog::OnButtonClick)
+EVT_TEXT (wxID_ANY, ExpressionEditorDialog::OnText)
+END_EVENT_TABLE ()

@@ -103,7 +103,6 @@ public:
 	PolygonEditorDialog (wxWindow *parent, const std::vector<glm::dvec2>& polygon);
 
 	void						OnButtonClick (wxCommandEvent& evt);
-	void						OnClose (wxCloseEvent& evt);
 	
 	bool						HasPolygon () const;
 	std::vector<glm::dvec2>		GetPolygon () const;
