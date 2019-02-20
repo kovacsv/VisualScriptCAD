@@ -129,6 +129,7 @@ struct BoostExpressionGrammar : qi::grammar<Iterator, Expression (), ascii::spac
 		using qi::alpha;
 		using qi::alnum;
 		using qi::as_wstring;
+		using qi::lexeme;
 
 		expression = additiveExpression.alias ();
 
@@ -164,7 +165,7 @@ struct BoostExpressionGrammar : qi::grammar<Iterator, Expression (), ascii::spac
 			double_;
 
 		identifierExpression =
-			as_wstring[alpha >> *alnum];
+			lexeme[as_wstring[alpha >> *alnum]];
 
 		parenthesizedExpression =
 			L"(" >> expression >> L")";
@@ -270,27 +271,41 @@ public:
 	const IdentifierMap& identifierMap;
 };
 
-double EvaluateExpression (const std::wstring& exp, const IdentifierMap& identifierMap)
+static bool ParseExpression (const std::wstring& exp, Expression& resultExpression)
 {
-	std::wstring::const_iterator first = exp.begin ();
-	std::wstring::const_iterator last = exp.end ();
+	bool success = true;
+	try {
+		std::wstring::const_iterator first = exp.begin ();
+		std::wstring::const_iterator last = exp.end ();
 
-	BoostExpressionGrammar<std::wstring::const_iterator> grammar;
-	Expression resultExpression;
-	bool parseSucceeded = qi::phrase_parse (first, last, grammar, qi::ascii::space, resultExpression);
-	if (!parseSucceeded || first != last) {
-		throw std::logic_error ("failed to parse expression");
+		BoostExpressionGrammar<std::wstring::const_iterator> grammar;
+		bool parseSucceeded = qi::phrase_parse (first, last, grammar, qi::ascii::space, resultExpression);
+		if (!parseSucceeded || first != last) {
+			success = false;
+		}
+	} catch (...) {
+		success = false;
 	}
+	return success;
+}
 
-	BoostExpressionCalculator calculator (identifierMap);
-	return calculator (resultExpression);
+bool ParseExpression (const std::wstring& exp)
+{
+	Expression dummy;
+	return ParseExpression (exp, dummy);
 }
 
 bool EvaluateExpression (const std::wstring& exp, const IdentifierMap& identifierMap, double& result)
 {
 	bool success = true;
 	try {
-		result = EvaluateExpression (exp, identifierMap);
+		Expression resultExpression;
+		if (ParseExpression (exp, resultExpression)) {
+			BoostExpressionCalculator calculator (identifierMap);
+			result = calculator (resultExpression);
+		} else {
+			success = false;
+		}
 	} catch (...) {
 		success = false;
 	}
