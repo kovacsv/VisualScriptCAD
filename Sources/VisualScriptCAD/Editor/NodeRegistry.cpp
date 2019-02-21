@@ -6,6 +6,7 @@
 #include "Basic3DNodes.hpp"
 #include "TransformationNodes.hpp"
 #include "BooleanNodes.hpp"
+#include "ExpressionNode.hpp"
 
 static const NodeRegistry nodeRegistry;
 
@@ -60,6 +61,9 @@ NodeRegistry::NodeRegistry () :
 	);
 	RegisterNode (L"Arithmetic Nodes", L"Division",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DivisionNode (L"Division", position)); }
+	);
+	RegisterNode (L"Arithmetic Nodes", L"Expression",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ExpressionNode (L"Expression", position)); }
 	);
 	RegisterNode (L"Point Nodes", L"Point 2D",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new Point2DNode (L"Point 2D", position)); }

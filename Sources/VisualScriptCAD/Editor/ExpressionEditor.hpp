@@ -10,6 +10,8 @@ public:
 
 	void					OnButtonClick (wxCommandEvent& evt);
 	void					OnText (wxCommandEvent& evt);
+
+	const std::wstring&		GetExpression () const;
 	
 private:
 	wxBoxSizer*				boxSizer;

@@ -46,6 +46,9 @@ TEST (ExpressionTest_BinaryOperators)
 
 TEST (ExpressionTest_InvalidExpressions)
 {
+	ASSERT (!ParseExpression (L""));
+	ASSERT (CheckInvalidExpression (L""));
+
 	ASSERT (!ParseExpression (L"2 +"));
 	ASSERT (CheckInvalidExpression (L"2 +"));
 

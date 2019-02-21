@@ -29,6 +29,11 @@ void ExpressionEditorDialog::OnText (wxCommandEvent&)
 	okButton->Enable (BoostOperations::ParseExpression (expression));
 }
 
+const std::wstring& ExpressionEditorDialog::GetExpression () const
+{
+	return expression;
+}
+
 BEGIN_EVENT_TABLE (ExpressionEditorDialog, wxDialog)
 EVT_BUTTON (wxID_ANY, ExpressionEditorDialog::OnButtonClick)
 EVT_TEXT (wxID_ANY, ExpressionEditorDialog::OnText)
