@@ -50,7 +50,6 @@ deploy:
   provider: GitHub
   auth_token:
     secure: oN14X2NG9+1O6cVQ7m2pIUkMxJ4mbZC1oht03WtJPS4E03MfPH8wZYAw9vmkSL9H
-  artifact: Build\Package\*
   draft: true
   on:
     branch: master
