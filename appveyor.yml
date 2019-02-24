@@ -40,4 +40,4 @@ test_script:
   - ctest --verbose --build-config %configuration%
 
 artifacts:
-  - Build\Package\*
+  - path: Build\Package\*
