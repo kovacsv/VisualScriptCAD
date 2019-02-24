@@ -38,7 +38,9 @@ after_build:
   - python createpackagewin.py "C:\Program Files (x86)\Inno Setup 5\ISCC.exe" %configuration%
 
 test_script:
+  - cd Build
   - ctest --verbose --build-config %configuration%
+  - cd ..
 
 artifacts:
   - path: Build\Package\*
