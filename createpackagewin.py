@@ -4,6 +4,9 @@ import re
 import subprocess
 import zipfile
 
+def PrintInfo (message):
+	print 'INFO: ' + message
+
 def PrintError (message):
 	print 'ERROR: ' + message
 
@@ -42,6 +45,10 @@ def Main (argv):
 		
 	currentDir = os.path.dirname (os.path.abspath (__file__))
 	os.chdir (currentDir)
+	
+	if msBuildConfiguration != 'Release':
+		PrintInfo ('No package creation needed')
+		return 0
 
 	version = GetVersion ()
 	if version == None:
