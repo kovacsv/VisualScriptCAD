@@ -33,11 +33,12 @@ def GetVersion ():
 	return installerVersion
 
 def Main (argv):
-	if len (argv) != 2:
-		print 'usage: createpackagewin.py <innoSetupPath>'
+	if len (argv) != 3:
+		print 'usage: createpackagewin.py <innoSetupPath> <msBuildConfiguration>'
 		return 1
 
 	innoSetupPath = argv[1] # C:\\Program Files (x86)\\Inno Setup 5\\ISCC.exe
+	msBuildConfiguration = argv[2]
 		
 	currentDir = os.path.dirname (os.path.abspath (__file__))
 	os.chdir (currentDir)
@@ -48,10 +49,10 @@ def Main (argv):
 		return 1
 	
 	requiredFiles = [
-		os.path.join ('Build', 'Release', 'VisualScriptCAD.exe'),
-		os.path.join ('Build', 'Release', 'CGAL-vc140-mt-4.13.dll'),
-		os.path.join ('Build', 'Release', 'libgmp-10.dll'),
-		os.path.join ('Build', 'Release', 'libmpfr-4.dll')
+		os.path.join ('Build', msBuildConfiguration, 'VisualScriptCAD.exe'),
+		os.path.join ('Build', msBuildConfiguration, 'CGAL-vc140-mt-4.13.dll'),
+		os.path.join ('Build', msBuildConfiguration, 'libgmp-10.dll'),
+		os.path.join ('Build', msBuildConfiguration, 'libmpfr-4.dll')
 	]
 	
 	for file in requiredFiles:

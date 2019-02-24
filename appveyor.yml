@@ -6,11 +6,11 @@ image:
   - Visual Studio 2017
 
 cache:
-  - C:\Dependencies\wxWidgets-3.1.2\include -> appveyor.yml
-  - C:\Dependencies\wxWidgets-3.1.2\lib\vc_x64_lib -> appveyor.yml
-  - C:\Dependencies\CGAL-4.13\include -> appveyor.yml
-  - C:\Dependencies\CGAL-4.13\build -> appveyor.yml
-  - C:\Dependencies\CGAL-4.13\auxiliary\gmp -> appveyor.yml
+  - C:\Dependencies\wxWidgets-3.1.2\include -> installdepswin.py
+  - C:\Dependencies\wxWidgets-3.1.2\lib\vc_x64_lib -> installdepswin.py
+  - C:\Dependencies\CGAL-4.13\include -> installdepswin.py
+  - C:\Dependencies\CGAL-4.13\build -> installdepswin.py
+  - C:\Dependencies\CGAL-4.13\auxiliary\gmp -> installdepswin.py
 
 configuration:
   - Debug
@@ -40,4 +40,4 @@ test_script:
   - ctest --verbose --build-config %configuration%
 
 artifacts:
-  - path: Build\Package\*
+  - path: Build\Package\* %configuration%
