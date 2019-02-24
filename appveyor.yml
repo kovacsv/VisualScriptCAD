@@ -33,5 +33,11 @@ build:
   project: c:\projects\VisualScriptCAD\Build\VisualScriptCAD.sln
   verbosity: minimal
 
+after_build:
+  - python createpackagewin.py "C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
+
 test_script:
   - ctest --verbose --build-config %configuration%
+
+artifacts:
+  - Build\Package\*
