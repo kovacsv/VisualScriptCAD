@@ -310,7 +310,7 @@ NE::ValueConstPtr ArcPointsNode::Calculate (NE::EvaluationEnv& env) const
 			segmentAngle = angle / (float) segmentation;
 		}
 		glm::vec3 currentPoint (radius, 0.0f, 0.0f);
-		glm::mat4 rotation = glm::rotate (glm::mat4 (1.0f), glm::radians (segmentAngle), glm::vec3 (0.0f, 0.0f, 1.f));
+		glm::mat4 rotation = glm::rotate (glm::mat4 (1.0f), glm::radians (segmentAngle), glm::vec3 (0.0f, 0.0f, 1.0f));
 		for (int i = 0; i < segmentation; i++) {
 			result->Push (NE::ValuePtr (new PointValue (currentPoint)));
 			currentPoint = glm::dvec3 (rotation * glm::dvec4 (currentPoint, 1.0));

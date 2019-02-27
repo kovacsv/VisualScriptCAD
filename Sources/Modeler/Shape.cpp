@@ -27,7 +27,7 @@ void Shape::SetTransformation (const glm::dmat4& newTransformation)
 Modeler::ShapePtr Shape::Transform (const glm::dmat4& newTransformation) const
 {
 	Modeler::ShapePtr transformed = Clone ();
-	transformed->SetTransformation (transformed->GetTransformation () * newTransformation);
+	transformed->SetTransformation (newTransformation * transformed->GetTransformation ());
 	return transformed;
 }
 

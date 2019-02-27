@@ -304,7 +304,7 @@ NE::ValueConstPtr CombinationNode::Calculate (NE::EvaluationEnv& env) const
 	valueCombination->CombineValues ({transformation1Value, transformation2Value}, [&] (const NE::ValueCombination& combination) {
 		glm::dmat4 transformation1 = TransformationValue::Get (combination.GetValue (0));
 		glm::dmat4 transformation2 = TransformationValue::Get (combination.GetValue (1));
-		glm::dmat4 transformation = transformation1 * transformation2;
+		glm::dmat4 transformation = transformation2 * transformation1;
 		result->Push (NE::ValuePtr (new TransformationValue (transformation)));
 		return true;
 	});
