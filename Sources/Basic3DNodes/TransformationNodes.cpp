@@ -4,66 +4,66 @@
 #include "BI_BuiltInFeatures.hpp"
 #include "GLMReadWrite.hpp"
 
-NE::SerializationInfo			TransformationNode::serializationInfo (NE::ObjectVersion (1));
-NE::DynamicSerializationInfo	TranslationNode::serializationInfo (NE::ObjectId ("{7F1B6F2F-2DE7-48FC-A926-5137FB9CFFF5}"), NE::ObjectVersion (1), TranslationNode::CreateSerializableInstance);
-NE::DynamicSerializationInfo	RotationNode::serializationInfo (NE::ObjectId ("{2F11941E-6B80-49A0-A553-BD230AC0336C}"), NE::ObjectVersion (1), RotationNode::CreateSerializableInstance);
-NE::DynamicSerializationInfo	ScaleNode::serializationInfo (NE::ObjectId ("{9E070858-8AC9-42DE-95A6-0C2AB6807426}"), NE::ObjectVersion (1), ScaleNode::CreateSerializableInstance);
-NE::DynamicSerializationInfo	CombinationNode::serializationInfo (NE::ObjectId ("{E6FC2758-00D6-47F6-B321-AE46ECEA66C5}"), NE::ObjectVersion (1), CombinationNode::CreateSerializableInstance);
+NE::SerializationInfo			TransformationMatrixNode::serializationInfo (NE::ObjectVersion (1));
+NE::DynamicSerializationInfo	TranslationMatrixNode::serializationInfo (NE::ObjectId ("{7F1B6F2F-2DE7-48FC-A926-5137FB9CFFF5}"), NE::ObjectVersion (1), TranslationMatrixNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	RotationMatrixNode::serializationInfo (NE::ObjectId ("{2F11941E-6B80-49A0-A553-BD230AC0336C}"), NE::ObjectVersion (1), RotationMatrixNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	ScaleMatrixNode::serializationInfo (NE::ObjectId ("{9E070858-8AC9-42DE-95A6-0C2AB6807426}"), NE::ObjectVersion (1), ScaleMatrixNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	MatrixCombinationNode::serializationInfo (NE::ObjectId ("{E6FC2758-00D6-47F6-B321-AE46ECEA66C5}"), NE::ObjectVersion (1), MatrixCombinationNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TransformPointNode::serializationInfo (NE::ObjectId ("{8AC8484D-C80C-450B-AF86-B5E915179CED}"), NE::ObjectVersion (1), TransformPointNode::CreateSerializableInstance);
 
-TransformationNode::TransformationNode () :
-	TransformationNode (L"", NUIE::Point ())
+TransformationMatrixNode::TransformationMatrixNode () :
+	TransformationMatrixNode (L"", NUIE::Point ())
 {
 
 }
 
-TransformationNode::TransformationNode (const std::wstring& name, const NUIE::Point& position) :
+TransformationMatrixNode::TransformationMatrixNode (const std::wstring& name, const NUIE::Point& position) :
 	BI::BasicUINode (name, position)
 {
 
 }
 
-void TransformationNode::Initialize ()
+void TransformationMatrixNode::Initialize ()
 {
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 }
 
-NE::Stream::Status TransformationNode::Read (NE::InputStream& inputStream)
+NE::Stream::Status TransformationMatrixNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
 	BI::BasicUINode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
-NE::Stream::Status TransformationNode::Write (NE::OutputStream& outputStream) const
+NE::Stream::Status TransformationMatrixNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	BI::BasicUINode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
 
-TranslationNode::TranslationNode () :
-	TranslationNode (L"", NUIE::Point ())
+TranslationMatrixNode::TranslationMatrixNode () :
+	TranslationMatrixNode (L"", NUIE::Point ())
 {
 
 }
 
-TranslationNode::TranslationNode (const std::wstring& name, const NUIE::Point& position) :
-	TransformationNode (name, position)
+TranslationMatrixNode::TranslationMatrixNode (const std::wstring& name, const NUIE::Point& position) :
+	TransformationMatrixNode (name, position)
 {
 
 }
 
-void TranslationNode::Initialize ()
+void TranslationMatrixNode::Initialize ()
 {
-	TransformationNode::Initialize ();
+	TransformationMatrixNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetx"), L"Offset X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsety"), L"Offset Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetz"), L"Offset Z", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValueConstPtr TranslationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr TranslationMatrixNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr offsetXValue = EvaluateInputSlot (NE::SlotId ("offsetx"), env);
 	NE::ValueConstPtr offsetYValue = EvaluateInputSlot (NE::SlotId ("offsety"), env);
@@ -90,43 +90,43 @@ NE::ValueConstPtr TranslationNode::Calculate (NE::EvaluationEnv& env) const
 	return result;
 }
 
-void TranslationNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+void TranslationMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
-	TransformationNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
+	TransformationMatrixNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
 }
 
-NE::Stream::Status TranslationNode::Read (NE::InputStream& inputStream)
+NE::Stream::Status TranslationMatrixNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
-	TransformationNode::Read (inputStream);
+	TransformationMatrixNode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
-NE::Stream::Status TranslationNode::Write (NE::OutputStream& outputStream) const
+NE::Stream::Status TranslationMatrixNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
-	TransformationNode::Write (outputStream);
+	TransformationMatrixNode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
 
-RotationNode::RotationNode () :
-	RotationNode (L"", NUIE::Point ())
+RotationMatrixNode::RotationMatrixNode () :
+	RotationMatrixNode (L"", NUIE::Point ())
 {
 
 }
 
-RotationNode::RotationNode (const std::wstring& name, const NUIE::Point& position) :
-	TransformationNode (name, position)
+RotationMatrixNode::RotationMatrixNode (const std::wstring& name, const NUIE::Point& position) :
+	TransformationMatrixNode (name, position)
 {
 
 }
 
-void RotationNode::Initialize ()
+void RotationMatrixNode::Initialize ()
 {
-	TransformationNode::Initialize ();
+	TransformationMatrixNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), L"Angle", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axisx"), L"Axis X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axisy"), L"Axis Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
@@ -134,7 +134,7 @@ void RotationNode::Initialize ()
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValueConstPtr RotationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr RotationMatrixNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr angleValue = EvaluateInputSlot (NE::SlotId ("angle"), env);
 	NE::ValueConstPtr axisXValue = EvaluateInputSlot (NE::SlotId ("axisx"), env);
@@ -170,51 +170,51 @@ NE::ValueConstPtr RotationNode::Calculate (NE::EvaluationEnv& env) const
 	return result;
 }
 
-void RotationNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+void RotationMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
-	TransformationNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationNode, NE::FloatValue> (parameterList, L"Angle", NUIE::ParameterType::Float, NE::SlotId ("angle"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationNode, NE::FloatValue> (parameterList, L"Axis X", NUIE::ParameterType::Float, NE::SlotId ("axisx"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationNode, NE::FloatValue> (parameterList, L"Axis Y", NUIE::ParameterType::Float, NE::SlotId ("axisy"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationNode, NE::FloatValue> (parameterList, L"Axis Z", NUIE::ParameterType::Float, NE::SlotId ("axisz"));
+	TransformationMatrixNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Angle", NUIE::ParameterType::Float, NE::SlotId ("angle"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Axis X", NUIE::ParameterType::Float, NE::SlotId ("axisx"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Axis Y", NUIE::ParameterType::Float, NE::SlotId ("axisy"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Axis Z", NUIE::ParameterType::Float, NE::SlotId ("axisz"));
 }
 
-NE::Stream::Status RotationNode::Read (NE::InputStream& inputStream)
+NE::Stream::Status RotationMatrixNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
-	TransformationNode::Read (inputStream);
+	TransformationMatrixNode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
-NE::Stream::Status RotationNode::Write (NE::OutputStream& outputStream) const
+NE::Stream::Status RotationMatrixNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
-	TransformationNode::Write (outputStream);
+	TransformationMatrixNode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
 
-ScaleNode::ScaleNode () :
-	ScaleNode (L"", NUIE::Point ())
+ScaleMatrixNode::ScaleMatrixNode () :
+	ScaleMatrixNode (L"", NUIE::Point ())
 {
 
 }
 
-ScaleNode::ScaleNode (const std::wstring& name, const NUIE::Point& position) :
-	TransformationNode (name, position)
+ScaleMatrixNode::ScaleMatrixNode (const std::wstring& name, const NUIE::Point& position) :
+	TransformationMatrixNode (name, position)
 {
 
 }
 
-void ScaleNode::Initialize ()
+void ScaleMatrixNode::Initialize ()
 {
-	TransformationNode::Initialize ();
+	TransformationMatrixNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("scalex"), L"Scale X", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("scaley"), L"Scale Y", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("scalez"), L"Scale Z", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValueConstPtr ScaleNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr ScaleMatrixNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr scaleXValue = EvaluateInputSlot (NE::SlotId ("scalex"), env);
 	NE::ValueConstPtr scaleYValue = EvaluateInputSlot (NE::SlotId ("scaley"), env);
@@ -247,49 +247,49 @@ NE::ValueConstPtr ScaleNode::Calculate (NE::EvaluationEnv& env) const
 	return result;
 }
 
-void ScaleNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+void ScaleMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
-	TransformationNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleNode, NE::FloatValue> (parameterList, L"Scale X", NUIE::ParameterType::Float, NE::SlotId ("scalex"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleNode, NE::FloatValue> (parameterList, L"Scale Y", NUIE::ParameterType::Float, NE::SlotId ("scaley"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleNode, NE::FloatValue> (parameterList, L"Scale Z", NUIE::ParameterType::Float, NE::SlotId ("scalez"));
+	TransformationMatrixNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, L"Scale X", NUIE::ParameterType::Float, NE::SlotId ("scalex"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, L"Scale Y", NUIE::ParameterType::Float, NE::SlotId ("scaley"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, L"Scale Z", NUIE::ParameterType::Float, NE::SlotId ("scalez"));
 }
 
-NE::Stream::Status ScaleNode::Read (NE::InputStream& inputStream)
+NE::Stream::Status ScaleMatrixNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
-	TransformationNode::Read (inputStream);
+	TransformationMatrixNode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
-NE::Stream::Status ScaleNode::Write (NE::OutputStream& outputStream) const
+NE::Stream::Status ScaleMatrixNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
-	TransformationNode::Write (outputStream);
+	TransformationMatrixNode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
 
-CombinationNode::CombinationNode () :
-	CombinationNode (L"", NUIE::Point ())
+MatrixCombinationNode::MatrixCombinationNode () :
+	MatrixCombinationNode (L"", NUIE::Point ())
 {
 
 }
 
-CombinationNode::CombinationNode (const std::wstring& name, const NUIE::Point& position) :
-	TransformationNode (name, position)
+MatrixCombinationNode::MatrixCombinationNode (const std::wstring& name, const NUIE::Point& position) :
+	TransformationMatrixNode (name, position)
 {
 
 }
 
-void CombinationNode::Initialize ()
+void MatrixCombinationNode::Initialize ()
 {
-	TransformationNode::Initialize ();
+	TransformationMatrixNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation1"), L"Transformation 1", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation2"), L"Transformation 2", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValueConstPtr CombinationNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr MatrixCombinationNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr transformation1Value = EvaluateInputSlot (NE::SlotId ("transformation1"), env);
 	NE::ValueConstPtr transformation2Value = EvaluateInputSlot (NE::SlotId ("transformation2"), env);
@@ -312,17 +312,17 @@ NE::ValueConstPtr CombinationNode::Calculate (NE::EvaluationEnv& env) const
 	return result;
 }
 
-NE::Stream::Status CombinationNode::Read (NE::InputStream& inputStream)
+NE::Stream::Status MatrixCombinationNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
-	TransformationNode::Read (inputStream);
+	TransformationMatrixNode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
-NE::Stream::Status CombinationNode::Write (NE::OutputStream& outputStream) const
+NE::Stream::Status MatrixCombinationNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
-	TransformationNode::Write (outputStream);
+	TransformationMatrixNode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
 
@@ -333,14 +333,14 @@ TransformPointNode::TransformPointNode () :
 }
 
 TransformPointNode::TransformPointNode (const std::wstring& name, const NUIE::Point& position) :
-	TransformationNode (name, position)
+	TransformationMatrixNode (name, position)
 {
 
 }
 
 void TransformPointNode::Initialize ()
 {
-	TransformationNode::Initialize ();
+	TransformationMatrixNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("point"), L"Point", NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
@@ -371,13 +371,13 @@ NE::ValueConstPtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
 NE::Stream::Status TransformPointNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
-	TransformationNode::Read (inputStream);
+	TransformationMatrixNode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
 NE::Stream::Status TransformPointNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
-	TransformationNode::Write (outputStream);
+	TransformationMatrixNode::Write (outputStream);
 	return outputStream.GetStatus ();
 }

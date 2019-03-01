@@ -6,13 +6,13 @@
 #include "Basic3DNodeValues.hpp"
 #include "IncludeGLM.hpp"
 
-class TransformationNode : public BI::BasicUINode
+class TransformationMatrixNode : public BI::BasicUINode
 {
 	SERIALIZABLE;
 
 public:
-	TransformationNode ();
-	TransformationNode (const std::wstring& name, const NUIE::Point& position);
+	TransformationMatrixNode ();
+	TransformationMatrixNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 
@@ -20,13 +20,13 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class TranslationNode : public TransformationNode
+class TranslationMatrixNode : public TransformationMatrixNode
 {
-	DYNAMIC_SERIALIZABLE (TranslationNode);
+	DYNAMIC_SERIALIZABLE (TranslationMatrixNode);
 
 public:
-	TranslationNode ();
-	TranslationNode (const std::wstring& name, const NUIE::Point& position);
+	TranslationMatrixNode ();
+	TranslationMatrixNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -36,13 +36,13 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class RotationNode : public TransformationNode
+class RotationMatrixNode : public TransformationMatrixNode
 {
-	DYNAMIC_SERIALIZABLE (RotationNode);
+	DYNAMIC_SERIALIZABLE (RotationMatrixNode);
 
 public:
-	RotationNode ();
-	RotationNode (const std::wstring& name, const NUIE::Point& position);
+	RotationMatrixNode ();
+	RotationMatrixNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -52,13 +52,13 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class ScaleNode : public TransformationNode
+class ScaleMatrixNode : public TransformationMatrixNode
 {
-	DYNAMIC_SERIALIZABLE (ScaleNode);
+	DYNAMIC_SERIALIZABLE (ScaleMatrixNode);
 
 public:
-	ScaleNode ();
-	ScaleNode (const std::wstring& name, const NUIE::Point& position);
+	ScaleMatrixNode ();
+	ScaleMatrixNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -68,13 +68,13 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class CombinationNode : public TransformationNode
+class MatrixCombinationNode : public TransformationMatrixNode
 {
-	DYNAMIC_SERIALIZABLE (CombinationNode);
+	DYNAMIC_SERIALIZABLE (MatrixCombinationNode);
 
 public:
-	CombinationNode ();
-	CombinationNode (const std::wstring& name, const NUIE::Point& position);
+	MatrixCombinationNode ();
+	MatrixCombinationNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -83,7 +83,7 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class TransformPointNode : public TransformationNode
+class TransformPointNode : public TransformationMatrixNode
 {
 	DYNAMIC_SERIALIZABLE (TransformPointNode);
 
