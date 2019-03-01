@@ -50,6 +50,7 @@ TEST (ExpressionTest_Functions)
 	ASSERT (CheckInvalidExpression (L"notexistingfunction (1)"));
 	ASSERT (CheckInvalidExpression (L"sin (45, 90)"));
 	ASSERT (CheckExpression (L"sin (90)", std::sin (glm::radians (90.0))));
+	ASSERT (CheckExpression (L"sin (cos (60))", std::sin (glm::radians (std::cos (glm::radians (60.0))))));
 	ASSERT (CheckExpression (L"cos (90)", std::cos (glm::radians (90.0))));
 	ASSERT (CheckExpression (L"1 + sin(60) - 2 * cos (60)", 1-0 + std::sin (glm::radians (60.0)) - 2.0 * std::cos (glm::radians (60.0))));
 }
