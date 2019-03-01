@@ -1,5 +1,6 @@
 #include "SimpleTest.hpp"
 #include "Geometry.hpp"
+#include "IncludeGLM.hpp"
 #include "ExpressionCalculator.hpp"
 
 using namespace BoostOperations;
@@ -42,6 +43,15 @@ TEST (ExpressionTest_BinaryOperators)
 	ASSERT (CheckExpression (L"2 ^ 3", pow (2.0, 3.0)));
 	ASSERT (CheckExpression (L"4 ^ 3 ^ 2", 262144.0));
 	ASSERT (CheckExpression (L" 2    +  3", 2.0 + 3.0));
+}
+
+TEST (ExpressionTest_Functions)
+{
+	ASSERT (CheckInvalidExpression (L"notexistingfunction (1)"));
+	ASSERT (CheckInvalidExpression (L"sin (45, 90)"));
+	ASSERT (CheckExpression (L"sin (90)", std::sin (glm::radians (90.0))));
+	ASSERT (CheckExpression (L"cos (90)", std::cos (glm::radians (90.0))));
+	ASSERT (CheckExpression (L"1 + sin(60) - 2 * cos (60)", 1-0 + std::sin (glm::radians (60.0)) - 2.0 * std::cos (glm::radians (60.0))));
 }
 
 TEST (ExpressionTest_InvalidExpressions)

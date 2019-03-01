@@ -1,5 +1,6 @@
 #include "ExpressionCalculator.hpp"
 #include "Geometry.hpp"
+#include "IncludeGLM.hpp"
 
 #include <list>
 
@@ -23,6 +24,7 @@ struct BinaryOperator;
 struct ExpOperator;
 struct Number;
 struct Identifier;
+struct Function;
 struct Parenthesized;
 struct Expression;
 
@@ -32,6 +34,7 @@ typedef boost::variant<
 	boost::recursive_wrapper<ExpOperator>,
 	boost::recursive_wrapper<Number>,
 	boost::recursive_wrapper<Identifier>,
+	boost::recursive_wrapper<Function>,
 	boost::recursive_wrapper<Parenthesized>,
 	boost::recursive_wrapper<Expression>
 > Operand;
@@ -62,6 +65,12 @@ struct Number
 struct Identifier
 {
 	std::wstring name;
+};
+
+struct Function
+{
+	std::wstring name;
+	std::vector<Operand> args;
 };
 
 struct Parenthesized
@@ -101,6 +110,12 @@ BOOST_FUSION_ADAPT_STRUCT(
 BOOST_FUSION_ADAPT_STRUCT( 
 	Number, 
 	(double, value)
+)
+
+BOOST_FUSION_ADAPT_STRUCT( 
+	Function, 
+	(std::wstring, name)
+	(std::vector<Operand>, args)
 )
 
 BOOST_FUSION_ADAPT_STRUCT(
@@ -158,6 +173,7 @@ struct BoostExpressionGrammar : qi::grammar<Iterator, Expression (), ascii::spac
 
 		primaryExpression =
 			numberExpression |
+			functionExpression |
 			identifierExpression |
 			parenthesizedExpression;
 
@@ -166,6 +182,9 @@ struct BoostExpressionGrammar : qi::grammar<Iterator, Expression (), ascii::spac
 
 		identifierExpression =
 			lexeme[as_wstring[alpha >> *alnum]];
+
+		functionExpression =
+			as_wstring[alpha >> *alnum] >> L"(" >> (expression % L",") >> L")";
 
 		parenthesizedExpression =
 			L"(" >> expression >> L")";
@@ -179,6 +198,7 @@ struct BoostExpressionGrammar : qi::grammar<Iterator, Expression (), ascii::spac
 	qi::rule<Iterator, Operand (), ascii::space_type> primaryExpression;
 	qi::rule<Iterator, Identifier (), ascii::space_type> identifierExpression;
 	qi::rule<Iterator, Number (), ascii::space_type> numberExpression;
+	qi::rule<Iterator, Function (), ascii::space_type> functionExpression;
 	qi::rule<Iterator, Parenthesized (), ascii::space_type> parenthesizedExpression;
 };
 
@@ -239,6 +259,19 @@ public:
 
 		double right = boost::apply_visitor (*this, expOperator.right.get ());
 		return pow (left, right);
+	}
+
+	result_type operator() (const Function& function)
+	{
+		if (function.args.size () == 1) {
+			double argVal = boost::apply_visitor (*this, function.args[0]);
+			if (function.name == L"sin") {
+				return std::sin (glm::radians (argVal));
+			} else if (function.name == L"cos") {
+				return std::cos (glm::radians (argVal));
+			}
+		}
+		throw std::logic_error ("invalid function");
 	}
 
 	result_type operator() (const Parenthesized& parenthesized)
