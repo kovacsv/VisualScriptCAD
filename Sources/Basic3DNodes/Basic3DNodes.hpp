@@ -1,4 +1,6 @@
 #ifndef BASIC3DNODES_HPP
+#define BASIC3DNODES_HPP
+
 #include "NE_Stream.hpp"
 #include "NE_StringSettings.hpp"
 #include "NE_GenericValue.hpp"
