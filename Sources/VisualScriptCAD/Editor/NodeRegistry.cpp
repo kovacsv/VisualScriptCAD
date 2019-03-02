@@ -112,9 +112,6 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Matrix Nodes", L"Translation Matrix",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixNode (L"Translation Matrix", position)); }
 	);
-	RegisterNode (L"Matrix Nodes", L"Translation From Point",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointTranslationNode (L"Translation From Point", position)); }
-	);
 	RegisterNode (L"Matrix Nodes", L"Rotation Matrix",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotationMatrixNode (L"Rotation Matrix", position)); }
 	);

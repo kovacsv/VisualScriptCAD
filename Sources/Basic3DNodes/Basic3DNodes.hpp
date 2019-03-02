@@ -126,19 +126,4 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class PointTranslationNode : public BI::BasicUINode
-{
-	DYNAMIC_SERIALIZABLE (PointTranslationNode);
-
-public:
-	PointTranslationNode ();
-	PointTranslationNode (const std::wstring& name, const NUIE::Point& position);
-
-	virtual void				Initialize () override;
-	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
-
-	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
-	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
-};
-
 #endif

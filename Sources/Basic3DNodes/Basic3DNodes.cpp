@@ -13,7 +13,6 @@ NE::DynamicSerializationInfo	PointNode::serializationInfo (NE::ObjectId ("{F387D
 NE::DynamicSerializationInfo	VectorNode::serializationInfo (NE::ObjectId ("{72FD83E7-EE2A-4F16-BAEC-5447554B93A5}"), NE::ObjectVersion (1), VectorNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	LinePointsNode::serializationInfo (NE::ObjectId ("{6228348D-9DE5-43DA-A3D8-7AA59BEE551A}"), NE::ObjectVersion (1), LinePointsNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ArcPointsNode::serializationInfo (NE::ObjectId ("{968F0889-E537-4A0F-9D76-4E0378868AB2}"), NE::ObjectVersion (1), ArcPointsNode::CreateSerializableInstance);
-NE::DynamicSerializationInfo	PointTranslationNode::serializationInfo (NE::ObjectId ("{23F99EC7-E0E1-42FB-88BD-239A27F1E24E}"), NE::ObjectVersion (1), PointTranslationNode::CreateSerializableInstance);
 
 PointNodeBase::PointNodeBase () :
 	PointNodeBase (L"", NUIE::Point ())
@@ -432,54 +431,5 @@ NE::Stream::Status ArcPointsNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	PointNodeBase::Write (outputStream);
-	return outputStream.GetStatus ();
-}
-
-PointTranslationNode::PointTranslationNode () :
-	PointTranslationNode (L"", NUIE::Point ())
-{
-
-}
-
-PointTranslationNode::PointTranslationNode (const std::wstring& name, const NUIE::Point& position) :
-	BI::BasicUINode (name, position)
-{
-
-}
-
-void PointTranslationNode::Initialize ()
-{
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("point"), L"Point", NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
-}
-
-NE::ValueConstPtr PointTranslationNode::Calculate (NE::EvaluationEnv& env) const
-{
-	NE::ValueConstPtr pointValue = EvaluateInputSlot (NE::SlotId ("point"), env);
-	if (!NE::IsComplexType<CoordinateValue> (pointValue)) {
-		return nullptr;
-	}
-
-	NE::ListValuePtr result (new NE::ListValue ());
-	NE::FlatEnumerate (pointValue, [&] (const NE::ValueConstPtr& val) {
-		glm::dvec3 offset (CoordinateValue::Get (val));
-		glm::dmat4 transformation = glm::translate (glm::dmat4 (1.0), offset);
-		result->Push (NE::ValuePtr (new TransformationValue (transformation)));
-	});
-
-	return result;
-}
-
-NE::Stream::Status PointTranslationNode::Read (NE::InputStream& inputStream)
-{
-	NE::ObjectHeader header (inputStream);
-	BI::BasicUINode::Read (inputStream);
-	return inputStream.GetStatus ();
-}
-
-NE::Stream::Status PointTranslationNode::Write (NE::OutputStream& outputStream) const
-{
-	NE::ObjectHeader header (outputStream, serializationInfo);
-	BI::BasicUINode::Write (outputStream);
 	return outputStream.GetStatus ();
 }
