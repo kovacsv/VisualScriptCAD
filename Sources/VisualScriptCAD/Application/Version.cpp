@@ -62,4 +62,4 @@ NE::Stream::Status Version::Write (NE::OutputStream& outputStream) const
 }
 
 const Version AppVersion (VSCAD_VERSION_1, VSCAD_VERSION_2, VSCAD_VERSION_3);
-const int FileVersion = 1;
+const int FileVersion = 2;
