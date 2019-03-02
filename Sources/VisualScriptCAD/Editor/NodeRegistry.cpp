@@ -74,6 +74,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Point Nodes", L"Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointNode (L"Point", position)); }
 	);
+	RegisterNode (L"Point Nodes", L"Vector",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new VectorNode (L"Vector", position)); }
+	);
 	RegisterNode (L"Point Nodes", L"Line Points",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new LinePointsNode (L"Line Points", position)); }
 	);
@@ -104,20 +107,20 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Shape Nodes", L"Platonic",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PlatonicNode (L"Platonic", position)); }
 	);
-	RegisterNode (L"Matrix Nodes", L"Translation",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixNode (L"Translation", position)); }
+	RegisterNode (L"Matrix Nodes", L"Translation Matrix",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixNode (L"Translation Matrix", position)); }
 	);
 	RegisterNode (L"Matrix Nodes", L"Translation From Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointTranslationNode (L"Translation From Point", position)); }
 	);
-	RegisterNode (L"Matrix Nodes", L"Rotation",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotationMatrixNode (L"Rotation", position)); }
+	RegisterNode (L"Matrix Nodes", L"Rotation Matrix",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotationMatrixNode (L"Rotation Matrix", position)); }
 	);
-	RegisterNode (L"Matrix Nodes", L"Scale",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ScaleMatrixNode (L"Scale", position)); }
+	RegisterNode (L"Matrix Nodes", L"Scale Matrix",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ScaleMatrixNode (L"Scale Matrix", position)); }
 	);
-	RegisterNode (L"Matrix Nodes", L"Combination",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MatrixCombinationNode (L"Combination", position)); }
+	RegisterNode (L"Matrix Nodes", L"Matrix Combination",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MatrixCombinationNode (L"Matrix Combination", position)); }
 	);
 	RegisterNode (L"Transformation Nodes", L"Transform Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (L"Transform Point", position)); }

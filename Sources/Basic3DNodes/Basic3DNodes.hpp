@@ -40,7 +40,27 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class PointNode : public PointNodeBase
+class CoordinateNode : public PointNodeBase
+{
+	SERIALIZABLE;
+
+public:
+	CoordinateNode ();
+	CoordinateNode (const std::wstring& name, const NUIE::Point& position);
+
+	virtual void				Initialize () override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
+	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
+
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+
+private:
+	virtual glm::vec3			GetDefaultValue () const = 0;
+	virtual NE::ValueConstPtr	GetValueFromVector (const glm::vec3& vec) const = 0;
+};
+
+class PointNode : public CoordinateNode
 {
 	DYNAMIC_SERIALIZABLE (PointNode);
 
@@ -49,11 +69,27 @@ public:
 	PointNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
-	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
-	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
-
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+
+	virtual glm::vec3			GetDefaultValue () const override;
+	virtual NE::ValueConstPtr	GetValueFromVector (const glm::vec3& vec) const override;
+};
+
+class VectorNode : public CoordinateNode
+{
+	DYNAMIC_SERIALIZABLE (VectorNode);
+
+public:
+	VectorNode ();
+	VectorNode (const std::wstring& name, const NUIE::Point& position);
+
+	virtual void				Initialize () override;
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
+
+	virtual glm::vec3			GetDefaultValue () const override;
+	virtual NE::ValueConstPtr	GetValueFromVector (const glm::vec3& vec) const override;
 };
 
 class LinePointsNode : public PointNodeBase

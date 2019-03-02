@@ -350,7 +350,7 @@ NE::ValueConstPtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr pointValue = EvaluateInputSlot (NE::SlotId ("point"), env);
 	NE::ValueConstPtr transformationValue = EvaluateInputSlot (NE::SlotId ("transformation"), env);
-	if (!NE::IsComplexType<PointValue> (pointValue) || !NE::IsComplexType<TransformationValue> (transformationValue)) {
+	if (!NE::IsComplexType<CoordinateValue> (pointValue) || !NE::IsComplexType<TransformationValue> (transformationValue)) {
 		return nullptr;
 	}
 
@@ -358,7 +358,7 @@ NE::ValueConstPtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
 
 	NE::ListValuePtr result (new NE::ListValue ());
 	valueCombination->CombineValues ({pointValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
-		glm::dvec3 point (PointValue::Get (combination.GetValue (0)));
+		glm::dvec3 point (CoordinateValue::Get (combination.GetValue (0)));
 		glm::dmat4 transformation (TransformationValue::Get (combination.GetValue (1)));
 		glm::dvec3 transformed = glm::dvec3 (transformation * glm::dvec4 (point, 1.0));
 		result->Push (NE::ValuePtr (new PointValue (transformed)));
