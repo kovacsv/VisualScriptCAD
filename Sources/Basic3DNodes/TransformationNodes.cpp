@@ -72,10 +72,8 @@ NE::ValueConstPtr TranslationMatrixNode::Calculate (NE::EvaluationEnv& env) cons
 		return nullptr;
 	}
 
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
 	NE::ListValuePtr result (new NE::ListValue ());
-	valueCombination->CombineValues ({offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
+	BI::CombineValues (this, {offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
 		glm::vec3 offset (
 			NE::NumberValue::ToFloat (combination.GetValue (0)),
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -144,10 +142,8 @@ NE::ValueConstPtr RotationMatrixNode::Calculate (NE::EvaluationEnv& env) const
 		return nullptr;
 	}
 
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = valueCombination->CombineValues ({angleValue, axisXValue, axisYValue, axisZValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::CombineValues (this, {angleValue, axisXValue, axisYValue, axisZValue}, [&] (const NE::ValueCombination& combination) {
 		float angle = NE::NumberValue::ToFloat (combination.GetValue (0));
 		glm::vec3 axis (
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -223,10 +219,8 @@ NE::ValueConstPtr ScaleMatrixNode::Calculate (NE::EvaluationEnv& env) const
 		return nullptr;
 	}
 
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = valueCombination->CombineValues ({scaleXValue, scaleYValue, scaleZValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::CombineValues (this, {scaleXValue, scaleYValue, scaleZValue}, [&] (const NE::ValueCombination& combination) {
 		glm::vec3 scale (
 			NE::NumberValue::ToFloat (combination.GetValue (0)),
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -297,10 +291,8 @@ NE::ValueConstPtr MatrixCombinationNode::Calculate (NE::EvaluationEnv& env) cons
 		return nullptr;
 	}
 
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
 	NE::ListValuePtr result (new NE::ListValue ());
-	valueCombination->CombineValues ({transformation1Value, transformation2Value}, [&] (const NE::ValueCombination& combination) {
+	BI::CombineValues (this, {transformation1Value, transformation2Value}, [&] (const NE::ValueCombination& combination) {
 		glm::dmat4 transformation1 = TransformationValue::Get (combination.GetValue (0));
 		glm::dmat4 transformation2 = TransformationValue::Get (combination.GetValue (1));
 		glm::dmat4 transformation = transformation2 * transformation1;

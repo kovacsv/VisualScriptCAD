@@ -44,10 +44,8 @@ NE::ValueConstPtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
 		return nullptr;
 	}
 	
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-	
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = valueCombination->CombineValues ({transformationValue, aValue, bValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::CombineValues (this, {transformationValue, aValue, bValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr aShape = ShapeValue::Get (combination.GetValue (1));
 		Modeler::ShapePtr bShape = ShapeValue::Get (combination.GetValue (2));
 		Modeler::ShapePtr shape = CGALOperations::MeshBooleanOperation (aShape, bShape, operation);

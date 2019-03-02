@@ -39,10 +39,8 @@ NE::ValueConstPtr ExpressionNode::Calculate (NE::EvaluationEnv& env) const
 		return nullptr;
 	}
 
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool success = valueCombination->CombineValues ({x, y, z}, [&] (const NE::ValueCombination& combination) {
+	bool success = BI::CombineValues (this, {x, y, z}, [&] (const NE::ValueCombination& combination) {
 		BoostOperations::IdentifierMap identifierMap;
 		identifierMap.insert ({ L"X", NE::NumberValue::ToDouble (combination.GetValue (0))});
 		identifierMap.insert ({ L"Y", NE::NumberValue::ToDouble (combination.GetValue (1))});

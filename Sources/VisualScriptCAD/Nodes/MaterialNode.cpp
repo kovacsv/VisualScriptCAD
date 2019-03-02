@@ -87,10 +87,8 @@ NE::ValueConstPtr MaterialNode::Calculate (NE::EvaluationEnv& env) const
 		return nullptr;
 	}
 
-	std::shared_ptr<BI::ValueCombinationFeature> valueCombination = BI::GetValueCombinationFeature (this);
-
 	NE::ListValuePtr result (new NE::ListValue ());
-	valueCombination->CombineValues ({red, green, blue}, [&] (const NE::ValueCombination& combination) {
+	BI::CombineValues (this, {red, green, blue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::Material material (glm::dvec3 (
 			NE::NumberValue::ToFloat (combination.GetValue (0)) / 255.0f,
 			NE::NumberValue::ToFloat (combination.GetValue (1)) / 255.0f,
