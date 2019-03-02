@@ -2,15 +2,15 @@
 #include "ExpressionCalculator.hpp"
 
 ExpressionEditorDialog::ExpressionEditorDialog (wxWindow* parent, const std::wstring& expression) :
-	wxDialog (parent, wxID_ANY, L"Edit Expression", wxDefaultPosition, wxSize (300, 200), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
+	wxDialog (parent, wxID_ANY, L"Edit Expression", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
 	boxSizer (new wxBoxSizer (wxVERTICAL)),
-	expressionControl (new wxTextCtrl (this, wxID_ANY, expression, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE)),
+	expressionControl (new wxTextCtrl (this, wxID_ANY, expression, wxDefaultPosition, wxSize (400, 30))),
 	okButton (new wxButton (this, wxID_OK, L"OK")),
 	expression (expression)
 {
 	boxSizer->Add (expressionControl, 1, wxEXPAND | wxALL, 0);
 	boxSizer->Add (okButton, 0, wxEXPAND | wxALL, 0);
-	SetSizer (boxSizer);
+	SetSizerAndFit (boxSizer);
 
 	SetEscapeId (wxID_CANCEL);
 	// CenterOnParent ();
