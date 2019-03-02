@@ -127,6 +127,12 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Transformation Nodes", L"Transform Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (L"Transform Point", position)); }
 	);
+	RegisterNode (L"Transformation Nodes", L"Translate Shape",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeNode (L"Translate Shape", position)); }
+	);
+	RegisterNode (L"Transformation Nodes", L"Rotate Shape",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotateShapeNode (L"Rotate Shape", position)); }
+	);
 	RegisterNode (L"Transformation Nodes", L"Transform Shape",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformShapeNode (L"Transform Shape", position)); }
 	);
