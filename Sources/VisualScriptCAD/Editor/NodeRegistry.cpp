@@ -74,9 +74,6 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Point Nodes", L"Point",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointNode (L"Point", position)); }
 	);
-	RegisterNode (L"Point Nodes", L"Vector",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new VectorNode (L"Vector", position)); }
-	);
 	RegisterNode (L"Point Nodes", L"Line Points",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new LinePointsNode (L"Line Points", position)); }
 	);

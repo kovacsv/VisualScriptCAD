@@ -32,20 +32,6 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class VectorValue : public NE::GenericValue<glm::vec3>
-{
-	DYNAMIC_SERIALIZABLE (VectorValue);
-
-public:
-	VectorValue ();
-	VectorValue (const glm::vec3& val);
-
-	virtual NE::ValuePtr		Clone () const override;
-	virtual std::wstring		ToString (const NE::StringSettings& stringSettings) const override;
-	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
-	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
-};
-
 class TransformationValue : public NE::GenericValue<glm::mat4>
 {
 	DYNAMIC_SERIALIZABLE (TransformationValue);
