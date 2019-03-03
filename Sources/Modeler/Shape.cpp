@@ -277,6 +277,18 @@ ShapePtr PlatonicShape::Clone () const
 
 std::wstring PlatonicShape::ToString () const
 {
+	switch (type) {
+		case PlatonicSolidType::Tetrahedron:
+			return L"Tetrahedron";
+		case PlatonicSolidType::Octahedron:
+			return L"Octahedron";
+		case PlatonicSolidType::Hexahedron:
+			return L"Hexahedron";
+		case PlatonicSolidType::Dodecahedron:
+			return L"Dodecahedron";
+		case PlatonicSolidType::Icosahedron:
+			return L"Icosahedron";
+	}
 	return L"Platonic";
 }
 

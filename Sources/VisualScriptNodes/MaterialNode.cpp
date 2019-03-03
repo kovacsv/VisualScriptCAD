@@ -30,7 +30,7 @@ std::wstring MaterialValue::ToString (const NE::StringSettings&) const
 {
 	std::wstring result;
 	const glm::dvec3& color = val.GetColor ();
-	result += L"rgb (";
+	result += L"Material (";
 	result += std::to_wstring (int (color.x * 255.0f)) + L", ";
 	result += std::to_wstring (int (color.y * 255.0f)) + L", ";
 	result += std::to_wstring (int (color.z * 255.0f));

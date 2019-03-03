@@ -184,9 +184,8 @@ NE::ValuePtr TransformationValue::Clone () const
 
 std::wstring TransformationValue::ToString (const NE::StringSettings&) const
 {
-	// TODO
 	std::wstring result;
-	result += L"transformation";
+	result += L"Transformation";
 	return result;
 }
 
