@@ -2,6 +2,7 @@
 #include "NE_SingleValues.hpp"
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
+#include "Geometry.hpp"
 #include "GLMReadWrite.hpp"
 
 NE::SerializationInfo			TransformationMatrixNode::serializationInfo (NE::ObjectVersion (1));
@@ -175,37 +176,33 @@ RotationMatrixNode::RotationMatrixNode (const std::wstring& name, const NUIE::Po
 void RotationMatrixNode::Initialize ()
 {
 	TransformationMatrixNode::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), L"Angle", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axisx"), L"Axis X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axisy"), L"Axis Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axisz"), L"Axis Z", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), L"Angle", NE::ValuePtr (new NE::FloatValue (0.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("origin"), L"Origin", NE::ValuePtr (new PointValue (glm::vec3 (0.0f, 0.0f, 0.0f))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axis"), L"Axis", NE::ValuePtr (new PointValue (glm::vec3 (0.0f, 0.0f, 1.0f))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
 NE::ValueConstPtr RotationMatrixNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr angleValue = EvaluateInputSlot (NE::SlotId ("angle"), env);
-	NE::ValueConstPtr axisXValue = EvaluateInputSlot (NE::SlotId ("axisx"), env);
-	NE::ValueConstPtr axisYValue = EvaluateInputSlot (NE::SlotId ("axisy"), env);
-	NE::ValueConstPtr axisZValue = EvaluateInputSlot (NE::SlotId ("axisz"), env);
-
-	if (!NE::IsComplexType<NE::NumberValue> (angleValue) || !NE::IsComplexType<NE::NumberValue> (axisXValue) || !NE::IsComplexType<NE::NumberValue> (axisYValue) || !NE::IsComplexType<NE::NumberValue> (axisZValue)) {
+	NE::ValueConstPtr originValue = EvaluateInputSlot (NE::SlotId ("origin"), env);
+	NE::ValueConstPtr axisValue = EvaluateInputSlot (NE::SlotId ("axis"), env);
+	if (!NE::IsComplexType<NE::NumberValue> (angleValue) || !NE::IsComplexType<CoordinateValue> (originValue) || !NE::IsComplexType<CoordinateValue> (axisValue)) {
 		return nullptr;
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {angleValue, axisXValue, axisYValue, axisZValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::CombineValues (this, {angleValue, originValue, axisValue}, [&] (const NE::ValueCombination& combination) {
 		float angle = NE::NumberValue::ToFloat (combination.GetValue (0));
-		glm::vec3 axis (
-			NE::NumberValue::ToFloat (combination.GetValue (1)),
-			NE::NumberValue::ToFloat (combination.GetValue (2)),
-			NE::NumberValue::ToFloat (combination.GetValue (3))
-		);
-		if (glm::length (axis) == 0.0f) {
+		glm::vec3 origin = CoordinateValue::Get (combination.GetValue (1));
+		glm::vec3 axis = CoordinateValue::Get (combination.GetValue (2));
+		if (Geometry::IsEqual (glm::length (axis), 0.0f)) {
 			return false;
 		}
-		axis = glm::normalize (axis);
-		glm::mat4 transformation = glm::rotate (glm::mat4 (1.0f), glm::radians (angle), axis);
+		glm::mat4 offset = glm::translate (glm::mat4 (1.0f), -origin);
+		glm::mat4 rotation = glm::rotate (glm::mat4 (1.0f), glm::radians (angle), axis);
+		glm::mat4 offsetBack = glm::translate (glm::mat4 (1.0f), origin);
+		glm::mat4 transformation = offsetBack * rotation * offset;
 		result->Push (NE::ValuePtr (new TransformationValue (transformation)));
 		return true;
 	});
@@ -220,9 +217,6 @@ void RotationMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterL
 {
 	TransformationMatrixNode::RegisterParameters (parameterList);
 	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Angle", NUIE::ParameterType::Float, NE::SlotId ("angle"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Axis X", NUIE::ParameterType::Float, NE::SlotId ("axisx"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Axis Y", NUIE::ParameterType::Float, NE::SlotId ("axisy"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Axis Z", NUIE::ParameterType::Float, NE::SlotId ("axisz"));
 }
 
 NE::Stream::Status RotationMatrixNode::Read (NE::InputStream& inputStream)
