@@ -112,6 +112,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Matrix Nodes", L"Translation Matrix",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixNode (L"Translation Matrix", position)); }
 	);
+	RegisterNode (L"Matrix Nodes", L"Translation Matrix XYZ",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixXYZNode (L"Translation Matrix XYZ", position)); }
+	);
 	RegisterNode (L"Matrix Nodes", L"Rotation Matrix",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotationMatrixNode (L"Rotation Matrix", position)); }
 	);
@@ -126,6 +129,9 @@ NodeRegistry::NodeRegistry () :
 	);
 	RegisterNode (L"Transformation Nodes", L"Translate Shape",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeNode (L"Translate Shape", position)); }
+	);
+	RegisterNode (L"Transformation Nodes", L"Translate Shape XYZ",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeXYZNode (L"Translate Shape XYZ", position)); }
 	);
 	RegisterNode (L"Transformation Nodes", L"Rotate Shape",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotateShapeNode (L"Rotate Shape", position)); }

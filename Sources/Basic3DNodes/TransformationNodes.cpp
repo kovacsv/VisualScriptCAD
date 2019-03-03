@@ -5,7 +5,8 @@
 #include "GLMReadWrite.hpp"
 
 NE::SerializationInfo			TransformationMatrixNode::serializationInfo (NE::ObjectVersion (1));
-NE::DynamicSerializationInfo	TranslationMatrixNode::serializationInfo (NE::ObjectId ("{7F1B6F2F-2DE7-48FC-A926-5137FB9CFFF5}"), NE::ObjectVersion (1), TranslationMatrixNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	TranslationMatrixNode::serializationInfo (NE::ObjectId ("{DDB65DA8-1E2C-47EF-9658-96819C29259D}"), NE::ObjectVersion (1), TranslationMatrixNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	TranslationMatrixXYZNode::serializationInfo (NE::ObjectId ("{7F1B6F2F-2DE7-48FC-A926-5137FB9CFFF5}"), NE::ObjectVersion (1), TranslationMatrixXYZNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	RotationMatrixNode::serializationInfo (NE::ObjectId ("{2F11941E-6B80-49A0-A553-BD230AC0336C}"), NE::ObjectVersion (1), RotationMatrixNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ScaleMatrixNode::serializationInfo (NE::ObjectId ("{9E070858-8AC9-42DE-95A6-0C2AB6807426}"), NE::ObjectVersion (1), ScaleMatrixNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	MatrixCombinationNode::serializationInfo (NE::ObjectId ("{E6FC2758-00D6-47F6-B321-AE46ECEA66C5}"), NE::ObjectVersion (1), MatrixCombinationNode::CreateSerializableInstance);
@@ -56,18 +57,68 @@ TranslationMatrixNode::TranslationMatrixNode (const std::wstring& name, const NU
 void TranslationMatrixNode::Initialize ()
 {
 	TransformationMatrixNode::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offset"), L"Offset", NE::ValuePtr (new PointValue (glm::vec3 (0.0f))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
+}
+
+NE::ValueConstPtr TranslationMatrixNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValueConstPtr offsetValue = EvaluateInputSlot (NE::SlotId ("offset"), env);
+	if (!NE::IsComplexType<CoordinateValue> (offsetValue)) {
+		return nullptr;
+	}
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	BI::CombineValues (this, {offsetValue}, [&] (const NE::ValueCombination& combination) {
+		glm::vec3 offset = CoordinateValue::Get (combination.GetValue (0));
+		glm::mat4 transformation = glm::translate (glm::mat4 (1.0f), offset);
+		result->Push (NE::ValuePtr (new TransformationValue (transformation)));
+		return true;
+	});
+
+	return result;
+}
+
+NE::Stream::Status TranslationMatrixNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	TransformationMatrixNode::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status TranslationMatrixNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	TransformationMatrixNode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+TranslationMatrixXYZNode::TranslationMatrixXYZNode () :
+	TranslationMatrixXYZNode (L"", NUIE::Point ())
+{
+
+}
+
+TranslationMatrixXYZNode::TranslationMatrixXYZNode (const std::wstring& name, const NUIE::Point& position) :
+	TransformationMatrixNode (name, position)
+{
+
+}
+
+void TranslationMatrixXYZNode::Initialize ()
+{
+	TransformationMatrixNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetx"), L"Offset X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsety"), L"Offset Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetz"), L"Offset Z", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("transformation"), L"Transformation")));
 }
 
-NE::ValueConstPtr TranslationMatrixNode::Calculate (NE::EvaluationEnv& env) const
+NE::ValueConstPtr TranslationMatrixXYZNode::Calculate (NE::EvaluationEnv& env) const
 {
 	NE::ValueConstPtr offsetXValue = EvaluateInputSlot (NE::SlotId ("offsetx"), env);
 	NE::ValueConstPtr offsetYValue = EvaluateInputSlot (NE::SlotId ("offsety"), env);
 	NE::ValueConstPtr offsetZValue = EvaluateInputSlot (NE::SlotId ("offsetz"), env);
-
 	if (!NE::IsComplexType<NE::NumberValue> (offsetXValue) || !NE::IsComplexType<NE::NumberValue> (offsetYValue) || !NE::IsComplexType<NE::NumberValue> (offsetZValue)) {
 		return nullptr;
 	}
@@ -87,22 +138,22 @@ NE::ValueConstPtr TranslationMatrixNode::Calculate (NE::EvaluationEnv& env) cons
 	return result;
 }
 
-void TranslationMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+void TranslationMatrixXYZNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	TransformationMatrixNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
 }
 
-NE::Stream::Status TranslationMatrixNode::Read (NE::InputStream& inputStream)
+NE::Stream::Status TranslationMatrixXYZNode::Read (NE::InputStream& inputStream)
 {
 	NE::ObjectHeader header (inputStream);
 	TransformationMatrixNode::Read (inputStream);
 	return inputStream.GetStatus ();
 }
 
-NE::Stream::Status TranslationMatrixNode::Write (NE::OutputStream& outputStream) const
+NE::Stream::Status TranslationMatrixXYZNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	TransformationMatrixNode::Write (outputStream);

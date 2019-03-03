@@ -6,6 +6,7 @@
 #include "Geometry.hpp"
 
 NE::DynamicSerializationInfo	TranslateShapeNode::serializationInfo (NE::ObjectId ("{AC4C90C2-5B10-45DB-9C62-A118BA993B2F}"), NE::ObjectVersion (1), TranslateShapeNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	TranslateShapeXYZNode::serializationInfo (NE::ObjectId ("{F97B5692-DBE2-4345-8F44-2A32A57675E6}"), NE::ObjectVersion (1), TranslateShapeXYZNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	RotateShapeNode::serializationInfo (NE::ObjectId ("{92A0FAB9-A100-4920-A2AC-9D8289F4C4B8}"), NE::ObjectVersion (1), RotateShapeNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TransformShapeNode::serializationInfo (NE::ObjectId ("{3BA3AD96-09FD-49D2-8299-2143A0A8ECFA}"), NE::ObjectVersion (1), TransformShapeNode::CreateSerializableInstance);
 
@@ -40,8 +41,8 @@ NE::ValueConstPtr TranslateShapeNode::Calculate (NE::EvaluationEnv& env) const
 	NE::ListValuePtr result (new NE::ListValue ());
 	BI::CombineValues (this, {shapeValue, offsetValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
-		glm::vec3 direction = CoordinateValue::Get (combination.GetValue (1));
-		glm::mat4 transformation = glm::translate (glm::mat4 (1.0f), direction);
+		glm::vec3 offset = CoordinateValue::Get (combination.GetValue (1));
+		glm::mat4 transformation = glm::translate (glm::mat4 (1.0f), offset);
 		Modeler::ShapePtr transformed = shape->Transform (transformation);
 		result->Push (NE::ValuePtr (new ShapeValue (transformed)));
 		return true;
@@ -58,6 +59,77 @@ NE::Stream::Status TranslateShapeNode::Read (NE::InputStream& inputStream)
 }
 
 NE::Stream::Status TranslateShapeNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	ShapeNode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+TranslateShapeXYZNode::TranslateShapeXYZNode () :
+	TranslateShapeXYZNode (L"", NUIE::Point ())
+{
+
+}
+
+TranslateShapeXYZNode::TranslateShapeXYZNode (const std::wstring& name, const NUIE::Point& position) :
+	ShapeNode (name, position)
+{
+
+}
+
+void TranslateShapeXYZNode::Initialize ()
+{
+	ShapeNode::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), L"Shape", nullptr, NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetx"), L"Offset X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsety"), L"Offset Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetz"), L"Offset Z", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+}
+
+void TranslateShapeXYZNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+{
+	ShapeNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
+}
+
+NE::ValueConstPtr TranslateShapeXYZNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValueConstPtr shapeValue = EvaluateInputSlot (NE::SlotId ("shape"), env);
+	NE::ValueConstPtr offsetXValue = EvaluateInputSlot (NE::SlotId ("offsetx"), env);
+	NE::ValueConstPtr offsetYValue = EvaluateInputSlot (NE::SlotId ("offsety"), env);
+	NE::ValueConstPtr offsetZValue = EvaluateInputSlot (NE::SlotId ("offsetz"), env);
+	if (!NE::IsComplexType<ShapeValue> (shapeValue) || !NE::IsComplexType<NE::NumberValue> (offsetXValue) || !NE::IsComplexType<NE::NumberValue> (offsetYValue) || !NE::IsComplexType<NE::NumberValue> (offsetZValue)) {
+		return nullptr;
+	}
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	BI::CombineValues (this, {shapeValue, offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
+		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
+		glm::vec3 offset (
+			NE::NumberValue::ToFloat (combination.GetValue (1)),
+			NE::NumberValue::ToFloat (combination.GetValue (2)),
+			NE::NumberValue::ToFloat (combination.GetValue (3))
+		);
+		glm::mat4 transformation = glm::translate (glm::mat4 (1.0f), offset);
+		Modeler::ShapePtr transformed = shape->Transform (transformation);
+		result->Push (NE::ValuePtr (new ShapeValue (transformed)));
+		return true;
+	});
+
+	return result;
+}
+
+NE::Stream::Status TranslateShapeXYZNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	ShapeNode::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status TranslateShapeXYZNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	ShapeNode::Write (outputStream);
