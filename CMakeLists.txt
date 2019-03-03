@@ -182,11 +182,12 @@ target_include_directories (
 	Basic3DNodes PUBLIC
 	${GLMSourcesFolder}
 	${GeometrySourcesFolder}
+	${ModelerSourcesFolder}
 	${Basic3DNodesHeaderFiles}
 	${Basic3DNodesSourceFiles}
+	${VSE_DEVKIT_DIR}/include
 )
-target_include_directories (Basic3DNodes PUBLIC ${GeometrySourcesFolder} ${VSE_DEVKIT_DIR}/include)
-target_link_libraries (Basic3DNodes Geometry)
+target_link_libraries (Basic3DNodes Geometry Modeler)
 SetCompilerOptions (Basic3DNodes)
 
 # VisualScriptCAD

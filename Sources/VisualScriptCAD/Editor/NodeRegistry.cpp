@@ -9,6 +9,7 @@
 #include "TransformationNodes.hpp"
 #include "BooleanNodes.hpp"
 #include "ExpressionNode.hpp"
+#include "PrismNode.hpp"
 
 static const NodeRegistry nodeRegistry;
 
