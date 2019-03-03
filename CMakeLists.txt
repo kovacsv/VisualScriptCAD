@@ -166,29 +166,29 @@ target_link_libraries (EngineTest Geometry Modeler BoostOperations CGALOperation
 SetCompilerOptions (EngineTest)
 add_test (EngineTest EngineTest)
 
-# Basic3DNodes
+# VisualScriptNodes
 
-set (Basic3DNodesSourcesFolder Sources/Basic3DNodes)
-file (GLOB Basic3DNodesHeaderFiles ${Basic3DNodesSourcesFolder}/*.hpp)
-file (GLOB Basic3DNodesSourceFiles ${Basic3DNodesSourcesFolder}/*.cpp)
+set (VisualScriptNodesSourcesFolder Sources/VisualScriptNodes)
+file (GLOB VisualScriptNodesHeaderFiles ${VisualScriptNodesSourcesFolder}/*.hpp)
+file (GLOB VisualScriptNodesSourceFiles ${VisualScriptNodesSourcesFolder}/*.cpp)
 set (
-	Basic3DNodesFiles
-	${Basic3DNodesHeaderFiles}
-	${Basic3DNodesSourceFiles}
+	VisualScriptNodesFiles
+	${VisualScriptNodesHeaderFiles}
+	${VisualScriptNodesSourceFiles}
 )
-source_group ("Sources" FILES ${Basic3DNodesFiles})
-add_library (Basic3DNodes STATIC ${Basic3DNodesFiles})
+source_group ("Sources" FILES ${VisualScriptNodesFiles})
+add_library (VisualScriptNodes STATIC ${VisualScriptNodesFiles})
 target_include_directories (
-	Basic3DNodes PUBLIC
+	VisualScriptNodes PUBLIC
 	${GLMSourcesFolder}
 	${GeometrySourcesFolder}
 	${ModelerSourcesFolder}
-	${Basic3DNodesHeaderFiles}
-	${Basic3DNodesSourceFiles}
+	${VisualScriptNodesHeaderFiles}
+	${VisualScriptNodesSourceFiles}
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (Basic3DNodes Geometry Modeler)
-SetCompilerOptions (Basic3DNodes)
+target_link_libraries (VisualScriptNodes Geometry Modeler)
+SetCompilerOptions (VisualScriptNodes)
 
 # VisualScriptCAD
 
@@ -236,7 +236,7 @@ target_include_directories (
 	${ModelerSourcesFolder}
 	${BoostOperationsSourcesFolder}
 	${CGALOperationsSourcesFolder}
-	${Basic3DNodesSourcesFolder}
+	${VisualScriptNodesSourcesFolder}
 	${GladSourcesFolder}/include
 	${TinyXMLSourcesFolder}
 	${VisualScriptCADSourcesFolder}/Nodes
@@ -248,6 +248,6 @@ target_include_directories (
 	${WXWIDGETS_DIR}/include/msvc
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations Basic3DNodes)
+target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations VisualScriptNodes)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
 SetCompilerOptions (VisualScriptCAD)
