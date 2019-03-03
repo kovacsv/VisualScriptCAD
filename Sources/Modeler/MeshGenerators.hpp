@@ -22,8 +22,8 @@ typedef std::shared_ptr<Triangulator> TriangulatorPtr;
 enum class PlatonicSolidType
 {
 	Tetrahedron,
-	Hexahedron,
 	Octahedron,
+	Hexahedron,
 	Dodecahedron,
 	Icosahedron
 };
