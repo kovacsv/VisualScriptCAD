@@ -71,7 +71,7 @@ def Main (argv):
 	installerScriptPath = os.path.abspath (os.path.join ('Installer', 'VisualScriptCADInstaller.iss'))
 	subprocess.call ([innoSetupPath, installerScriptPath])
 	
-	zipPath = os.path.abspath (os.path.join (packagePath, 'VisualScriptCAD_v' + version + '_Portable.zip'))
+	zipPath = os.path.abspath (os.path.join (packagePath, 'VisualScriptCAD_v' + version + '_Win64_Portable.zip'))
 	zip = zipfile.ZipFile (zipPath, 'w')
 	for file in requiredFiles:
 		zip.write (file, os.path.basename (file))
