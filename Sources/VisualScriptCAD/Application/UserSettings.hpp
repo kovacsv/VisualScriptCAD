@@ -46,6 +46,7 @@ public:
 	void	Save ();
 
 	void	AddRecentFile (const std::wstring& filePath);
+	void	RemoveRecentFile (const std::wstring& filePath);
 
 	RenderSettings				renderSettings;
 	ExportSettings				exportSettings;

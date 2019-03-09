@@ -245,3 +245,11 @@ void UserSettings::AddRecentFile (const std::wstring& filePath)
 		recentFiles.erase (recentFiles.begin ());
 	}
 }
+
+void UserSettings::RemoveRecentFile (const std::wstring& filePath)
+{
+	auto found = std::find (recentFiles.begin (), recentFiles.end (), filePath);
+	if (found != recentFiles.end ()) {
+		recentFiles.erase (found);
+	}
+}

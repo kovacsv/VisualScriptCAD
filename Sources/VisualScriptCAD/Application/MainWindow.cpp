@@ -638,6 +638,7 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 	} else {
 		wxMessageDialog messageDialog (this, L"Failed to open file.", L"Error!", wxICON_ERROR | wxOK);
 		messageDialog.ShowModal ();
+		userSettings.RemoveRecentFile (fileName);
 		NewFile ();
 	}
 }
