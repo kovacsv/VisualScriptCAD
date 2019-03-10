@@ -42,7 +42,96 @@ private:
 	wxFile*			file;
 };
 
-ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings) :
+class ImageSettingsDialog : public wxDialog
+{
+public:
+	enum DialogIds
+	{
+		WidthId = 1001,
+		HeightId = 1002,
+		MultisamplingId = 1003,
+		SaveButtonId = 1100
+	};
+
+	ImageSettingsDialog (wxWindow* parent, const ImageSettings& imageSettings) :
+		wxDialog (parent, wxID_ANY, L"Image Settings", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE),
+		imageSettings (imageSettings),
+		boxSizer (new wxBoxSizer (wxVERTICAL)),
+		widthText (new wxTextCtrl (this, DialogIds::WidthId, wxEmptyString, wxDefaultPosition, controlMinSize)),
+		heightText (new wxTextCtrl (this, DialogIds::HeightId, wxEmptyString, wxDefaultPosition, controlMinSize)),
+		multisamplingSlider (new wxSlider (this, DialogIds::HeightId, 1, 1, 8, wxDefaultPosition, controlMinSize, wxSL_LABELS | wxSL_AUTOTICKS)),
+		saveButton (new wxButton (this, DialogIds::SaveButtonId, L"Save"))
+	{
+		WXAS::SetTextControlValidator (widthText, L"0123456789");
+		WXAS::SetTextControlValidator (heightText, L"0123456789");
+
+		widthText->SetValue (std::to_wstring (imageSettings.width));
+		heightText->SetValue (std::to_wstring (imageSettings.height));
+		multisamplingSlider->SetValue (imageSettings.multisampling);
+
+		{
+			wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
+			horizontalSizer->Add (new wxStaticText (this, wxID_ANY, L"Width", wxDefaultPosition, nameMinSize), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+			horizontalSizer->Add (widthText, 1, wxEXPAND | wxALL, 5);
+			boxSizer->Add (horizontalSizer, 0, wxEXPAND);
+		}
+
+		{
+			wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
+			horizontalSizer->Add (new wxStaticText (this, wxID_ANY, L"Height", wxDefaultPosition, nameMinSize), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+			horizontalSizer->Add (heightText, 1, wxEXPAND | wxALL, 5);
+			boxSizer->Add (horizontalSizer, 0, wxEXPAND);
+		}
+
+		{
+			wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
+			horizontalSizer->Add (new wxStaticText (this, wxID_ANY, L"Multisampling", wxDefaultPosition, nameMinSize), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+			horizontalSizer->Add (multisamplingSlider, 1, wxEXPAND | wxALL, 5);
+			boxSizer->Add (horizontalSizer, 0, wxEXPAND);
+		}
+
+		boxSizer->Add (saveButton, 1, wxEXPAND | wxALL, 5);
+		SetSizerAndFit (boxSizer);
+	}
+
+	const ImageSettings& GetImageSettings () const
+	{
+		return imageSettings;
+	}
+
+	void OnButtonClick (wxCommandEvent& evt)
+	{
+		if (evt.GetId () == DialogIds::SaveButtonId) {
+			imageSettings.width = std::stoi (widthText->GetValue ().ToStdWstring ());
+			imageSettings.height = std::stoi (heightText->GetValue ().ToStdWstring ());
+			imageSettings.multisampling = multisamplingSlider->GetValue ();
+			
+			if (imageSettings.IsValid ()) {
+				EndModal (wxID_OK);
+			} else {
+				wxMessageDialog messageDialog (this, L"Invalid image settings.", L"Error!", wxICON_ERROR | wxOK);
+				messageDialog.ShowModal ();
+			}
+		}
+	}
+
+private:
+	ImageSettings			imageSettings;
+
+	wxBoxSizer*				boxSizer;
+	wxTextCtrl*				widthText;
+	wxTextCtrl*				heightText;
+	wxSlider*				multisamplingSlider;
+	wxButton*				saveButton;
+
+	DECLARE_EVENT_TABLE ();
+};
+
+BEGIN_EVENT_TABLE (ImageSettingsDialog, wxDialog)
+EVT_BUTTON (wxID_ANY, ImageSettingsDialog::OnButtonClick)
+END_EVENT_TABLE ()
+
+ExportDialog::ExportDialog (wxWindow* parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings) :
 	wxDialog (parent, wxID_ANY, L"Export Model", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE),
 	model (model),
 	scene (scene),
@@ -135,7 +224,7 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 			Modeler::ExportModel (model, modelerFormat, exportSettings.name, writer);
 			successfulExport = true;
 		} else if (exportSettings.format == ExportSettings::FormatId::Png) {
-			if (exportSettings.image.width > 0 && exportSettings.image.height > 0 && exportSettings.image.multisampling > 0) {
+			if (exportSettings.image.IsValid ()) {
 				RenderPixels pixels (exportSettings.image.width * exportSettings.image.multisampling, exportSettings.image.height * exportSettings.image.multisampling);
 				scene.DrawOffscreen (renderSettings, pixels);
 
@@ -147,21 +236,28 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 						image.SetRGB (x, image.GetHeight () - y - 1, r, g, b);
 					}
 				}
-
 				if (exportSettings.image.multisampling != 1) {
 					image.Rescale (exportSettings.image.width, exportSettings.image.height, wxIMAGE_QUALITY_NEAREST);
 				}
+
 				wxFileName filePath (exportSettings.folder, exportSettings.name + L".png");
 				image.SaveFile (filePath.GetFullPath (), wxBITMAP_TYPE_PNG);
 				successfulExport = true;
+				image.Destroy ();
 			}
 		}
 
 		if (successfulExport) {
-			EndModal (DialogIds::ExportButtonId);
+			EndModal (wxID_OK);
 		} else {
 			wxMessageDialog messageDialog (this, L"Failed export model.", L"Error!", wxICON_ERROR | wxOK);
 			messageDialog.ShowModal ();
+		}
+	} else if (evt.GetId () == DialogIds::FormatSettingsButtonId) {
+		ImageSettingsDialog imageSettingsDialog (this, exportSettings.image);
+		if (imageSettingsDialog.ShowModal () == wxID_OK) {
+			exportSettings.image = imageSettingsDialog.GetImageSettings ();
+			return;
 		}
 	} else if (evt.GetId () == DialogIds::BrowseFolderButtonId) {
 		wxDirDialog dirDialog (this);
@@ -174,12 +270,12 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 void ExportDialog::UpdateControls ()
 {
 	formatSettingsButton->Disable ();
-	// ExportSettings::FormatId formatId = (ExportSettings::FormatId) formatChoice->GetSelection ();
-	// if (formatId == ExportSettings::FormatId::Png) {
-	// 	formatSettingsButton->Enable ();
-	// } else {
-	// 	formatSettingsButton->Disable ();
-	// }
+	ExportSettings::FormatId formatId = (ExportSettings::FormatId) formatChoice->GetSelection ();
+	if (formatId == ExportSettings::FormatId::Png) {
+		formatSettingsButton->Enable ();
+	} else {
+		formatSettingsButton->Disable ();
+	}
 }
 
 BEGIN_EVENT_TABLE (ExportDialog, wxDialog)

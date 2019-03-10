@@ -32,6 +32,8 @@ class ImageSettings
 public:
 	ImageSettings (int width, int height, int multisampling);
 
+	bool IsValid () const;
+
 	int width;
 	int height;
 	int multisampling;

@@ -133,6 +133,7 @@ static const char ExportSettingsNodeName[] = "ExportSettings";
 static const char ImageSettingsNodeName[] = "ImageSettings";
 static const char ImageWidthNodeName[] = "ImageWidth";
 static const char ImageHeightNodeName[] = "ImageHeight";
+static const char MultisamplingNodeName[] = "ImageMultisampling";
 static const char ExportFolderNodeName[] = "ModelFolder";
 static const char ExportModelNodeName[] = "ModelName";
 static const char RecentFilesNodeName[] = "RecentFiles";
@@ -168,6 +169,12 @@ ImageSettings::ImageSettings (int width, int height, int multisampling) :
 	height (height),
 	multisampling (multisampling)
 {
+}
+
+bool ImageSettings::IsValid () const
+{
+	// TODO: strange memory errors in case of smaller images
+	return width >= 50 && height >= 50 && multisampling > 0;
 }
 
 ExportSettings::ExportSettings (FormatId format, const ImageSettings& image, const std::wstring& folder, const std::wstring& name) :
@@ -214,6 +221,7 @@ void UserSettings::Load ()
 		if (imageSettingsNode != nullptr) {
 			ReadIntegerNode (imageSettingsNode, ImageWidthNodeName, exportSettings.image.width);
 			ReadIntegerNode (imageSettingsNode, ImageHeightNodeName, exportSettings.image.height);
+			ReadIntegerNode (imageSettingsNode, MultisamplingNodeName, exportSettings.image.multisampling);
 		}
 		ReadStringNode (exportSettingsNode, ExportFolderNodeName, exportSettings.folder);
 		ReadStringNode (exportSettingsNode, ExportModelNodeName, exportSettings.name);
@@ -250,6 +258,7 @@ void UserSettings::Save ()
 	tinyxml2::XMLNode* imageSettingsNode = doc.NewElement (ImageSettingsNodeName);
 	WriteIntegerNode (doc, imageSettingsNode, ImageWidthNodeName, exportSettings.image.width);
 	WriteIntegerNode (doc, imageSettingsNode, ImageHeightNodeName, exportSettings.image.height);
+	WriteIntegerNode (doc, imageSettingsNode, MultisamplingNodeName, exportSettings.image.multisampling);
 	exportSettingsNode->InsertEndChild (imageSettingsNode);
 	WriteStringNode (doc, exportSettingsNode, ExportFolderNodeName, exportSettings.folder);
 	WriteStringNode (doc, exportSettingsNode, ExportModelNodeName, exportSettings.name);

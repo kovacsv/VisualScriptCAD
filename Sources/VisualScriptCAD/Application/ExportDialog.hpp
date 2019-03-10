@@ -19,7 +19,7 @@ public:
 		ExportButtonId = 1100
 	};
 
-	ExportDialog (wxWindow *parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings);
+	ExportDialog (wxWindow* parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings);
 
 	const ExportSettings&	GetExportSettings () const;
 	void					OnChoice (wxCommandEvent& evt);
