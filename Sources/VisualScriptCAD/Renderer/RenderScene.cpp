@@ -518,7 +518,7 @@ void RenderScene::Draw (int width, int height, const RenderSettings& settings) c
 {
 	glViewport (0, 0, width, height);
 
-	glClearColor (0.9f, 0.9f, 0.9f, 1.0f);
+	glClearColor (0.9f, 0.9f, 0.9f, 0.0f);
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	DrawModel (width, height, settings.viewMode);
