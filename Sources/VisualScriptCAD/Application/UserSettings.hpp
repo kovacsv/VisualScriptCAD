@@ -27,6 +27,16 @@ public:
 	AxisMode axisMode;
 };
 
+class ImageSettings
+{
+public:
+	ImageSettings (int width, int height, int multisampling);
+
+	int width;
+	int height;
+	int multisampling;
+};
+
 class ExportSettings
 {
 public:
@@ -38,9 +48,10 @@ public:
 		Png = 3
 	};
 
-	ExportSettings (FormatId format, const std::wstring& folder, const std::wstring& name);
+	ExportSettings (FormatId format, const ImageSettings& image, const std::wstring& folder, const std::wstring& name);
 
 	FormatId		format;
+	ImageSettings	image;
 	std::wstring	folder;
 	std::wstring	name;
 };

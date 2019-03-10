@@ -86,6 +86,21 @@ static void WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* pare
 	parent->InsertEndChild (node);
 }
 
+static bool ReadIntegerNode (const tinyxml2::XMLNode* parent, const char* nodeName, int& value)
+{
+	std::wstring nodeValue;
+	if (!ReadStringNode (parent, nodeName, nodeValue)) {
+		return false;
+	}
+	value = std::stoi (nodeValue);
+	return true;
+}
+
+static void WriteIntegerNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, int value)
+{
+	WriteStringNode (doc, parent, nodeName, std::to_wstring (value));
+}
+
 static bool ReadBooleanNode (const tinyxml2::XMLNode* parent, const char* nodeName, bool& value)
 {
 	std::wstring nodeValue;
@@ -115,6 +130,9 @@ static std::string GetXmlFilePath ()
 static const char SettingsNodeName[] = "VisualScriptCADSettings";
 static const char RenderSettingsNodeName[] = "RenderSettings";
 static const char ExportSettingsNodeName[] = "ExportSettings";
+static const char ImageSettingsNodeName[] = "ImageSettings";
+static const char ImageWidthNodeName[] = "ImageWidth";
+static const char ImageHeightNodeName[] = "ImageHeight";
 static const char ExportFolderNodeName[] = "ModelFolder";
 static const char ExportModelNodeName[] = "ModelName";
 static const char RecentFilesNodeName[] = "RecentFiles";
@@ -145,8 +163,16 @@ RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode) :
 
 }
 
-ExportSettings::ExportSettings (FormatId format, const std::wstring& folder, const std::wstring& name) :
+ImageSettings::ImageSettings (int width, int height, int multisampling) :
+	width (width),
+	height (height),
+	multisampling (multisampling)
+{
+}
+
+ExportSettings::ExportSettings (FormatId format, const ImageSettings& image, const std::wstring& folder, const std::wstring& name) :
 	format (format),
+	image (image),
 	folder (folder),
 	name (name)
 {
@@ -154,7 +180,7 @@ ExportSettings::ExportSettings (FormatId format, const std::wstring& folder, con
 
 UserSettings::UserSettings () :
 	renderSettings (ViewMode::Polygons, AxisMode::Off),
-	exportSettings (ExportSettings::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
+	exportSettings (ExportSettings::FormatId::Obj, ImageSettings (800, 600, 4), wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
 	isMaximized (true)
 {
 
@@ -184,6 +210,11 @@ void UserSettings::Load ()
 	const tinyxml2::XMLNode* exportSettingsNode = settingsNode->FirstChildElement (ExportSettingsNodeName);
 	if (exportSettingsNode != nullptr) {
 		ExportFormatEnum.Read (exportSettingsNode, &exportSettings.format);
+		const tinyxml2::XMLNode* imageSettingsNode = exportSettingsNode->FirstChildElement (ImageSettingsNodeName);
+		if (imageSettingsNode != nullptr) {
+			ReadIntegerNode (imageSettingsNode, ImageWidthNodeName, exportSettings.image.width);
+			ReadIntegerNode (imageSettingsNode, ImageHeightNodeName, exportSettings.image.height);
+		}
 		ReadStringNode (exportSettingsNode, ExportFolderNodeName, exportSettings.folder);
 		ReadStringNode (exportSettingsNode, ExportModelNodeName, exportSettings.name);
 	}
@@ -216,6 +247,10 @@ void UserSettings::Save ()
 
 	tinyxml2::XMLNode* exportSettingsNode = doc.NewElement (ExportSettingsNodeName);
 	ExportFormatEnum.Write (doc, exportSettingsNode, exportSettings.format);
+	tinyxml2::XMLNode* imageSettingsNode = doc.NewElement (ImageSettingsNodeName);
+	WriteIntegerNode (doc, imageSettingsNode, ImageWidthNodeName, exportSettings.image.width);
+	WriteIntegerNode (doc, imageSettingsNode, ImageHeightNodeName, exportSettings.image.height);
+	exportSettingsNode->InsertEndChild (imageSettingsNode);
 	WriteStringNode (doc, exportSettingsNode, ExportFolderNodeName, exportSettings.folder);
 	WriteStringNode (doc, exportSettingsNode, ExportModelNodeName, exportSettings.name);
 	settingsNode->InsertEndChild (exportSettingsNode);

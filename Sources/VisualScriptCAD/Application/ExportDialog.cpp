@@ -109,6 +109,8 @@ void ExportDialog::OnChoice (wxCommandEvent& evt)
 void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 {
 	if (evt.GetId () == DialogIds::ExportButtonId) {
+		bool successfulExport = false;
+
 		WXAS::BusyCursorGuard busyCursor;
 		exportSettings.format = (ExportSettings::FormatId) formatChoice->GetSelection ();
 		exportSettings.folder = outputFolderText->GetValue ();
@@ -131,24 +133,36 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 			}
 			wxFileWriter writer (exportSettings.folder);
 			Modeler::ExportModel (model, modelerFormat, exportSettings.name, writer);
+			successfulExport = true;
 		} else if (exportSettings.format == ExportSettings::FormatId::Png) {
-			RenderPixels pixels (1024, 768);
-			scene.DrawOffscreen (renderSettings, pixels);
+			if (exportSettings.image.width > 0 && exportSettings.image.height > 0 && exportSettings.image.multisampling > 0) {
+				RenderPixels pixels (exportSettings.image.width * exportSettings.image.multisampling, exportSettings.image.height * exportSettings.image.multisampling);
+				scene.DrawOffscreen (renderSettings, pixels);
 
-			wxImage image (pixels.GetWidth (), pixels.GetHeight ());
-			for (int x = 0; x < image.GetWidth (); x++) {
-				for (int y = 0; y < image.GetHeight (); y++) {
-					unsigned char r, g, b;
-					pixels.GetPixel (x, y, r, g, b);
-					image.SetRGB (x, image.GetHeight () - y - 1, r, g, b);
+				wxImage image (pixels.GetWidth (), pixels.GetHeight ());
+				for (int x = 0; x < image.GetWidth (); x++) {
+					for (int y = 0; y < image.GetHeight (); y++) {
+						unsigned char r, g, b;
+						pixels.GetPixel (x, y, r, g, b);
+						image.SetRGB (x, image.GetHeight () - y - 1, r, g, b);
+					}
 				}
-			}
 
-			wxFileName filePath (exportSettings.folder, exportSettings.name + L".png");
-			image.SaveFile (filePath.GetFullPath (), wxBITMAP_TYPE_PNG);
+				if (exportSettings.image.multisampling != 1) {
+					image.Rescale (exportSettings.image.width, exportSettings.image.height, wxIMAGE_QUALITY_NEAREST);
+				}
+				wxFileName filePath (exportSettings.folder, exportSettings.name + L".png");
+				image.SaveFile (filePath.GetFullPath (), wxBITMAP_TYPE_PNG);
+				successfulExport = true;
+			}
 		}
 
-		EndModal (DialogIds::ExportButtonId);
+		if (successfulExport) {
+			EndModal (DialogIds::ExportButtonId);
+		} else {
+			wxMessageDialog messageDialog (this, L"Failed export model.", L"Error!", wxICON_ERROR | wxOK);
+			messageDialog.ShowModal ();
+		}
 	} else if (evt.GetId () == DialogIds::BrowseFolderButtonId) {
 		wxDirDialog dirDialog (this);
 		if (dirDialog.ShowModal () == wxID_OK) {
