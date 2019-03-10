@@ -10,7 +10,7 @@ VisualScriptCAD is a simple experimental 3D modeling application based on [Visua
 
 ## Videos
 
-![Video](Documentation/Videos/VisualScriptCAD01.png?raw=true "VisuaScriptCAD")
+![Video](Documentation/Videos/VisualScriptCAD01.gif?raw=true "VisuaScriptCAD")
 
 ## Screenshots
 
