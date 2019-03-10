@@ -6,7 +6,7 @@ VisualScriptCAD is a simple experimental 3D modeling application based on [Visua
 
 ## Links
 
-[Releases](https://github.com/kovacsv/VisualScriptCAD/releases) 🞄 [Issues](https://github.com/kovacsv/VisualScriptCAD/issues) 🞄 [Wiki](https://github.com/kovacsv/VisualScriptCAD/wiki)
+[Releases](https://github.com/kovacsv/VisualScriptCAD/releases) - [Issues](https://github.com/kovacsv/VisualScriptCAD/issues) - [Wiki](https://github.com/kovacsv/VisualScriptCAD/wiki)
 
 ## Videos
 
