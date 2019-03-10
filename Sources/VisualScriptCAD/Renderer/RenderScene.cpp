@@ -441,7 +441,7 @@ void RenderLineModel::EnumerateRenderLineGeometries (const std::function<void (c
 RenderPixels::RenderPixels (int width, int height) :
 	width (width),
 	height (height),
-	pixels (new unsigned char[width * height * 3])
+	pixels (new unsigned char[width * height * 4])
 {
 }
 
@@ -465,12 +465,13 @@ unsigned char* RenderPixels::GetPixels () const
 	return pixels;
 }
 
-void RenderPixels::GetPixel (int x, int y, unsigned char& r, unsigned char& g, unsigned char& b) const
+void RenderPixels::GetPixel (int x, int y, unsigned char& r, unsigned char& g, unsigned char& b, unsigned char& a) const
 {
-	int firstIndex = width * y * 3 + x * 3;
+	int firstIndex = width * y * 4 + x * 4;
 	r = pixels[firstIndex + 0];
 	g = pixels[firstIndex + 1];
 	b = pixels[firstIndex + 2];
+	a = pixels[firstIndex + 3];
 }
 
 RenderScene::RenderScene () :
@@ -508,6 +509,8 @@ bool RenderScene::Init ()
 	lineModel.AddRenderLineGeometry (axis);
 
 	glEnable (GL_DEPTH_TEST);
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	return true;
 }
 
@@ -535,7 +538,7 @@ void RenderScene::DrawOffscreen (const RenderSettings& settings, RenderPixels& p
 	glGenTextures (1, &targetTexture);
 	glBindTexture (GL_TEXTURE_2D, targetTexture);
 
-	glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
@@ -549,7 +552,7 @@ void RenderScene::DrawOffscreen (const RenderSettings& settings, RenderPixels& p
 	Draw (width, height, settings);
 
 	glReadBuffer (GL_COLOR_ATTACHMENT0);
-	glReadPixels (0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.GetPixels ());
+	glReadPixels (0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.GetPixels ());
 
 	glBindFramebuffer (GL_FRAMEBUFFER, 0);
 }

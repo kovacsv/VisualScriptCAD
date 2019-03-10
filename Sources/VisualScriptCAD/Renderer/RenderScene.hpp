@@ -168,7 +168,7 @@ public:
 	int				GetWidth () const;
 	int				GetHeight () const;
 	unsigned char*	GetPixels () const;
-	void			GetPixel (int x, int y, unsigned char& r, unsigned char& g, unsigned char& b) const;
+	void			GetPixel (int x, int y, unsigned char& r, unsigned char& g, unsigned char& b, unsigned char& a) const;
 
 private:
 	int				width;

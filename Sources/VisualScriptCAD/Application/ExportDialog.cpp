@@ -229,11 +229,13 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 				scene.DrawOffscreen (renderSettings, pixels);
 
 				wxImage image (pixels.GetWidth (), pixels.GetHeight ());
+				image.InitAlpha ();
 				for (int x = 0; x < image.GetWidth (); x++) {
 					for (int y = 0; y < image.GetHeight (); y++) {
-						unsigned char r, g, b;
-						pixels.GetPixel (x, y, r, g, b);
+						unsigned char r, g, b, a;
+						pixels.GetPixel (x, y, r, g, b, a);
 						image.SetRGB (x, image.GetHeight () - y - 1, r, g, b);
+						image.SetAlpha (x, image.GetHeight () - y - 1, a);
 					}
 				}
 				if (exportSettings.image.multisampling != 1) {
