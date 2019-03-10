@@ -2,7 +2,7 @@
 #define EXPORTDIALOG_HPP
 
 #include "Model.hpp"
-#include "UserSettings.hpp"
+#include "RenderScene.hpp"
 
 #include <wx/wx.h>
 
@@ -12,23 +12,30 @@ public:
 	enum DialogIds
 	{
 		FormatChoiceId = 1001,
-		OutputFolderId = 1002,
-		BrowseFolderButtonId = 1003,
-		OutputNameId = 1004,
+		FormatSettingsButtonId = 1002,
+		OutputFolderId = 1003,
+		BrowseFolderButtonId = 1004,
+		OutputNameId = 1005,
 		ExportButtonId = 1100
 	};
 
-	ExportDialog (wxWindow *parent, const Modeler::Model& model, const ExportSettings& exportSettings);
+	ExportDialog (wxWindow *parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings);
 
 	const ExportSettings&	GetExportSettings () const;
+	void					OnChoice (wxCommandEvent& evt);
 	void					OnButtonClick (wxCommandEvent& evt);
 
 private:
+	void					UpdateControls ();
+
 	const Modeler::Model&	model;
+	const RenderScene&		scene;
 	ExportSettings			exportSettings;
+	RenderSettings			renderSettings;
 
 	wxBoxSizer*				boxSizer;
 	wxChoice*				formatChoice;
+	wxButton*				formatSettingsButton;
 	wxTextCtrl*				outputFolderText;
 	wxButton*				browseFolderButton;
 	wxTextCtrl*				outputNameText;

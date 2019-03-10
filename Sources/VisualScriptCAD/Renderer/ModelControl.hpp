@@ -33,6 +33,8 @@ public:
 	const RenderSettings&		 	GetRenderSettings () const;
 	void							SetRenderSettings (const RenderSettings& newSettings);
 
+	const RenderScene&				GetRenderScene () const;
+
 private:
 	bool InitContext ();
 

@@ -518,7 +518,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_Export:
 			{
-				ExportDialog modelExportDialog (this, model, userSettings.exportSettings);
+				ExportDialog modelExportDialog (this, model, modelControl->GetRenderScene (), userSettings.exportSettings, userSettings.renderSettings);
 				modelExportDialog.ShowModal ();
 				userSettings.exportSettings = modelExportDialog.GetExportSettings ();
 			}

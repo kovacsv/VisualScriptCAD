@@ -30,11 +30,19 @@ public:
 class ExportSettings
 {
 public:
-	ExportSettings (Modeler::FormatId format, const std::wstring& folder, const std::wstring& name);
+	enum class FormatId
+	{
+		Obj = 0,
+		Stl = 1,
+		Off = 2,
+		Png = 3
+	};
 
-	Modeler::FormatId	format;
-	std::wstring		folder;
-	std::wstring		name;
+	ExportSettings (FormatId format, const std::wstring& folder, const std::wstring& name);
+
+	FormatId		format;
+	std::wstring	folder;
+	std::wstring	name;
 };
 
 class UserSettings

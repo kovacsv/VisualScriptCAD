@@ -438,6 +438,41 @@ void RenderLineModel::EnumerateRenderLineGeometries (const std::function<void (c
 	}
 }
 
+RenderPixels::RenderPixels (int width, int height) :
+	width (width),
+	height (height),
+	pixels (new unsigned char[width * height * 3])
+{
+}
+
+RenderPixels::~RenderPixels ()
+{
+	delete[] pixels;
+}
+
+int RenderPixels::GetWidth () const
+{
+	return width;
+}
+
+int RenderPixels::GetHeight () const
+{
+	return height;
+}
+
+unsigned char* RenderPixels::GetPixels () const
+{
+	return pixels;
+}
+
+void RenderPixels::GetPixel (int x, int y, unsigned char& r, unsigned char& g, unsigned char& b) const
+{
+	int firstIndex = width * y * 3 + x * 3;
+	r = pixels[firstIndex + 0];
+	g = pixels[firstIndex + 1];
+	b = pixels[firstIndex + 2];
+}
+
 RenderScene::RenderScene () :
 	lineShader (-1),
 	triangleShader (-1),
@@ -476,7 +511,7 @@ bool RenderScene::Init ()
 	return true;
 }
 
-void RenderScene::Draw (int width, int height, const RenderSettings& settings)
+void RenderScene::Draw (int width, int height, const RenderSettings& settings) const
 {
 	glViewport (0, 0, width, height);
 
@@ -485,6 +520,38 @@ void RenderScene::Draw (int width, int height, const RenderSettings& settings)
 
 	DrawModel (width, height, settings.viewMode);
 	DrawLines (width, height, settings.axisMode);
+}
+
+void RenderScene::DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const
+{
+	int width = pixels.GetWidth ();
+	int height = pixels.GetHeight ();
+
+	GLuint frameBuffer = 0;
+	glGenFramebuffers (1, &frameBuffer);
+	glBindFramebuffer (GL_FRAMEBUFFER, frameBuffer);
+
+	GLuint targetTexture;
+	glGenTextures (1, &targetTexture);
+	glBindTexture (GL_TEXTURE_2D, targetTexture);
+
+	glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	GLuint depthRenderBuffer;
+	glGenRenderbuffers (1, &depthRenderBuffer);
+	glBindRenderbuffer (GL_RENDERBUFFER, depthRenderBuffer);
+	glRenderbufferStorage (GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+	glFramebufferRenderbuffer (GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderBuffer);
+	glFramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, targetTexture, 0);
+
+	Draw (width, height, settings);
+
+	glReadBuffer (GL_COLOR_ATTACHMENT0);
+	glReadPixels (0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.GetPixels ());
+
+	glBindFramebuffer (GL_FRAMEBUFFER, 0);
 }
 
 RenderModel& RenderScene::GetModel ()
@@ -538,7 +605,7 @@ void RenderScene::FitToWindow (int width, int height)
 	camera.ZoomToSphere (center, radius, width, height);
 }
 
-void RenderScene::DrawModel (int width, int height, ViewMode drawMode)
+void RenderScene::DrawModel (int width, int height, ViewMode drawMode) const
 {
 	glUseProgram (triangleShader);
 
@@ -581,7 +648,7 @@ void RenderScene::DrawModel (int width, int height, ViewMode drawMode)
 	});
 }
 
-void RenderScene::DrawLines (int width, int height, AxisMode axisMode)
+void RenderScene::DrawLines (int width, int height, AxisMode axisMode) const
 {
 	if (axisMode == AxisMode::Off) {
 		return;

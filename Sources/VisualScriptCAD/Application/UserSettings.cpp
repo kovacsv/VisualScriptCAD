@@ -131,10 +131,11 @@ static const XmlEnum<AxisMode> AxisModeEnum ("AxisMode", {
 	{ AxisMode::Off, "Off" }
 });
 
-static const XmlEnum<Modeler::FormatId> ExportFormatEnum ("ModelFormat", {
-	{ Modeler::FormatId::Obj, "Obj" },
-	{ Modeler::FormatId::Stl, "Stl" },
-	{ Modeler::FormatId::Off, "Off" }
+static const XmlEnum<ExportSettings::FormatId> ExportFormatEnum ("ExportFormat", {
+	{ ExportSettings::FormatId::Obj, "Obj" },
+	{ ExportSettings::FormatId::Stl, "Stl" },
+	{ ExportSettings::FormatId::Off, "Off" },
+	{ ExportSettings::FormatId::Png, "Png" },
 });
 
 RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode) :
@@ -144,7 +145,7 @@ RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode) :
 
 }
 
-ExportSettings::ExportSettings (Modeler::FormatId format, const std::wstring& folder, const std::wstring& name) :
+ExportSettings::ExportSettings (FormatId format, const std::wstring& folder, const std::wstring& name) :
 	format (format),
 	folder (folder),
 	name (name)
@@ -153,7 +154,7 @@ ExportSettings::ExportSettings (Modeler::FormatId format, const std::wstring& fo
 
 UserSettings::UserSettings () :
 	renderSettings (ViewMode::Polygons, AxisMode::Off),
-	exportSettings (Modeler::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
+	exportSettings (ExportSettings::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
 	isMaximized (true)
 {
 

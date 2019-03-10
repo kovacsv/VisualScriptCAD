@@ -42,12 +42,15 @@ private:
 	wxFile*			file;
 };
 
-ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model, const ExportSettings& exportSettings) :
+ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings) :
 	wxDialog (parent, wxID_ANY, L"Export Model", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE),
 	model (model),
+	scene (scene),
 	exportSettings (exportSettings),
+	renderSettings (renderSettings),
 	boxSizer (new wxBoxSizer (wxVERTICAL)),
 	formatChoice (new wxChoice (this, DialogIds::FormatChoiceId, wxDefaultPosition, controlMinSize)),
+	formatSettingsButton (new wxButton (this, DialogIds::FormatSettingsButtonId, L"...", wxDefaultPosition, wxSize (40, -1))),
 	outputFolderText (new wxTextCtrl (this, DialogIds::OutputFolderId, wxEmptyString, wxDefaultPosition, controlMinSize)),
 	browseFolderButton (new wxButton (this, DialogIds::BrowseFolderButtonId, L"...", wxDefaultPosition, wxSize (40, -1))),
 	outputNameText (new wxTextCtrl (this, DialogIds::OutputNameId, wxEmptyString, wxDefaultPosition, controlMinSize)),
@@ -60,11 +63,13 @@ ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model, const
 		formatChoice->Append (L"obj");
 		formatChoice->Append (L"stl");
 		formatChoice->Append (L"off");
+		formatChoice->Append (L"png");
 		formatChoice->Select ((int) exportSettings.format);
 
 		wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
 		horizontalSizer->Add (new wxStaticText (this, wxID_ANY, L"Format", wxDefaultPosition, nameMinSize), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 		horizontalSizer->Add (formatChoice, 1, wxEXPAND | wxALL, 5);
+		horizontalSizer->Add (formatSettingsButton, 0, wxALL, 5);
 		boxSizer->Add (horizontalSizer, 0, wxEXPAND);
 	}
 
@@ -85,6 +90,8 @@ ExportDialog::ExportDialog (wxWindow *parent, const Modeler::Model& model, const
 
 	boxSizer->Add (exportButton, 1, wxEXPAND | wxALL, 5);
 	SetSizerAndFit (boxSizer);
+
+	UpdateControls ();
 }
 
 const ExportSettings& ExportDialog::GetExportSettings () const
@@ -92,18 +99,55 @@ const ExportSettings& ExportDialog::GetExportSettings () const
 	return exportSettings;
 }
 
+void ExportDialog::OnChoice (wxCommandEvent& evt)
+{
+	if (evt.GetId () == DialogIds::FormatChoiceId) {
+		UpdateControls ();
+	}
+}
+
 void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 {
 	if (evt.GetId () == DialogIds::ExportButtonId) {
 		WXAS::BusyCursorGuard busyCursor;
-		exportSettings.format = (Modeler::FormatId) formatChoice->GetSelection ();
+		exportSettings.format = (ExportSettings::FormatId) formatChoice->GetSelection ();
 		exportSettings.folder = outputFolderText->GetValue ();
 		exportSettings.name = outputNameText->GetValue ();
 		if (exportSettings.folder.empty () || exportSettings.name.empty ()) {
 			return;
 		}
-		wxFileWriter writer (exportSettings.folder);
-		Modeler::ExportModel (model, exportSettings.format, exportSettings.name, writer);
+		if (exportSettings.format == ExportSettings::FormatId::Obj || exportSettings.format == ExportSettings::FormatId::Stl || exportSettings.format == ExportSettings::FormatId::Off) {
+			Modeler::FormatId modelerFormat = Modeler::FormatId::Obj;
+			switch (exportSettings.format) {
+				case ExportSettings::FormatId::Obj:
+					modelerFormat = Modeler::FormatId::Obj;
+					break;
+				case ExportSettings::FormatId::Stl:
+					modelerFormat = Modeler::FormatId::Stl;
+					break;
+				case ExportSettings::FormatId::Off:
+					modelerFormat = Modeler::FormatId::Off;
+					break;
+			}
+			wxFileWriter writer (exportSettings.folder);
+			Modeler::ExportModel (model, modelerFormat, exportSettings.name, writer);
+		} else if (exportSettings.format == ExportSettings::FormatId::Png) {
+			RenderPixels pixels (1024, 768);
+			scene.DrawOffscreen (renderSettings, pixels);
+
+			wxImage image (pixels.GetWidth (), pixels.GetHeight ());
+			for (int x = 0; x < image.GetWidth (); x++) {
+				for (int y = 0; y < image.GetHeight (); y++) {
+					unsigned char r, g, b;
+					pixels.GetPixel (x, y, r, g, b);
+					image.SetRGB (x, image.GetHeight () - y - 1, r, g, b);
+				}
+			}
+
+			wxFileName filePath (exportSettings.folder, exportSettings.name + L".png");
+			image.SaveFile (filePath.GetFullPath (), wxBITMAP_TYPE_PNG);
+		}
+
 		EndModal (DialogIds::ExportButtonId);
 	} else if (evt.GetId () == DialogIds::BrowseFolderButtonId) {
 		wxDirDialog dirDialog (this);
@@ -113,6 +157,18 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 	}
 }
 
+void ExportDialog::UpdateControls ()
+{
+	formatSettingsButton->Disable ();
+	// ExportSettings::FormatId formatId = (ExportSettings::FormatId) formatChoice->GetSelection ();
+	// if (formatId == ExportSettings::FormatId::Png) {
+	// 	formatSettingsButton->Enable ();
+	// } else {
+	// 	formatSettingsButton->Disable ();
+	// }
+}
+
 BEGIN_EVENT_TABLE (ExportDialog, wxDialog)
+EVT_CHOICE (wxID_ANY, ExportDialog::OnChoice)
 EVT_BUTTON (wxID_ANY, ExportDialog::OnButtonClick)
 END_EVENT_TABLE ()

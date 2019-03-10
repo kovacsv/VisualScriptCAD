@@ -136,6 +136,11 @@ void ModelControl::SetRenderSettings (const RenderSettings& newSettings)
 	Refresh ();
 }
 
+const RenderScene& ModelControl::GetRenderScene () const
+{
+	return renderScene;
+}
+
 bool ModelControl::InitContext ()
 {
 	if (glContext != nullptr) {

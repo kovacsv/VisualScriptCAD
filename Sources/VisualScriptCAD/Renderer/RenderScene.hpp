@@ -157,6 +157,25 @@ private:
 	std::vector<RenderLineGeometry>		renderLineGeometries;
 };
 
+class RenderPixels
+{
+public:
+	RenderPixels (int width, int height);
+	RenderPixels (const RenderPixels& rhs) = delete;
+	RenderPixels& operator= (const RenderPixels& rhs) const = delete;
+	~RenderPixels ();
+
+	int				GetWidth () const;
+	int				GetHeight () const;
+	unsigned char*	GetPixels () const;
+	void			GetPixel (int x, int y, unsigned char& r, unsigned char& g, unsigned char& b) const;
+
+private:
+	int				width;
+	int				height;
+	unsigned char*	pixels;
+};
+
 class RenderScene
 {
 public:
@@ -169,18 +188,19 @@ public:
 
 	RenderScene ();
 
-	bool			Init ();
-	void			Draw (int width, int height, const RenderSettings& settings);
-	RenderModel&	GetModel ();
+	bool				Init ();
+	void				Draw (int width, int height, const RenderSettings& settings) const;
+	void				DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const;
+	RenderModel&		GetModel ();
 
-	void			OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
-	void			OnMouseWheel (int rotation);
+	void				OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
+	void				OnMouseWheel (int rotation);
 
-	void			FitToWindow (int width, int height);
+	void				FitToWindow (int width, int height);
 
 private:
-	void			DrawModel (int width, int height, ViewMode drawMode);
-	void			DrawLines (int width, int height, AxisMode axisMode);
+	void				DrawModel (int width, int height, ViewMode drawMode) const;
+	void				DrawLines (int width, int height, AxisMode axisMode) const;
 
 	int					lineShader;
 	int					triangleShader;
