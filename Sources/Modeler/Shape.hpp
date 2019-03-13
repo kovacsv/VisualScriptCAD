@@ -69,6 +69,26 @@ private:
 	bool		isSmooth;
 };
 
+class TubeShape : public Shape
+{
+public:
+	TubeShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth);
+	virtual ~TubeShape ();
+
+	virtual bool			Check () const override;
+	virtual ShapePtr		Clone () const override;
+	virtual std::wstring	ToString () const override;
+	virtual Mesh			GenerateMesh () const override;
+
+private:
+	Material	material;
+	double		radius;
+	double		height;
+	double		thickness;
+	int			segmentation;
+	bool		isSmooth;
+};
+
 class ConeShape : public Shape
 {
 public:

@@ -11,6 +11,7 @@
 
 NE::DynamicSerializationInfo	BoxNode::serializationInfo (NE::ObjectId ("{9C29EF6D-AD3B-466C-8574-95B82D4EC0D4}"), NE::ObjectVersion (1), BoxNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	CylinderNode::serializationInfo (NE::ObjectId ("{6C457800-788A-4747-A2D1-54158EFB2794}"), NE::ObjectVersion (1), CylinderNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	TubeNode::serializationInfo (NE::ObjectId ("{73164BBB-3971-46FB-9D17-E6BCA5814420}"), NE::ObjectVersion (1), TubeNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ConeNode::serializationInfo (NE::ObjectId ("{586F0D6E-CBEB-4C19-8B9E-7358E3E75FD2}"), NE::ObjectVersion (1), ConeNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	SphereNode::serializationInfo (NE::ObjectId ("{686712CE-BF1B-438E-8C0A-B687A158A0BB}"), NE::ObjectVersion (1), SphereNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	TorusNode::serializationInfo (NE::ObjectId ("{E17CF103-A4B6-4498-BB7E-7A566C1F7D26}"), NE::ObjectVersion (1), TorusNode::CreateSerializableInstance);
@@ -176,6 +177,91 @@ NE::Stream::Status CylinderNode::Read (NE::InputStream& inputStream)
 }
 
 NE::Stream::Status CylinderNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	ShapeNode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+TubeNode::TubeNode () :
+	TubeNode (L"", NUIE::Point ())
+{
+
+}
+
+TubeNode::TubeNode (const std::wstring& name, const NUIE::Point& position) :
+	ShapeNode (name, position)
+{
+
+}
+
+void TubeNode::Initialize ()
+{
+	ShapeNode::Initialize ();
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (0.4f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), L"Height", NE::ValuePtr (new NE::FloatValue (1.2f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("thickness"), L"Thickness", NE::ValuePtr (new NE::FloatValue (0.1f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+}
+
+NE::ValueConstPtr TubeNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr radiusValue = EvaluateInputSlot (NE::SlotId ("radius"), env);
+	NE::ValueConstPtr heightValue = EvaluateInputSlot (NE::SlotId ("height"), env);
+	NE::ValueConstPtr thicknessValue = EvaluateInputSlot (NE::SlotId ("thickness"), env);
+	NE::ValueConstPtr segmentationValue = EvaluateInputSlot (NE::SlotId ("segmentation"), env);
+
+	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (radiusValue) || !NE::IsComplexType<NE::NumberValue> (heightValue) || !NE::IsComplexType<NE::NumberValue> (thicknessValue) || !NE::IsComplexType<NE::NumberValue> (segmentationValue)) {
+		return nullptr;
+	}
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	bool isValid = BI::CombineValues (this, {material, transformation, radiusValue, heightValue, thicknessValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (5));
+		Modeler::ShapePtr shape (new Modeler::TubeShape (
+			MaterialValue::Get (combination.GetValue (0)),
+			TransformationValue::Get (combination.GetValue (1)),
+			NE::NumberValue::ToDouble (combination.GetValue (2)),
+			NE::NumberValue::ToDouble (combination.GetValue (3)),
+			NE::NumberValue::ToDouble (combination.GetValue (4)),
+			segmentation,
+			IsSmooth (segmentation)
+		));
+		if (!shape->Check ()) {
+			return false;
+		}
+		result->Push (NE::ValuePtr (new ShapeValue (shape)));
+		return true;
+	});
+
+	if (!isValid) {
+		return nullptr;
+	}
+	return result;
+}
+
+void TubeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+{
+	ShapeNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TubeNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TubeNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TubeNode, NE::FloatValue> (parameterList, L"Thickness", NUIE::ParameterType::Float, NE::SlotId ("thickness"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TubeNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+}
+
+NE::Stream::Status TubeNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	ShapeNode::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status TubeNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	ShapeNode::Write (outputStream);

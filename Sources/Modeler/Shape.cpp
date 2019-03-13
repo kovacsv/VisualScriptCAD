@@ -98,6 +98,41 @@ Mesh CylinderShape::GenerateMesh () const
 	return GenerateCylinder (material, transformation, radius, height, segmentation, isSmooth);
 }
 
+TubeShape::TubeShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth) :
+	Shape (transformation),
+	material (material),
+	radius (radius),
+	height (height),
+	thickness (thickness),
+	segmentation (segmentation),
+	isSmooth (isSmooth)
+{
+}
+
+TubeShape::~TubeShape ()
+{
+}
+
+bool TubeShape::Check () const
+{
+	return Geometry::IsGreater (radius, 0.0) && Geometry::IsGreater (height, 0.0) && Geometry::IsLower (thickness, radius) && segmentation >= 3;
+}
+
+ShapePtr TubeShape::Clone () const
+{
+	return ShapePtr (new TubeShape (*this));
+}
+
+std::wstring TubeShape::ToString () const
+{
+	return L"Tube";
+}
+
+Mesh TubeShape::GenerateMesh () const
+{
+	return GenerateTube (material, transformation, radius, height, thickness, segmentation, isSmooth);
+}
+
 ConeShape::ConeShape (const Material& material, const glm::dmat4& transformation, double topRadius, double bottomRadius, double height, int segmentation, bool isSmooth) :
 	Shape (transformation),
 	material (material),

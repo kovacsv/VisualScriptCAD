@@ -108,9 +108,6 @@ Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformatio
 	mesh.SetTransformation (transformation);
 
 	double halfHeight = height / 2.0;
-	double segmentAngle = (2.0 * PI) / double (segmentation);
-	glm::dmat4 rotMatrix = glm::rotate (glm::dmat4 (1.0), segmentAngle, glm::dvec3 (0.0, 0.0, 1.0));
-	
 	glm::dvec3 bottomPoint (0.0, 0.0, -halfHeight);
 	glm::dvec3 topPoint (0.0, 0.0, halfHeight);
 	unsigned int bottomVertex = mesh.AddVertex (bottomPoint);
@@ -125,14 +122,16 @@ Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformatio
 	AddCenteredConvexPolygon (mesh, bottomVertex, bottomVerticesReversed, glm::dvec3 (0.0, 0.0, -1.0), materialId);
 	AddCenteredConvexPolygon (mesh, topVertex, topVertices, glm::dvec3 (0.0, 0.0, 1.0), materialId);
 
+	double segmentAngle = (2.0 * PI) / double (segmentation);
+	glm::dmat4 rotMatrix = glm::rotate (glm::dmat4 (1.0), segmentAngle, glm::dvec3 (0.0, 0.0, 1.0));
 	glm::dvec3 normal (1.0, 0.0, 0.0);
 	for (size_t i = 0; i < segmentation; i++) {
-		glm::dvec3 begNormal = normal;
-		glm::dvec3 endNormal = rotMatrix * glm::dvec4 (normal, 1.0);
 		unsigned int a = bottomVertices[i];
 		unsigned int b = bottomVertices[i == segmentation - 1 ? 0 : i + 1];
 		unsigned int c = topVertices[i == segmentation - 1 ? 0 : i + 1];
 		unsigned int d = topVertices[i];
+		glm::dvec3 begNormal = normal;
+		glm::dvec3 endNormal = rotMatrix * glm::dvec4 (normal, 1.0);
 		if (isSmooth) {
 			unsigned int n1 = mesh.AddNormal (begNormal);
 			unsigned int n2 = mesh.AddNormal (endNormal);
@@ -147,6 +146,64 @@ Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformatio
 	return mesh;
 }
 
+Mesh GenerateTube (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth)
+{
+	Mesh mesh;
+	MaterialId materialId = mesh.AddMaterial (material);
+	mesh.SetTransformation (transformation);
+
+	double halfHeight = height / 2.0;
+	glm::dvec3 bottomPoint (0.0, 0.0, -halfHeight);
+	glm::dvec3 topPoint (0.0, 0.0, halfHeight);
+
+	std::vector<unsigned int> bottomOutsideVertices = AddCircularVertices (mesh, bottomPoint, radius, segmentation);
+	std::vector<unsigned int> bottomInsideVertices = AddCircularVertices (mesh, bottomPoint, radius - thickness, segmentation);
+	std::vector<unsigned int> topOutsideVertices = AddCircularVertices (mesh, topPoint, radius, segmentation);
+	std::vector<unsigned int> topInsideVertices = AddCircularVertices (mesh, topPoint, radius - thickness, segmentation);
+
+	double segmentAngle = (2.0 * PI) / double (segmentation);
+	glm::dmat4 rotMatrix = glm::rotate (glm::dmat4 (1.0), segmentAngle, glm::dvec3 (0.0, 0.0, 1.0));
+	glm::dvec3 normal (1.0, 0.0, 0.0);
+	for (size_t i = 0; i < segmentation; i++) {
+		unsigned int oa = bottomOutsideVertices[i];
+		unsigned int ob = bottomOutsideVertices[i == segmentation - 1 ? 0 : i + 1];
+		unsigned int oc = topOutsideVertices[i == segmentation - 1 ? 0 : i + 1];
+		unsigned int od = topOutsideVertices[i];
+
+		unsigned int ia = bottomInsideVertices[i];
+		unsigned int ib = bottomInsideVertices[i == segmentation - 1 ? 0 : i + 1];
+		unsigned int ic = topInsideVertices[i == segmentation - 1 ? 0 : i + 1];
+		unsigned int id = topInsideVertices[i];
+
+		glm::dvec3 begNormal = normal;
+		glm::dvec3 endNormal = rotMatrix * glm::dvec4 (normal, 1.0);
+
+		if (isSmooth) {
+			unsigned int n1 = mesh.AddNormal (begNormal);
+			unsigned int n2 = mesh.AddNormal (endNormal);
+			mesh.AddTriangle (oa, ob, oc, n1, n2, n2, materialId);
+			mesh.AddTriangle (oa, oc, od, n1, n2, n1, materialId);
+		} else {
+			AddRectangle (mesh, oa, ob, oc, od, materialId);
+		}
+
+		if (isSmooth) {
+			unsigned int n1 = mesh.AddNormal (-begNormal);
+			unsigned int n2 = mesh.AddNormal (-endNormal);
+			mesh.AddTriangle (ia, id, ic, n1, n1, n2, materialId);
+			mesh.AddTriangle (ia, ic, ib, n1, n2, n2, materialId);
+		} else {
+			AddRectangle (mesh, ia, id, ic, ib, materialId);
+		}
+
+		AddRectangle (mesh, od, oc, ic, id, materialId);
+		AddRectangle (mesh, oa, ia, ib, ob, materialId);
+		normal = endNormal;
+	}
+
+	return mesh;
+}
+
 Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, double topRadius, double bottomRadius, double height, int segmentation, bool isSmooth)
 {
 	Mesh mesh;
@@ -154,9 +211,6 @@ Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, d
 	mesh.SetTransformation (transformation);
 
 	double halfHeight = height / 2.0;
-	double segmentAngle = (2.0 * PI) / double (segmentation);
-	glm::dmat4 rotMatrix = glm::rotate (glm::dmat4 (1.0), segmentAngle, glm::dvec3 (0.0, 0.0, 1.0));
-
 	bool onePointBottom = Geometry::IsEqual (bottomRadius, 0.0);
 	bool onePointTop = Geometry::IsEqual (topRadius, 0.0);
 
