@@ -7,6 +7,32 @@
 class PolygonEditor
 {
 public:
+	class State
+	{
+	public:
+		State (const std::vector<glm::dvec2>& polygon);
+
+		bool							HasPolygon () const;
+		const std::vector<glm::dvec2>&	GetPolygon () const;
+
+		bool							IsClosed () const;
+		void							StartNewPolygon (const glm::dvec2& firstVertex);
+		void							AddNewVertex (const glm::dvec2& newVertex);
+
+		void							SelectVertex (int newSelectedVertex);
+		bool							HasSelectedVertex () const;
+		int								GetSelectedVertex () const;
+		
+		const glm::dvec2&				GetSelectedVertexPosition () const;
+		void							SetSelectedVertexPosition (const glm::dvec2& position);
+
+	private:
+		std::vector<glm::dvec2>		polygon;
+
+		bool						isClosed;
+		int							selectedVertex;
+	};
+
 	PolygonEditor (const std::vector<glm::dvec2>& polygon);
 
 	void							UpdateScreenSize (const wxSize& newScreenSize);
@@ -24,7 +50,7 @@ public:
 	int								GetSelectedVertex () const;
 
 	glm::dvec2						GetSelectedVertexPosition () const;
-	void							SetSelectedVertexPosition (const glm::dvec2 position);
+	void							SetSelectedVertexPosition (const glm::dvec2& position);
 
 	int								GetScale () const;
 	const wxPoint&					GetMouseScreenPosition () const;
@@ -37,13 +63,10 @@ private:
 	wxPoint							CenteredCoordToMouseCoord (const wxPoint& point) const;
 	int								DetectVertexUnderMouse (const wxPoint& point) const;
 
-	std::vector<glm::dvec2>			polygon;
-	bool							closed;
+	State							state;
 
 	wxSize							screenSize;
 	wxPoint							mouseScreenPosition;
-
-	int								selectedVertex;
 	int								scale;
 };
 

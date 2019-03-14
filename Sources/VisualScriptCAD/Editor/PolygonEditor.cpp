@@ -82,11 +82,72 @@ PolygonEditorPanel::StatusUpdater::~StatusUpdater ()
 
 }
 
-PolygonEditor::PolygonEditor (const std::vector<glm::dvec2>& polygon) :
+PolygonEditor::State::State (const std::vector<glm::dvec2>& polygon) :
 	polygon (polygon),
-	closed (!polygon.empty ()),
+	isClosed (!polygon.empty ()),
+	selectedVertex (-1)
+{
+}
+
+bool PolygonEditor::State::HasPolygon () const
+{
+	return isClosed;
+}
+
+const std::vector<glm::dvec2>& PolygonEditor::State::GetPolygon () const
+{
+	return polygon;
+}
+
+bool PolygonEditor::State::IsClosed () const
+{
+	return isClosed;
+}
+
+void PolygonEditor::State::StartNewPolygon (const glm::dvec2& firstVertex)
+{
+	polygon.clear ();
+	polygon.push_back (firstVertex);
+	isClosed = false;
+}
+
+void PolygonEditor::State::AddNewVertex (const glm::dvec2& newVertex)
+{
+	if (selectedVertex == 0 && polygon.size () > 2) {
+		isClosed = true;
+	} else if (selectedVertex == -1) {
+		polygon.push_back (newVertex);
+	}
+}
+
+void PolygonEditor::State::SelectVertex (int newSelectedVertex)
+{
+	selectedVertex = newSelectedVertex;
+}
+
+bool PolygonEditor::State::HasSelectedVertex () const
+{
+	return selectedVertex != -1;
+}
+
+int PolygonEditor::State::GetSelectedVertex () const
+{
+	return selectedVertex;
+}
+
+const glm::dvec2& PolygonEditor::State::GetSelectedVertexPosition () const
+{
+	return polygon[selectedVertex];
+}
+
+void PolygonEditor::State::SetSelectedVertexPosition (const glm::dvec2& position)
+{
+	polygon[selectedVertex] = position;
+}
+
+PolygonEditor::PolygonEditor (const std::vector<glm::dvec2>& polygon) :
+	state (polygon),
 	mouseScreenPosition (0, 0),
-	selectedVertex (-1),
 	scale (1)
 {
 }
@@ -99,7 +160,7 @@ void PolygonEditor::UpdateScreenSize (const wxSize& newScreenSize)
 void PolygonEditor::UpdateMousePosition (const wxPoint& point)
 {
 	mouseScreenPosition = point;
-	selectedVertex = DetectVertexUnderMouse (mouseScreenPosition);
+	state.SelectVertex (DetectVertexUnderMouse (mouseScreenPosition));
 }
 
 void PolygonEditor::UpdateScale (int change)
@@ -112,13 +173,14 @@ void PolygonEditor::UpdateScale (int change)
 
 void PolygonEditor::AutoScale ()
 {
-	if (!HasPolygon ()) {
+	if (!state.HasPolygon ()) {
 		return;
 	}
 
 	static const double INF = std::numeric_limits<double>::max ();
 	double maxX = -INF;
 	double maxY = -INF;
+	const std::vector<glm::dvec2>& polygon = state.GetPolygon ();
 	for (const glm::dvec2& point : polygon) {
 		maxX = std::max (maxX, std::fabs (point.x));
 		maxY = std::max (maxY, std::fabs (point.y));
@@ -141,58 +203,52 @@ void PolygonEditor::AutoScale ()
 
 glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
 {
-	if (selectedVertex != -1) {
-		return polygon[selectedVertex];
+	if (state.HasSelectedVertex ()) {
+		return state.GetSelectedVertexPosition ();
 	}
 	return MouseCoordToPolygonPoint (mouseScreenPosition);
 }
 
 void PolygonEditor::HandleMouseClick (const wxPoint& point)
 {
-	if (closed) {
-		if (selectedVertex == -1) {
-			polygon.clear ();
-			polygon.push_back (MouseCoordToPolygonPoint (point));
-			closed = false;
+	if (state.IsClosed ()) {
+		if (!state.HasSelectedVertex ()) {
+			state.StartNewPolygon (MouseCoordToPolygonPoint (point));
 		}
 	} else {
-		if (selectedVertex == 0 && polygon.size () > 2) {
-			closed = true;
-		} else if (selectedVertex == -1) {
-			polygon.push_back (MouseCoordToPolygonPoint (point));
-		}
+		state.AddNewVertex (MouseCoordToPolygonPoint (point));
 	}
 	UpdateMousePosition (point);
 }
 
 bool PolygonEditor::HasPolygon () const
 {
-	return closed;
+	return state.HasPolygon ();
 }
 
 const std::vector<glm::dvec2>& PolygonEditor::GetPolygon () const
 {
-	return polygon;
+	return state.GetPolygon ();
 }
 
 bool PolygonEditor::HasSelectedVertex () const
 {
-	return selectedVertex != -1;
+	return state.HasSelectedVertex ();
 }
 
 int PolygonEditor::GetSelectedVertex () const
 {
-	return selectedVertex;
+	return state.GetSelectedVertex ();
 }
 
 glm::dvec2 PolygonEditor::GetSelectedVertexPosition () const
 {
-	return polygon[selectedVertex];
+	return state.GetSelectedVertexPosition ();
 }
 
-void PolygonEditor::SetSelectedVertexPosition (const glm::dvec2 position)
+void PolygonEditor::SetSelectedVertexPosition (const glm::dvec2& position)
 {
-	polygon[selectedVertex] = position;
+	state.SetSelectedVertexPosition (position);
 }
 
 int PolygonEditor::GetScale () const
@@ -247,6 +303,7 @@ wxPoint PolygonEditor::CenteredCoordToMouseCoord (const wxPoint& point) const
 
 int PolygonEditor::DetectVertexUnderMouse (const wxPoint& point) const
 {
+	const std::vector<glm::dvec2>& polygon = state.GetPolygon ();
 	for (int i = 0; i < (int) polygon.size (); i++) {
 		const glm::dvec2& polygonPoint = polygon[i];
 		wxPoint polygonMousePoint = PolygonPointToMouseCoord (polygonPoint);
