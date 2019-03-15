@@ -169,16 +169,30 @@ Orientation GetTriangleOrientation2D (const glm::dvec2& v1, const glm::dvec2& v2
 	return Orientation::Invalid;
 }
 
-Orientation GetPolygonOrientation2D (const std::vector<glm::dvec2>& points)
+static double GetPolygonSignedArea (const std::vector<glm::dvec2>& points)
 {
 	if (points.size () < 3) {
-		return Orientation::Invalid;
+		return 0.0;
 	}
-	for (size_t i = 0; i < points.size () - 2; i++) {
-		Orientation orientation = GetTriangleOrientation2D (points[i], points[i + 1], points[i + 2]);
-		if (orientation != Orientation::Invalid) {
-			return orientation;
-		}
+	
+	double area = 0.0;
+	for (size_t i = 0; i < points.size (); i++) {
+		const glm::dvec2& current = points[i];
+		const glm::dvec2& next = points[(i + 1) % points.size ()];
+		area += current.x * next.y - next.x * current.y;
+	}
+	area *= 0.5;
+
+	return area;
+}
+
+Orientation GetPolygonOrientation2D (const std::vector<glm::dvec2>& points)
+{
+	double area = GetPolygonSignedArea (points);
+	if (Geometry::IsGreater (area, 0.0)) {
+		return Orientation::CounterClockwise;
+	} else if (Geometry::IsLower (area, 0.0)) {
+		return Orientation::Clockwise;
 	}
 	return Orientation::Invalid;
 };

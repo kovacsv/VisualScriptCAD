@@ -125,4 +125,12 @@ TEST (OrientationTest)
 	ASSERT (GetTriangleOrientation2D ({0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}) == Orientation::Invalid);
 }
 
+TEST (PolygonOrientationTest)
+{
+	std::vector<glm::dvec2> polygon1 ({{0.0, 0.0}, {1.0, 0.0}, {2.0, 0.0}, {2.0, 2.0}, {1.0, 2.0}, {1.0, 1.0}, {0.0, 1.0}});
+	ASSERT (GetPolygonOrientation2D (polygon1) == Orientation::CounterClockwise);
+	std::vector<glm::dvec2> polygon2 ({{0.0, 1.0}, {1.0, 1.0}, {1.0, 2.0}, {3.1, -0.6}, {1.0, 0.55}, {0.0, 0.0}, {0.0, 1.0}});
+	ASSERT (GetPolygonOrientation2D (polygon2) == Orientation::Clockwise);
+}
+
 }
