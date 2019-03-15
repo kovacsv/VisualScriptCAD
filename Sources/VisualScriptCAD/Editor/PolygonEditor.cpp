@@ -480,7 +480,11 @@ void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 	}
 	if (state.HasSelectedVertex ()) {
 		wxPoint selPoint = points[state.GetSelectedVertex ()];
-		dc.SetBrush (wxBrush (wxColour (150, 175, 200)));
+		wxColor highlightColor (150, 175, 200);
+		if (state.IsMoving ()) {
+			highlightColor = wxColor (150, 220, 175);
+		}
+		dc.SetBrush (wxBrush (highlightColor));
 		dc.DrawCircle (selPoint, 5);
 	}
 }
