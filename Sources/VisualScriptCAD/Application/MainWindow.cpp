@@ -242,6 +242,10 @@ void MenuBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::Upd
 		size_t index = userSettings.recentFiles.size () - i - 1;
 		openRecentMenu->Append (CommandId::File_OpenRecent_First + index, userSettings.recentFiles[index]);
 	}
+	if (!userSettings.recentFiles.empty ()) {
+		openRecentMenu->AppendSeparator ();
+		openRecentMenu->Append (CommandId::File_ClearRecent, L"Clear Recent List");
+	}
 }
 
 ToolBar::ToolBar (wxWindow* parent) :
@@ -421,6 +425,11 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		case File_Exit:
 			{
 				Close (true);
+			}
+			break;
+		case File_ClearRecent:
+			{
+				userSettings.recentFiles.clear ();
 			}
 			break;
 		case Edit_Undo:

@@ -15,23 +15,24 @@ enum CommandId
 	File_Save					= 3,
 	File_SaveAs					= 4,
 	File_Exit					= 5,
-	Edit_Undo					= 6,
-	Edit_Redo					= 7,
-	Mode_Automatic				= 8,
-	Mode_Manual					= 9,
-	Mode_Update					= 10,
-	View_Editor					= 11,
-	View_Model					= 12,
-	View_Split					= 13,
-	Editor_FitToWindow			= 14,
-	Model_FitToWindow			= 15,
-	Model_ViewMode_Lines		= 16,
-	Model_ViewMode_Polygons		= 17,
-	Model_AxisMode_On			= 18,
-	Model_AxisMode_Off			= 19,
-	Model_Info					= 20,
-	Model_Export				= 21,
-	About_GitHub				= 22,
+	File_ClearRecent			= 6,
+	Edit_Undo					= 7,
+	Edit_Redo					= 8,
+	Mode_Automatic				= 9,
+	Mode_Manual					= 10,
+	Mode_Update					= 11,
+	View_Editor					= 12,
+	View_Model					= 13,
+	View_Split					= 14,
+	Editor_FitToWindow			= 15,
+	Model_FitToWindow			= 16,
+	Model_ViewMode_Lines		= 17,
+	Model_ViewMode_Polygons		= 18,
+	Model_AxisMode_On			= 19,
+	Model_AxisMode_Off			= 20,
+	Model_Info					= 21,
+	Model_Export				= 22,
+	About_GitHub				= 23,
 	File_OpenRecent_First		= 100
 };
 
@@ -81,7 +82,7 @@ class MenuBar : public wxMenuBar
 public:
 	MenuBar ();
 
-	void	UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const UserSettings& userSettings);
+	void		UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const UserSettings& userSettings);
 
 private:
 	wxMenu*		openRecentMenu;
