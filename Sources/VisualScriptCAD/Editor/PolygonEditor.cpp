@@ -85,13 +85,14 @@ PolygonEditorPanel::StatusUpdater::~StatusUpdater ()
 PolygonEditor::State::State (const std::vector<glm::dvec2>& polygon) :
 	polygon (polygon),
 	isClosed (!polygon.empty ()),
+	isMoving (false),
 	selectedVertex (-1)
 {
 }
 
 bool PolygonEditor::State::HasPolygon () const
 {
-	return isClosed;
+	return isClosed && !isMoving;
 }
 
 const std::vector<glm::dvec2>& PolygonEditor::State::GetPolygon () const
@@ -102,6 +103,11 @@ const std::vector<glm::dvec2>& PolygonEditor::State::GetPolygon () const
 bool PolygonEditor::State::IsClosed () const
 {
 	return isClosed;
+}
+
+bool PolygonEditor::State::IsMoving () const
+{
+	return isMoving;
 }
 
 void PolygonEditor::State::StartNewPolygon (const glm::dvec2& firstVertex)
@@ -119,6 +125,16 @@ void PolygonEditor::State::AddNewVertex (const glm::dvec2& newVertex)
 bool PolygonEditor::State::SelectedVertexCanClose () const
 {
 	return selectedVertex == 0 && polygon.size () > 2;
+}
+
+void PolygonEditor::State::StartMoveSelectedVertex ()
+{
+	isMoving = true;
+}
+
+void PolygonEditor::State::StopMoveSelectedVertex ()
+{
+	isMoving = false;
 }
 
 void PolygonEditor::State::ClosePolygon ()
@@ -161,12 +177,6 @@ PolygonEditor::PolygonEditor (const std::vector<glm::dvec2>& polygon) :
 void PolygonEditor::UpdateScreenSize (const wxSize& newScreenSize)
 {
 	screenSize = newScreenSize;
-}
-
-void PolygonEditor::UpdateMousePosition (const wxPoint& point)
-{
-	mouseScreenPosition = point;
-	state.SelectVertex (DetectVertexUnderMouse (mouseScreenPosition));
 }
 
 void PolygonEditor::UpdateScale (int change)
@@ -218,8 +228,14 @@ glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
 void PolygonEditor::HandleMouseClick (const wxPoint& point)
 {
 	if (state.IsClosed ()) {
-		if (!state.HasSelectedVertex ()) {
-			state.StartNewPolygon (MouseCoordToPolygonPoint (point));
+		if (state.IsMoving ()) {
+			state.StopMoveSelectedVertex ();
+		} else {
+			if (state.HasSelectedVertex ()) {
+				state.StartMoveSelectedVertex ();
+			} else {
+				state.StartNewPolygon (MouseCoordToPolygonPoint (point));
+			}
 		}
 	} else {
 		if (state.SelectedVertexCanClose ()) {
@@ -231,6 +247,21 @@ void PolygonEditor::HandleMouseClick (const wxPoint& point)
 	UpdateMousePosition (point);
 }
 
+void PolygonEditor::HandleMouseMove (const wxPoint& point)
+{
+	mouseScreenPosition = point;
+	if (state.IsMoving ()) {
+		state.SetSelectedVertexPosition (MouseCoordToPolygonPoint (point));
+	} else {
+		state.SelectVertex (DetectVertexUnderMouse (mouseScreenPosition));
+	}
+}
+
+const PolygonEditor::State& PolygonEditor::GetState () const
+{
+	return state;
+}
+
 bool PolygonEditor::HasPolygon () const
 {
 	return state.HasPolygon ();
@@ -239,16 +270,6 @@ bool PolygonEditor::HasPolygon () const
 const std::vector<glm::dvec2>& PolygonEditor::GetPolygon () const
 {
 	return state.GetPolygon ();
-}
-
-bool PolygonEditor::HasSelectedVertex () const
-{
-	return state.HasSelectedVertex ();
-}
-
-int PolygonEditor::GetSelectedVertex () const
-{
-	return state.GetSelectedVertex ();
 }
 
 glm::dvec2 PolygonEditor::GetSelectedVertexPosition () const
@@ -289,6 +310,11 @@ wxPoint PolygonEditor::PolygonPointToMouseCoord (const glm::dvec2& point) const
 		point.y / dScale
 	);
 	return CenteredCoordToMouseCoord (centeredPoint);
+}
+
+void PolygonEditor::UpdateMousePosition (const wxPoint& point)
+{
+	mouseScreenPosition = point;
 }
 
 wxPoint PolygonEditor::MouseCoordToCenteredCoord (const wxPoint& point) const
@@ -358,13 +384,13 @@ void PolygonEditorPanel::OnLeftClick (wxMouseEvent& evt)
 
 void PolygonEditorPanel::OnRightClick (wxMouseEvent& evt)
 {
-	polygonEditor.UpdateMousePosition (evt.GetPosition ());
-	if (polygonEditor.HasPolygon () && polygonEditor.HasSelectedVertex ()) {
+	const PolygonEditor::State& state = polygonEditor.GetState ();
+	if (state.HasPolygon () && state.HasSelectedVertex ()) {
 		wxMenu popupMenu;
 		popupMenu.Append (1, L"Set Point Position");
 		int selectedItem = GetPopupMenuSelectionFromUser (popupMenu, evt.GetPosition ());
 		if (selectedItem == 1) {
-			PointPositionDialog pointPositionDialog (this, polygonEditor.GetSelectedVertexPosition ());
+			PointPositionDialog pointPositionDialog (this, state.GetSelectedVertexPosition ());
 			if (pointPositionDialog.ShowModal () == wxID_OK) {
 				polygonEditor.SetSelectedVertexPosition (pointPositionDialog.GetPoint ());
 			}
@@ -375,7 +401,7 @@ void PolygonEditorPanel::OnRightClick (wxMouseEvent& evt)
 
 void PolygonEditorPanel::OnMouseMove (wxMouseEvent& evt)
 {
-	polygonEditor.UpdateMousePosition (evt.GetPosition ());
+	polygonEditor.HandleMouseMove (evt.GetPosition ());
 	UpdateStatus ();
 	Draw ();
 }
@@ -390,12 +416,12 @@ void PolygonEditorPanel::OnMouseWheel (wxMouseEvent& evt)
 
 bool PolygonEditorPanel::HasPolygon () const
 {
-	return polygonEditor.HasPolygon ();
+	return polygonEditor.GetState ().HasPolygon ();
 }
 
 std::vector<glm::dvec2> PolygonEditorPanel::GetPolygon () const
 {
-	std::vector<glm::dvec2> polygon = polygonEditor.GetPolygon ();
+	std::vector<glm::dvec2> polygon = polygonEditor.GetState ().GetPolygon ();
 	Geometry::Orientation orientation = Geometry::GetPolygonOrientation2D (polygon);
 	if (orientation != Geometry::Orientation::CounterClockwise) {
 		std::reverse (polygon.begin (), polygon.end ());
@@ -435,7 +461,8 @@ void PolygonEditorPanel::DrawCoordSystem (wxDC& dc)
 
 void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 {
-	const std::vector<glm::dvec2>& polygon = polygonEditor.GetPolygon ();
+	const PolygonEditor::State& state = polygonEditor.GetState ();
+	const std::vector<glm::dvec2>& polygon = state.GetPolygon ();
 	if (polygon.empty ()) {
 		return;
 	}
@@ -444,15 +471,15 @@ void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 		points.push_back (polygonEditor.PolygonPointToMouseCoord (polygonPoint));
 	}
 	dc.SetPen (wxPen (wxColour (0, 0, 0)));
-	if (polygonEditor.HasPolygon ()) {
+	if (state.IsClosed ()) {
 		dc.SetBrush (wxBrush (wxColour (230, 230, 230)));
 		dc.DrawPolygon (points.size (), &points[0]);
 	} else {
 		points.push_back (polygonEditor.GetMouseScreenPosition ());
 		dc.DrawLines (points.size (), &points[0]);
 	}
-	if (polygonEditor.HasSelectedVertex ()) {
-		wxPoint selPoint = points[polygonEditor.GetSelectedVertex ()];
+	if (state.HasSelectedVertex ()) {
+		wxPoint selPoint = points[state.GetSelectedVertex ()];
 		dc.SetBrush (wxBrush (wxColour (150, 175, 200)));
 		dc.DrawCircle (selPoint, 5);
 	}
