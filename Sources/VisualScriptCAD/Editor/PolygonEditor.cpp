@@ -113,11 +113,17 @@ void PolygonEditor::State::StartNewPolygon (const glm::dvec2& firstVertex)
 
 void PolygonEditor::State::AddNewVertex (const glm::dvec2& newVertex)
 {
-	if (selectedVertex == 0 && polygon.size () > 2) {
-		isClosed = true;
-	} else if (selectedVertex == -1) {
-		polygon.push_back (newVertex);
-	}
+	polygon.push_back (newVertex);
+}
+
+bool PolygonEditor::State::SelectedVertexCanClose () const
+{
+	return selectedVertex == 0 && polygon.size () > 2;
+}
+
+void PolygonEditor::State::ClosePolygon ()
+{
+	isClosed = true;
 }
 
 void PolygonEditor::State::SelectVertex (int newSelectedVertex)
@@ -216,7 +222,11 @@ void PolygonEditor::HandleMouseClick (const wxPoint& point)
 			state.StartNewPolygon (MouseCoordToPolygonPoint (point));
 		}
 	} else {
-		state.AddNewVertex (MouseCoordToPolygonPoint (point));
+		if (state.SelectedVertexCanClose ()) {
+			state.ClosePolygon ();
+		} else if (!state.HasSelectedVertex ()) {
+			state.AddNewVertex (MouseCoordToPolygonPoint (point));
+		}
 	}
 	UpdateMousePosition (point);
 }
@@ -491,7 +501,9 @@ PolygonEditorDialog::PolygonEditorDialog (wxWindow* parent, const std::vector<gl
 void PolygonEditorDialog::OnButtonClick (wxCommandEvent& evt)
 {
 	if (evt.GetId () == wxID_OK) {
-		EndModal (wxID_OK);
+		if (editorPanel->HasPolygon ()) {
+			EndModal (wxID_OK);
+		}
 	}
 }
 

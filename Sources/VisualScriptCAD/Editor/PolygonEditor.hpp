@@ -19,6 +19,9 @@ public:
 		void							StartNewPolygon (const glm::dvec2& firstVertex);
 		void							AddNewVertex (const glm::dvec2& newVertex);
 
+		bool							SelectedVertexCanClose () const;
+		void							ClosePolygon ();
+
 		void							SelectVertex (int newSelectedVertex);
 		bool							HasSelectedVertex () const;
 		int								GetSelectedVertex () const;
