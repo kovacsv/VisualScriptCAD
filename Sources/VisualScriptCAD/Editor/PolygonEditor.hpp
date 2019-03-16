@@ -16,12 +16,13 @@ public:
 		const std::vector<glm::dvec2>&	GetPolygon () const;
 
 		bool							IsClosed () const;
-		bool							IsMoving () const;
+		bool							IsVertexMoving () const;
 
 		void							StartNewPolygon (const glm::dvec2& firstVertex);
 		void							AddNewVertex (const glm::dvec2& newVertex);
 
 		bool							SelectedVertexCanClose () const;
+		bool							VertexCanClose (int vertex) const;
 		void							StartMoveSelectedVertex ();
 		void							StopMoveSelectedVertex ();
 		void							ClosePolygon ();

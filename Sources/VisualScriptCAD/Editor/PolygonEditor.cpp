@@ -105,7 +105,7 @@ bool PolygonEditor::State::IsClosed () const
 	return isClosed;
 }
 
-bool PolygonEditor::State::IsMoving () const
+bool PolygonEditor::State::IsVertexMoving () const
 {
 	return isMoving;
 }
@@ -113,18 +113,25 @@ bool PolygonEditor::State::IsMoving () const
 void PolygonEditor::State::StartNewPolygon (const glm::dvec2& firstVertex)
 {
 	polygon.clear ();
-	polygon.push_back (firstVertex);
-	isClosed = false;
+	AddNewVertex (firstVertex);
 }
 
 void PolygonEditor::State::AddNewVertex (const glm::dvec2& newVertex)
 {
 	polygon.push_back (newVertex);
+	isClosed = false;
+	isMoving = false;
+	selectedVertex = -1;
 }
 
 bool PolygonEditor::State::SelectedVertexCanClose () const
 {
-	return selectedVertex == 0 && polygon.size () > 2;
+	return VertexCanClose (selectedVertex);
+}
+
+bool PolygonEditor::State::VertexCanClose (int vertex) const
+{
+	return vertex == 0 && polygon.size () > 2;
 }
 
 void PolygonEditor::State::StartMoveSelectedVertex ()
@@ -228,7 +235,7 @@ glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
 void PolygonEditor::HandleMouseClick (const wxPoint& point)
 {
 	if (state.IsClosed ()) {
-		if (state.IsMoving ()) {
+		if (state.IsVertexMoving ()) {
 			state.StopMoveSelectedVertex ();
 		} else {
 			if (state.HasSelectedVertex ()) {
@@ -250,10 +257,11 @@ void PolygonEditor::HandleMouseClick (const wxPoint& point)
 void PolygonEditor::HandleMouseMove (const wxPoint& point)
 {
 	mouseScreenPosition = point;
-	if (state.IsMoving ()) {
+	int vertexUnderMouse = DetectVertexUnderMouse (mouseScreenPosition);
+	if (state.IsVertexMoving ()) {
 		state.SetSelectedVertexPosition (MouseCoordToPolygonPoint (point));
-	} else {
-		state.SelectVertex (DetectVertexUnderMouse (mouseScreenPosition));
+	} else if (state.IsClosed () || state.VertexCanClose (vertexUnderMouse)) {
+		state.SelectVertex (vertexUnderMouse);
 	}
 }
 
@@ -481,7 +489,7 @@ void PolygonEditorPanel::DrawPolygon (wxDC& dc)
 	if (state.HasSelectedVertex ()) {
 		wxPoint selPoint = points[state.GetSelectedVertex ()];
 		wxColor highlightColor (150, 175, 200);
-		if (state.IsMoving ()) {
+		if (state.IsVertexMoving ()) {
 			highlightColor = wxColor (150, 220, 175);
 		}
 		dc.SetBrush (wxBrush (highlightColor));
