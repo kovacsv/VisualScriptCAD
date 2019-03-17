@@ -527,9 +527,10 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_Export:
 			{
-				ExportDialog modelExportDialog (this, model, modelControl->GetRenderScene (), userSettings.exportSettings, userSettings.renderSettings);
-				modelExportDialog.ShowModal ();
-				userSettings.exportSettings = modelExportDialog.GetExportSettings ();
+				ExportDialog modelExportDialog (this, model, modelControl->GetRenderScene (), userSettings.exportSettings);
+				if (modelExportDialog.ShowModal () == wxID_OK) {
+					userSettings.exportSettings = modelExportDialog.GetExportSettings ();
+				}
 			}
 			break;
 		case About_GitHub:

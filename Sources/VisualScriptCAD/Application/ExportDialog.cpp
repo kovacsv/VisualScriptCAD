@@ -131,12 +131,11 @@ BEGIN_EVENT_TABLE (ImageSettingsDialog, wxDialog)
 EVT_BUTTON (wxID_ANY, ImageSettingsDialog::OnButtonClick)
 END_EVENT_TABLE ()
 
-ExportDialog::ExportDialog (wxWindow* parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings, const RenderSettings& renderSettings) :
+ExportDialog::ExportDialog (wxWindow* parent, const Modeler::Model& model, const RenderScene& scene, const ExportSettings& exportSettings) :
 	wxDialog (parent, wxID_ANY, L"Export Model", wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE),
 	model (model),
 	scene (scene),
 	exportSettings (exportSettings),
-	renderSettings (renderSettings),
 	boxSizer (new wxBoxSizer (wxVERTICAL)),
 	formatChoice (new wxChoice (this, DialogIds::FormatChoiceId, wxDefaultPosition, controlMinSize)),
 	formatSettingsButton (new wxButton (this, DialogIds::FormatSettingsButtonId, L"...", wxDefaultPosition, wxSize (40, -1))),
@@ -226,6 +225,7 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 		} else if (exportSettings.format == ExportSettings::FormatId::Png) {
 			if (exportSettings.image.IsValid ()) {
 				RenderPixels pixels (exportSettings.image.width * exportSettings.image.multisampling, exportSettings.image.height * exportSettings.image.multisampling);
+				RenderSettings renderSettings (ViewMode::Polygons, AxisMode::Off);
 				scene.DrawOffscreen (renderSettings, pixels);
 
 				wxImage image (pixels.GetWidth (), pixels.GetHeight ());
