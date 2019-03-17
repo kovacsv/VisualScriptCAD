@@ -234,6 +234,7 @@ glm::dvec2 PolygonEditor::GetMousePositionAsPolygonPoint () const
 
 void PolygonEditor::HandleMouseClick (const wxPoint& point)
 {
+	UpdateMousePosition (point);
 	if (state.IsClosed ()) {
 		if (state.IsVertexMoving ()) {
 			state.StopMoveSelectedVertex ();
@@ -251,18 +252,11 @@ void PolygonEditor::HandleMouseClick (const wxPoint& point)
 			state.AddNewVertex (MouseCoordToPolygonPoint (point));
 		}
 	}
-	UpdateMousePosition (point);
 }
 
 void PolygonEditor::HandleMouseMove (const wxPoint& point)
 {
-	mouseScreenPosition = point;
-	int vertexUnderMouse = DetectVertexUnderMouse (mouseScreenPosition);
-	if (state.IsVertexMoving ()) {
-		state.SetSelectedVertexPosition (MouseCoordToPolygonPoint (point));
-	} else if (state.IsClosed () || state.VertexCanClose (vertexUnderMouse)) {
-		state.SelectVertex (vertexUnderMouse);
-	}
+	UpdateMousePosition (point);
 }
 
 const PolygonEditor::State& PolygonEditor::GetState () const
@@ -323,6 +317,13 @@ wxPoint PolygonEditor::PolygonPointToMouseCoord (const glm::dvec2& point) const
 void PolygonEditor::UpdateMousePosition (const wxPoint& point)
 {
 	mouseScreenPosition = point;
+	int vertexUnderMouse = DetectVertexUnderMouse (mouseScreenPosition);
+	if (state.IsVertexMoving ()) {
+		state.SetSelectedVertexPosition (MouseCoordToPolygonPoint (point));
+	} else if (state.IsClosed () || state.VertexCanClose (vertexUnderMouse)) {
+		state.SelectVertex (vertexUnderMouse);
+	}
+
 }
 
 wxPoint PolygonEditor::MouseCoordToCenteredCoord (const wxPoint& point) const
