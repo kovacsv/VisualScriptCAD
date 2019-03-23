@@ -3,6 +3,7 @@
 #include "ModelControl.hpp"
 #include "RenderModelConverter.hpp"
 #include "ModelEvaluationData.hpp"
+#include "SettingsDialog.hpp"
 #include "InfoDialog.hpp"
 #include "ExportDialog.hpp"
 #include "IconStore.hpp"
@@ -169,26 +170,22 @@ MenuBar::MenuBar () :
 	viewMenu->AppendRadioItem (CommandId::View_Split, "Split View");
 	Append (viewMenu, L"&View");
 
+	wxMenu* toolsMenu = new wxMenu ();
+	toolsMenu->Append (CommandId::Tools_Options, "Options...");
+	Append (toolsMenu, L"&Tools");
+
 	wxMenu* editorMenu = new wxMenu ();
 	wxMenu* updateModeMenu = new wxMenu ();
-	updateModeMenu->AppendRadioItem (CommandId::Mode_Automatic, "Automatic");
-	updateModeMenu->AppendRadioItem (CommandId::Mode_Manual, "Manual");
+	updateModeMenu->AppendRadioItem (CommandId::Editor_Mode_Automatic, "Automatic");
+	updateModeMenu->AppendRadioItem (CommandId::Editor_Mode_Manual, "Manual");
 	updateModeMenu->AppendSeparator ();
-	updateModeMenu->Append (CommandId::Mode_Update, "Update Now");
-	editorMenu->AppendSubMenu (updateModeMenu, L"Update");
+	updateModeMenu->Append (CommandId::Editor_Mode_Update, "Update Now");
+	editorMenu->AppendSubMenu (updateModeMenu, L"Update Mode");
 	editorMenu->Append (CommandId::Editor_FitToWindow, "Fit to Window");
 	Append (editorMenu, L"E&ditor");
 
 	wxMenu* modelMenu = new wxMenu ();
 	modelMenu->Append (CommandId::Model_FitToWindow, "Fit to Window");
-	wxMenu* viewModeMenu = new wxMenu ();
-	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Lines, "Lines");
-	viewModeMenu->AppendRadioItem (CommandId::Model_ViewMode_Polygons, "Polygons");
-	modelMenu->AppendSubMenu (viewModeMenu, L"View Mode");
-	wxMenu* axisModeMenu = new wxMenu ();
-	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_On, "On");
-	axisModeMenu->AppendRadioItem (CommandId::Model_AxisMode_Off, "Off");
-	modelMenu->AppendSubMenu (axisModeMenu, L"Axis Mode");
 	modelMenu->Append (CommandId::Model_Info, "Information...");
 	modelMenu->Append (CommandId::Model_Export, "Export...");
 	Append (modelMenu, L"&Model");
@@ -211,25 +208,9 @@ void MenuBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::Upd
 	}
 
 	if (updateMode == WXAS::NodeEditorControl::UpdateMode::Automatic) {
-		FindItem (CommandId::Mode_Automatic)->Check (true);
+		FindItem (CommandId::Editor_Mode_Automatic)->Check (true);
 	} else if (updateMode == WXAS::NodeEditorControl::UpdateMode::Manual) {
-		FindItem (CommandId::Mode_Manual)->Check (true);
-	} else {
-		DBGBREAK ();
-	}
-
-	if (userSettings.renderSettings.viewMode == ViewMode::Lines) {
-		FindItem (CommandId::Model_ViewMode_Lines)->Check (true);
-	} else if (userSettings.renderSettings.viewMode == ViewMode::Polygons) {
-		FindItem (CommandId::Model_ViewMode_Polygons)->Check (true);
-	} else {
-		DBGBREAK ();
-	}
-
-	if (userSettings.renderSettings.axisMode == AxisMode::On) {
-		FindItem (CommandId::Model_AxisMode_On)->Check (true);
-	} else if (userSettings.renderSettings.axisMode == AxisMode::Off) {
-		FindItem (CommandId::Model_AxisMode_Off)->Check (true);
+		FindItem (CommandId::Editor_Mode_Manual)->Check (true);
 	} else {
 		DBGBREAK ();
 	}
@@ -268,15 +249,15 @@ ToolBar::ToolBar (wxWindow* parent) :
 
 	AddSeparator ();
 
-	AddRadioButton (CommandId::Mode_Automatic, control_end_blue, control_end_blue_size, L"Automatic Update");
-	AddRadioButton (CommandId::Mode_Manual, control_pause_blue, control_pause_blue_size, L"Manual Update");
-	AddIconButton (CommandId::Mode_Update, control_play_blue, control_play_blue_size, L"Update Now");
+	AddRadioButton (CommandId::Editor_Mode_Automatic, control_end_blue, control_end_blue_size, L"Automatic Update");
+	AddRadioButton (CommandId::Editor_Mode_Manual, control_pause_blue, control_pause_blue_size, L"Manual Update");
+	AddIconButton (CommandId::Editor_Mode_Update, control_play_blue, control_play_blue_size, L"Update Now");
 
 	AddSeparator ();
 
 	AddIconButton (CommandId::Model_FitToWindow, arrow_in, arrow_in_size, L"Fit to Window");
 
-	ToggleTool (CommandId::Mode_Automatic, true);
+	ToggleTool (CommandId::Editor_Mode_Automatic, true);
 	ToggleTool (CommandId::View_Split, true);
 
 	Realize ();
@@ -295,9 +276,9 @@ void ToolBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::Upd
 	}
 
 	if (updateMode == WXAS::NodeEditorControl::UpdateMode::Automatic) {
-		ToggleTool (CommandId::Mode_Automatic, true);
+		ToggleTool (CommandId::Editor_Mode_Automatic, true);
 	} else if (updateMode == WXAS::NodeEditorControl::UpdateMode::Manual) {
-		ToggleTool (CommandId::Mode_Manual, true);
+		ToggleTool (CommandId::Editor_Mode_Manual, true);
 	} else {
 		DBGBREAK ();
 	}
@@ -442,17 +423,26 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				editor->Redo ();
 			}
 			break;
-		case Mode_Automatic:
+		case Tools_Options:
+			{
+				SettingsDialog settingsDialog (this, userSettings);
+				if (settingsDialog.ShowModal () == wxID_OK) {
+					userSettings = settingsDialog.GetUserSettings ();
+					modelControl->SetRenderSettings (userSettings.renderSettings);
+				}
+			}
+			break;
+		case Editor_Mode_Automatic:
 			{
 				editor->SetUpdateMode (WXAS::NodeEditorControl::UpdateMode::Automatic);
 			}
 			break;
-		case Mode_Manual:
+		case Editor_Mode_Manual:
 			{
 				editor->SetUpdateMode (WXAS::NodeEditorControl::UpdateMode::Manual);
 			}
 			break;
-		case Mode_Update:
+		case Editor_Mode_Update:
 			{
 				editor->ManualUpdate ();
 			}
@@ -487,30 +477,6 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		case Model_FitToWindow:
 			{
 				modelControl->FitToWindow ();
-			}
-			break;
-		case Model_ViewMode_Lines:
-			{
-				userSettings.renderSettings.viewMode = ViewMode::Lines;
-				modelControl->SetRenderSettings (userSettings.renderSettings);
-			}
-			break;
-		case Model_ViewMode_Polygons:
-			{
-				userSettings.renderSettings.viewMode = ViewMode::Polygons;
-				modelControl->SetRenderSettings (userSettings.renderSettings);
-			}
-			break;
-		case Model_AxisMode_On:
-			{
-				userSettings.renderSettings.axisMode = AxisMode::On;
-				modelControl->SetRenderSettings (userSettings.renderSettings);
-			}
-			break;
-		case Model_AxisMode_Off:
-			{
-				userSettings.renderSettings.axisMode = AxisMode::Off;
-				modelControl->SetRenderSettings (userSettings.renderSettings);
 			}
 			break;
 		case Model_Info:

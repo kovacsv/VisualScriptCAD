@@ -34,10 +34,10 @@ public:
 		SetTextValidator (yPositionControl, L"0123456789.-");
 
 		gridSizer->SetRows (2);
-		gridSizer->Add (new wxStaticText (this, wxID_ANY, L"Position X"));
-		gridSizer->Add (xPositionControl);
-		gridSizer->Add (new wxStaticText (this, wxID_ANY, L"Position Y"));
-		gridSizer->Add (yPositionControl);
+		gridSizer->Add (new wxStaticText (this, wxID_ANY, L"Position X"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
+		gridSizer->Add (xPositionControl, 1, wxEXPAND);
+		gridSizer->Add (new wxStaticText (this, wxID_ANY, L"Position Y"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
+		gridSizer->Add (yPositionControl, 1, wxEXPAND);
 
 		boxSizer->Add (gridSizer, 1, wxEXPAND | wxALL, 5);
 		boxSizer->Add (okButton, 0, wxEXPAND | wxALL, 5);
