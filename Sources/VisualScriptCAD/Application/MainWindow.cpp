@@ -159,33 +159,16 @@ MenuBar::MenuBar () :
 	fileMenu->Append (CommandId::File_Exit, L"Exit");
 	Append (fileMenu, L"&File");
 
-	wxMenu* editMenu = new wxMenu ();
-	editMenu->Append (CommandId::Edit_Undo, "Undo");
-	editMenu->Append (CommandId::Edit_Redo, "Redo");
-	Append (editMenu, L"&Edit");
-
 	wxMenu* viewMenu = new wxMenu ();
-	viewMenu->AppendRadioItem (CommandId::View_Editor, "Show Editor");
-	viewMenu->AppendRadioItem (CommandId::View_Model, "Show Model");
-	viewMenu->AppendRadioItem (CommandId::View_Split, "Split View");
+	viewMenu->Append (CommandId::View_Editor_FitToWindow, "Fit Editor to Window");
+	viewMenu->Append (CommandId::View_Model_FitToWindow, "Fit Model to Window");
 	Append (viewMenu, L"&View");
 
 	wxMenu* toolsMenu = new wxMenu ();
 	toolsMenu->Append (CommandId::Tools_Options, "Options...");
 	Append (toolsMenu, L"&Tools");
 
-	wxMenu* editorMenu = new wxMenu ();
-	wxMenu* updateModeMenu = new wxMenu ();
-	updateModeMenu->AppendRadioItem (CommandId::Editor_Mode_Automatic, "Automatic");
-	updateModeMenu->AppendRadioItem (CommandId::Editor_Mode_Manual, "Manual");
-	updateModeMenu->AppendSeparator ();
-	updateModeMenu->Append (CommandId::Editor_Mode_Update, "Update Now");
-	editorMenu->AppendSubMenu (updateModeMenu, L"Update Mode");
-	editorMenu->Append (CommandId::Editor_FitToWindow, "Fit to Window");
-	Append (editorMenu, L"E&ditor");
-
 	wxMenu* modelMenu = new wxMenu ();
-	modelMenu->Append (CommandId::Model_FitToWindow, "Fit to Window");
 	modelMenu->Append (CommandId::Model_Info, "Information...");
 	modelMenu->Append (CommandId::Model_Export, "Export...");
 	Append (modelMenu, L"&Model");
@@ -195,26 +178,8 @@ MenuBar::MenuBar () :
 	Append (aboutMenu, L"&About");
 }
 
-void MenuBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode, const UserSettings& userSettings)
+void MenuBar::UpdateStatus (const UserSettings& userSettings)
 {
-	if (viewMode == SplitViewMode::Editor) {
-		FindItem (CommandId::View_Editor)->Check (true);
-	} else if (viewMode == SplitViewMode::Model) {
-		FindItem (CommandId::View_Model)->Check (true);
-	} else if (viewMode == SplitViewMode::Split) {
-		FindItem (CommandId::View_Split)->Check (true);
-	} else {
-		DBGBREAK ();
-	}
-
-	if (updateMode == WXAS::NodeEditorControl::UpdateMode::Automatic) {
-		FindItem (CommandId::Editor_Mode_Automatic)->Check (true);
-	} else if (updateMode == WXAS::NodeEditorControl::UpdateMode::Manual) {
-		FindItem (CommandId::Editor_Mode_Manual)->Check (true);
-	} else {
-		DBGBREAK ();
-	}
-
 	while (openRecentMenu->GetMenuItemCount () > 0) {
 		wxMenuItemList& items = openRecentMenu->GetMenuItems ();
 		openRecentMenu->Destroy (items.GetFirst ()->GetData ());
@@ -238,27 +203,27 @@ ToolBar::ToolBar (wxWindow* parent) :
 
 	AddSeparator ();
 
-	AddIconButton (CommandId::Edit_Undo, arrow_undo, arrow_undo_size, L"Undo");
-	AddIconButton (CommandId::Edit_Redo, arrow_redo, arrow_redo_size, L"Redo");
+	AddIconButton (CommandId::Tool_Undo, arrow_undo, arrow_undo_size, L"Undo");
+	AddIconButton (CommandId::Tool_Redo, arrow_redo, arrow_redo_size, L"Redo");
 
 	AddSeparator ();
 
-	AddRadioButton (CommandId::View_Editor, application_side_expand, application_side_expand_size, L"Show Editor");
-	AddRadioButton (CommandId::View_Model, application_side_contract, application_side_contract_size, L"Show Model");
-	AddRadioButton (CommandId::View_Split, application_tile_horizontal, application_tile_horizontal_size, L"Split View");
+	AddRadioButton (CommandId::Tool_View_Editor, application_side_expand, application_side_expand_size, L"Show Editor");
+	AddRadioButton (CommandId::Tool_View_Model, application_side_contract, application_side_contract_size, L"Show Model");
+	AddRadioButton (CommandId::Tool_View_Split, application_tile_horizontal, application_tile_horizontal_size, L"Split View");
 
 	AddSeparator ();
 
-	AddRadioButton (CommandId::Editor_Mode_Automatic, control_end_blue, control_end_blue_size, L"Automatic Update");
-	AddRadioButton (CommandId::Editor_Mode_Manual, control_pause_blue, control_pause_blue_size, L"Manual Update");
-	AddIconButton (CommandId::Editor_Mode_Update, control_play_blue, control_play_blue_size, L"Update Now");
+	AddRadioButton (CommandId::Tool_Mode_Automatic, control_end_blue, control_end_blue_size, L"Automatic Update");
+	AddRadioButton (CommandId::Tool_Mode_Manual, control_pause_blue, control_pause_blue_size, L"Manual Update");
+	AddIconButton (CommandId::Tool_Mode_Update, control_play_blue, control_play_blue_size, L"Update Now");
 
 	AddSeparator ();
 
-	AddIconButton (CommandId::Model_FitToWindow, arrow_in, arrow_in_size, L"Fit to Window");
+	AddIconButton (CommandId::View_Model_FitToWindow, arrow_in, arrow_in_size, L"Fit to Window");
 
-	ToggleTool (CommandId::Editor_Mode_Automatic, true);
-	ToggleTool (CommandId::View_Split, true);
+	ToggleTool (CommandId::Tool_Mode_Automatic, true);
+	ToggleTool (CommandId::Tool_View_Split, true);
 
 	Realize ();
 }
@@ -266,19 +231,19 @@ ToolBar::ToolBar (wxWindow* parent) :
 void ToolBar::UpdateStatus (SplitViewMode viewMode, WXAS::NodeEditorControl::UpdateMode updateMode)
 {
 	if (viewMode == SplitViewMode::Editor) {
-		ToggleTool (CommandId::View_Editor, true);
+		ToggleTool (CommandId::Tool_View_Editor, true);
 	} else if (viewMode == SplitViewMode::Model) {
-		ToggleTool (CommandId::View_Model, true);
+		ToggleTool (CommandId::Tool_View_Model, true);
 	} else if (viewMode == SplitViewMode::Split) {
-		ToggleTool (CommandId::View_Split, true);
+		ToggleTool (CommandId::Tool_View_Split, true);
 	} else {
 		DBGBREAK ();
 	}
 
 	if (updateMode == WXAS::NodeEditorControl::UpdateMode::Automatic) {
-		ToggleTool (CommandId::Editor_Mode_Automatic, true);
+		ToggleTool (CommandId::Tool_Mode_Automatic, true);
 	} else if (updateMode == WXAS::NodeEditorControl::UpdateMode::Manual) {
-		ToggleTool (CommandId::Editor_Mode_Manual, true);
+		ToggleTool (CommandId::Tool_Mode_Manual, true);
 	} else {
 		DBGBREAK ();
 	}
@@ -413,12 +378,12 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				userSettings.recentFiles.clear ();
 			}
 			break;
-		case Edit_Undo:
+		case Tool_Undo:
 			{
 				editor->Undo ();
 			}
 			break;
-		case Edit_Redo:
+		case Tool_Redo:
 			{
 				editor->Redo ();
 			}
@@ -432,22 +397,22 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				}
 			}
 			break;
-		case Editor_Mode_Automatic:
+		case Tool_Mode_Automatic:
 			{
 				editor->SetUpdateMode (WXAS::NodeEditorControl::UpdateMode::Automatic);
 			}
 			break;
-		case Editor_Mode_Manual:
+		case Tool_Mode_Manual:
 			{
 				editor->SetUpdateMode (WXAS::NodeEditorControl::UpdateMode::Manual);
 			}
 			break;
-		case Editor_Mode_Update:
+		case Tool_Mode_Update:
 			{
 				editor->ManualUpdate ();
 			}
 			break;
-		case View_Editor:
+		case Tool_View_Editor:
 			{
 				editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 				sashPosition = editorAndModelSplitter->GetSashPosition ();
@@ -455,7 +420,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				splitViewMode = SplitViewMode::Editor;
 			}
 			break;
-		case View_Model:
+		case Tool_View_Model:
 			{
 				editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 				sashPosition = editorAndModelSplitter->GetSashPosition ();
@@ -463,18 +428,18 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				splitViewMode = SplitViewMode::Model;
 			}
 			break;
-		case View_Split:
+		case Tool_View_Split:
 			{
 				editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 				splitViewMode = SplitViewMode::Split;
 			}
 			break;
-		case Editor_FitToWindow:
+		case View_Editor_FitToWindow:
 			{
 				editor->FitToWindow ();
 			}
 			break;
-		case Model_FitToWindow:
+		case View_Model_FitToWindow:
 			{
 				modelControl->FitToWindow ();
 			}
@@ -574,7 +539,7 @@ void MainWindow::SyncUserSettings ()
 void MainWindow::UpdateMenuBar ()
 {
 	WXAS::NodeEditorControl* editor = nodeEditorControl->GetEditor ();
- 	menuBar->UpdateStatus (splitViewMode, editor->GetUpdateMode (), userSettings);
+ 	menuBar->UpdateStatus (userSettings);
 	toolBar->UpdateStatus (splitViewMode, editor->GetUpdateMode ());
 }
 
