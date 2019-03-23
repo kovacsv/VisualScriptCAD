@@ -17,11 +17,13 @@ public:
 	const std::wstring&		GetName () const;
 	wxPanel*				GetPanel ();
 
-	virtual void			SaveUserSettings (UserSettings& userSettings) = 0;
+	virtual void			LoadFromUserSettings (const UserSettings& userSettings) = 0;
+	virtual void			SaveToUserSettings (UserSettings& userSettings) const = 0;
 
 protected:
 	std::wstring	name;
 	wxPanel*		panel;
+	bool			loaded;
 };
 
 class SettingsDialog : public wxDialog
@@ -38,11 +40,12 @@ public:
 	const UserSettings&		GetUserSettings () const;
 
 private:
-	void	OnListItemSelected (wxCommandEvent& evt);
-	void	OnButtonClick (wxCommandEvent& evt);
+	void					OnListItemSelected (wxCommandEvent& evt);
+	void					OnButtonClick (wxCommandEvent& evt);
 
-	void	AddPanels ();
-	void	ActivatePanel (size_t index);
+	void					AddPanels ();
+	void					SaveAllPanels ();
+	void					ActivatePanel (size_t index);
 
 	wxBoxSizer*											horizontalSizer;
 	wxBoxSizer*											verticalSizer;

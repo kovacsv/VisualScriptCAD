@@ -2,7 +2,8 @@
 
 SettingsDialogPanel::SettingsDialogPanel (const std::wstring& name, wxDialog* parent) :
 	name (name),
-	panel (new wxPanel (parent, wxID_ANY))
+	panel (new wxPanel (parent, wxID_ANY)),
+	loaded (false)
 {
 
 }
@@ -26,7 +27,7 @@ public:
 		AxisModeChoiceId = 1002
 	};
 
-	ModelViewPanel (wxDialog* parent, const UserSettings& userSettings) :
+	ModelViewPanel (wxDialog* parent) :
 		SettingsDialogPanel (L"Model View", parent),
 		gridSizer (new wxGridSizer (2, 2, 5, 5)),
 		boxSizer (new wxBoxSizer (wxVERTICAL)),
@@ -35,19 +36,8 @@ public:
 	{
 		viewModeChoice->Append (L"Lines");
 		viewModeChoice->Append (L"Polygons");
-		if (userSettings.renderSettings.viewMode == ViewMode::Lines) {
-			viewModeChoice->Select (0);
-		} else if (userSettings.renderSettings.viewMode == ViewMode::Polygons) {
-			viewModeChoice->Select (1);
-		}
-
 		axisModeChoice->Append (L"On");
 		axisModeChoice->Append (L"Off");
-		if (userSettings.renderSettings.axisMode == AxisMode::On) {
-			axisModeChoice->Select (0);
-		} else if (userSettings.renderSettings.axisMode == AxisMode::Off) {
-			axisModeChoice->Select (1);
-		}
 
 		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"View Mode"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
 		gridSizer->Add (viewModeChoice, 1, wxEXPAND);
@@ -58,7 +48,22 @@ public:
 		panel->SetSizer (boxSizer);
 	}
 
-	virtual void SaveUserSettings (UserSettings& userSettings) override
+	virtual void LoadFromUserSettings (const UserSettings& userSettings) override
+	{
+		if (userSettings.renderSettings.viewMode == ViewMode::Lines) {
+			viewModeChoice->Select (0);
+		} else if (userSettings.renderSettings.viewMode == ViewMode::Polygons) {
+			viewModeChoice->Select (1);
+		}
+
+		if (userSettings.renderSettings.axisMode == AxisMode::On) {
+			axisModeChoice->Select (0);
+		} else if (userSettings.renderSettings.axisMode == AxisMode::Off) {
+			axisModeChoice->Select (1);
+		}
+	}
+
+	virtual void SaveToUserSettings (UserSettings& userSettings) const override
 	{
 		if (viewModeChoice->GetSelection () == 0) {
 			userSettings.renderSettings.viewMode = ViewMode::Lines;
@@ -100,8 +105,9 @@ SettingsDialog::SettingsDialog (wxWindow *parent, const UserSettings& userSettin
 
 	AddPanels ();
 	ActivatePanel (0);
-	SetSizer (verticalSizer);
+	settingsList->Select (0);
 
+	SetSizer (verticalSizer);
 	SetEscapeId (wxID_CANCEL);
 }
 
@@ -120,31 +126,37 @@ void SettingsDialog::OnListItemSelected (wxCommandEvent& evt)
 void SettingsDialog::OnButtonClick (wxCommandEvent& evt)
 {
 	if (evt.GetId () == wxID_OK) {
-		for (std::unique_ptr<SettingsDialogPanel>& panel : panels) {
-			panel->SaveUserSettings (userSettings);
-		}
+		SaveAllPanels ();
 		EndModal (wxID_OK);
 	}
 }
 
 void SettingsDialog::AddPanels ()
 {
-	panels.push_back (std::unique_ptr<SettingsDialogPanel> (new ModelViewPanel (this, userSettings)));
+	panels.push_back (std::unique_ptr<SettingsDialogPanel> (new ModelViewPanel (this)));
 
 	for (std::unique_ptr<SettingsDialogPanel>& panel : panels) {
 		settingsList->Append (panel->GetName ());
 	}
 }
 
+void SettingsDialog::SaveAllPanels ()
+{
+	for (std::unique_ptr<SettingsDialogPanel>& panel : panels) {
+		panel->SaveToUserSettings (userSettings);
+	}
+}
+
 void SettingsDialog::ActivatePanel (size_t index)
 {
-	settingsList->Select (index);
+	SaveAllPanels ();
 
 	std::unique_ptr<SettingsDialogPanel>& activePanel = panels[index];
 	for (std::unique_ptr<SettingsDialogPanel>& panel : panels) {
 		panel->GetPanel ()->Hide ();
 	}
 	activePanel->GetPanel ()->Show ();
+	activePanel->LoadFromUserSettings (userSettings);
 
 	if (horizontalSizer->GetItemCount () > 1) {
 		horizontalSizer->Remove (1);
