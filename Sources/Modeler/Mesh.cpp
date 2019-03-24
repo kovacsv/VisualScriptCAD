@@ -8,7 +8,7 @@
 namespace Modeler
 {
 
-const Material DefaultMaterial (glm::dvec3 (0.5f, 0.5f, 0.5f));
+const Material DefaultMaterial (glm::dvec3 (0.0f, 0.5f, 0.7f));
 
 Material::Material () :
 	color (0.0f, 0.0f, 0.0f)
