@@ -13,16 +13,13 @@
 #include <CGAL/Polygon_mesh_processing/corefinement.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 #include <CGAL/Polyhedron_3.h>
-#include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/Cartesian_converter.h>
-#include <CGAL/boost/graph/convert_nef_polyhedron_to_polygon_mesh.h>
 #pragma warning (pop)
 
 typedef CGAL::Exact_predicates_exact_constructions_kernel	CGAL_Kernel;
 typedef CGAL_Kernel::Point_3								CGAL_Point;
 typedef CGAL::Surface_mesh<CGAL_Point>						CGAL_Mesh;
 typedef CGAL::Polyhedron_3<CGAL_Kernel>						CGAL_Polyhedron;
-typedef CGAL::Nef_polyhedron_3<CGAL_Kernel>					CGAL_NefPolyhedron;
 typedef CGAL_Polyhedron::HalfedgeDS							CGAL_HalfedgeDS;
 
 // https://stackoverflow.com/questions/53837772/cgal-convert-non-manifold-nef-polyhedron-3-to-triangle-mesh
@@ -289,83 +286,6 @@ static bool MeshBooleanOperationWithCGALMesh (const Modeler::Mesh& aMesh, const 
 	return true;
 }
 
-template <class HDS>
-class PolyhedronBuilder : public CGAL::Modifier_base<HDS> {
-public:
-	PolyhedronBuilder (const Modeler::Mesh& mesh) :
-		mesh (mesh)
-	{
-
-	}
-
-	void operator() (HDS& hds)
-	{
-		CGAL::Polyhedron_incremental_builder_3<HDS> builder (hds, true);
-		const Modeler::MeshGeometry& geometry = mesh.GetGeometry ();
-		builder.begin_surface (geometry.VertexCount (), geometry.TriangleCount ());
-		const glm::dmat4& transformation = mesh.GetTransformation ();
-		geometry.EnumerateVertices (transformation, [&] (const glm::dvec3& vertex) {
-			builder.add_vertex (HDS::Vertex::Point (vertex.x, vertex.y, vertex.z));
-		});
-		geometry.EnumerateTriangles ([&] (const Modeler::MeshTriangle& triangle) {
-			builder.begin_facet ();
-			builder.add_vertex_to_facet (triangle.v1);
-			builder.add_vertex_to_facet (triangle.v2);
-			builder.add_vertex_to_facet (triangle.v3);
-			builder.end_facet ();
-		});
-		builder.end_surface ();
-	}
-
-private:
-	const Modeler::Mesh& mesh;
-};
-
-static bool MeshBooleanOperationWithCGALPolyhedron (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
-{
-	CGAL_Polyhedron aPolyhedron;
-	CGAL_Polyhedron bPolyhedron;
-
-	PolyhedronBuilder<CGAL_HalfedgeDS> aBuilder (aMesh);
-	aPolyhedron.delegate (aBuilder);
-
-	PolyhedronBuilder<CGAL_HalfedgeDS>bBuilder (bMesh);
-	bPolyhedron.delegate (bBuilder);
-
-	CGAL_NefPolyhedron aNefPolyhedron (aPolyhedron);
-	CGAL_NefPolyhedron bNefPolyhedron (bPolyhedron);
-
-	CGAL_NefPolyhedron resultNefPolyhedron;
-	if (operation == BooleanOperation::Difference) {
-		resultNefPolyhedron = aNefPolyhedron - bNefPolyhedron;
-	} else if (operation == BooleanOperation::Difference) {
-		resultNefPolyhedron = aNefPolyhedron * bNefPolyhedron;
-	} else if (operation == BooleanOperation::Difference) {
-		resultNefPolyhedron = aNefPolyhedron + bNefPolyhedron;
-	} else {
-		throw std::exception ("invalid boolean operation");
-		return false;
-	}
-
-	std::vector<CGAL_Point> points;
-	std::vector<std::vector<size_t>> polygons;
-	convert_nef_polyhedron_to_polygon_soup<CGAL_Kernel, CGAL_NefPolyhedron> (resultNefPolyhedron, points, polygons, true);
-
-	Modeler::MaterialId materialId = resultMesh.AddMaterial (Modeler::DefaultMaterial);
-	for (const CGAL_Point& point : points) {
-		resultMesh.AddVertex (CGAL::to_double (point.x ()), CGAL::to_double (point.y ()), CGAL::to_double (point.z ()));
-	}
-
-	for (const std::vector<size_t>& polygon : polygons) {
-		if (polygon.size () != 3) {
-			throw std::exception ("invalid triangulated polygon");
-		}
-		resultMesh.AddTriangle ((unsigned int) polygon[0], (unsigned int) polygon[1], (unsigned int) polygon[2], materialId);
-	}
-
-	return true;
-}
-
 bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
 {
 	// use the same rounding for mesh generation as for operation
@@ -377,15 +297,6 @@ bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMes
 		success = MeshBooleanOperationWithCGALMesh (aMesh, bMesh, operation, resultMesh);
 	} catch (...) {
 		success = false;
-	}
-
-	static bool enablePolyhedronOperation = false;
-	if (enablePolyhedronOperation && !success) {
-		try {
-			success = MeshBooleanOperationWithCGALPolyhedron (aMesh, bMesh, operation, resultMesh);
-		} catch (...) {
-			success = false;
-		}
 	}
 
 	return success;
