@@ -51,5 +51,4 @@ private:
 	mutable std::unordered_set<Modeler::MeshId> meshes;
 };
 
-
 #endif

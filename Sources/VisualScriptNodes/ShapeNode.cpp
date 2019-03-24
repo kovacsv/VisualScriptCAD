@@ -63,7 +63,6 @@ ShapeNode::ShapeNode (const std::wstring& name, const NUIE::Point& position) :
 void ShapeNode::Initialize ()
 {
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::EnableDisableFeature ()));
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 }
 
 void ShapeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const

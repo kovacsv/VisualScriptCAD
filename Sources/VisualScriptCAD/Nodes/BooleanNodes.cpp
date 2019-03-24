@@ -28,6 +28,7 @@ BooleanNode::BooleanNode (const std::wstring& name, const NUIE::Point& position,
 void BooleanNode::Initialize ()
 {
 	ShapeNode::Initialize ();
+	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), L"Shape A", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("b"), L"Shape B", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Single)));
