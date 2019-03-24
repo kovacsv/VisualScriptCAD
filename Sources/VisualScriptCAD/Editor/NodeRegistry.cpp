@@ -56,6 +56,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Input Nodes", L"Number Distribute",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleDistributedNode (L"Num Distribute", position)); }
 	);
+	RegisterNode (L"Input Nodes", L"List Builder",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::ListBuilderNode (L"List Builder", position)); }
+	);
 	RegisterNode (L"Arithmetic Nodes", L"Addition",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::AdditionNode (L"Addition", position)); }
 	);
