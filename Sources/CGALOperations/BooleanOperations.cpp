@@ -220,6 +220,13 @@ static void ConvertCGALMeshToMesh (const CGAL_Mesh& cgalMesh, const CGAL_Mesh::P
 	}
 }
 
+enum class BooleanOperation
+{
+	Difference,
+	Intersection,
+	Union
+};
+
 static bool MeshBooleanOperationWithCGALMesh (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
 {
 	class CGAL_MeshVisitor : public CGAL::Polygon_mesh_processing::Corefinement::Default_visitor<CGAL_Mesh>
@@ -286,7 +293,7 @@ static bool MeshBooleanOperationWithCGALMesh (const Modeler::Mesh& aMesh, const 
 	return true;
 }
 
-bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
+static bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
 {
 	// use the same rounding for mesh generation as for operation
 	// also workaround a CGAL bug of not resetting the rounding value sometimes
@@ -302,7 +309,7 @@ bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMes
 	return success;
 }
 
-std::shared_ptr<Modeler::MeshShape> MeshBooleanOperation (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape, BooleanOperation operation)
+static std::shared_ptr<Modeler::MeshShape> ShapeBooleanOperation (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape, BooleanOperation operation)
 {
 	Modeler::Mesh aMesh = aShape->GenerateMesh ();
 	Modeler::Mesh bMesh = bShape->GenerateMesh ();
@@ -312,6 +319,36 @@ std::shared_ptr<Modeler::MeshShape> MeshBooleanOperation (const Modeler::ShapeCo
 		return nullptr;
 	}
 	return std::shared_ptr<Modeler::MeshShape> (new Modeler::MeshShape (glm::dmat4 (1.0), resultMesh));
+}
+
+bool MeshDifference (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh)
+{
+	return MeshBooleanOperation (aMesh, bMesh, BooleanOperation::Difference, resultMesh);
+}
+
+bool MeshIntersection (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh)
+{
+	return MeshBooleanOperation (aMesh, bMesh, BooleanOperation::Intersection, resultMesh);
+}
+
+bool MeshUnion (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh)
+{
+	return MeshBooleanOperation (aMesh, bMesh, BooleanOperation::Union, resultMesh);
+}
+
+std::shared_ptr<Modeler::MeshShape> ShapeDifference (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
+{
+	return ShapeBooleanOperation (aShape, bShape, BooleanOperation::Difference);
+}
+
+std::shared_ptr<Modeler::MeshShape> ShapeIntersection (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
+{
+	return ShapeBooleanOperation (aShape, bShape, BooleanOperation::Intersection);
+}
+
+std::shared_ptr<Modeler::MeshShape> ShapeUnion (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
+{
+	return ShapeBooleanOperation (aShape, bShape, BooleanOperation::Union);
 }
 
 }

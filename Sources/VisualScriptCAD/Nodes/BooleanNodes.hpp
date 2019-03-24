@@ -11,8 +11,15 @@ class BooleanNode : public ShapeNode
 	DYNAMIC_SERIALIZABLE (BooleanNode);
 
 public:
+	enum class Operation
+	{
+		Difference,
+		Intersection,
+		Union
+	};
+
 	BooleanNode ();
-	BooleanNode (const std::wstring& name, const NUIE::Point& position, CGALOperations::BooleanOperation operation);
+	BooleanNode (const std::wstring& name, const NUIE::Point& position, Operation operation);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -21,7 +28,7 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 
 private:
-	CGALOperations::BooleanOperation operation;
+	Operation	operation;
 };
 
 #endif

@@ -147,13 +147,13 @@ NodeRegistry::NodeRegistry () :
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformShapeNode (L"Transform Shape", position)); }
 	);
 	RegisterNode (L"Boolean Nodes", L"Difference",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Difference", position, CGALOperations::BooleanOperation::Difference)); }
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Difference", position, BooleanNode::Operation::Difference)); }
 	);
 	RegisterNode (L"Boolean Nodes", L"Intersection",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Intersection", position, CGALOperations::BooleanOperation::Intersection)); }
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Intersection", position, BooleanNode::Operation::Intersection)); }
 	);
 	RegisterNode (L"Boolean Nodes", L"Union",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Union", position, CGALOperations::BooleanOperation::Union)); }
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Union", position, BooleanNode::Operation::Union)); }
 	);
 	RegisterNode (L"Other Nodes", L"Viewer",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::MultiLineViewerNode (L"Viewer", position, 5)); }

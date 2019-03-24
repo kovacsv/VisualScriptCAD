@@ -7,15 +7,13 @@
 namespace CGALOperations
 {
 
-enum class BooleanOperation
-{
-	Difference,
-	Intersection,
-	Union
-};
+bool									MeshDifference (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
+bool									MeshIntersection (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
+bool									MeshUnion (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
 
-bool									MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh);
-std::shared_ptr<Modeler::MeshShape>		MeshBooleanOperation (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape, BooleanOperation operation);
+std::shared_ptr<Modeler::MeshShape>		ShapeDifference (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
+std::shared_ptr<Modeler::MeshShape>		ShapeIntersection (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
+std::shared_ptr<Modeler::MeshShape>		ShapeUnion (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
 
 }
 

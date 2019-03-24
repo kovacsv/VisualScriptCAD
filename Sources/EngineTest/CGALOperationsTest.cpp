@@ -52,7 +52,7 @@ TEST (CubeDifferenceTest)
 	Mesh cube1 = GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0);
 	Mesh cube2 = GenerateBox (DefaultMaterial, glm::translate (glm::dmat4 (1.0), glm::dvec3 (0.5, 0.5, 0.5)), 1.0, 1.0, 1.0);
 	Mesh result;
-	bool opResult = MeshBooleanOperation (cube1, cube2, BooleanOperation::Difference, result);
+	bool opResult = MeshDifference (cube1, cube2, result);
 	ASSERT (opResult == true);
 }
 
@@ -61,7 +61,7 @@ TEST (CubeDifferenceTestWithMaterials)
 	Mesh cube1 = GenerateBox (Material (glm::dvec3 (1.0, 0.0, 0.0)), glm::dmat4 (1.0), 1.0, 1.0, 1.0);
 	Mesh cube2 = GenerateBox (Material (glm::dvec3 (0.0, 1.0, 0.0)), glm::translate (glm::dmat4 (1.0), glm::dvec3 (0.5, 0.5, 0.5)), 1.0, 1.0, 1.0);
 	Mesh result;
-	bool opResult = MeshBooleanOperation (cube1, cube2, BooleanOperation::Difference, result);
+	bool opResult = MeshDifference (cube1, cube2, result);
 	ASSERT (opResult == true);
 
 	std::unordered_set<MaterialId> foundMaterials;
@@ -78,7 +78,7 @@ TEST (CubeCylinderNonManifoldDifferenceTest)
 	Mesh cube1 = GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0);
 	Mesh cube2 = GenerateCylinder (DefaultMaterial, glm::dmat4 (1.0), 0.5, 1.0, 3, true);
 	Mesh result;
-	bool opResult = MeshBooleanOperation (cube1, cube2, BooleanOperation::Difference, result);
+	bool opResult = MeshDifference (cube1, cube2, result);
 	ASSERT (opResult == false);
 }
 
@@ -99,7 +99,7 @@ TEST (TriangulationTest)
 			glm::dvec2 (1.0, 1.0)
 		};
 		std::vector<std::array<size_t, 3>> result;
-		bool opResult = TriangulatePolygon (points, result);;
+		bool opResult = TriangulatePolygon (points, result);
 		ASSERT (opResult == true);
 		ASSERT (result.size () == 1);
 		ASSERT (result[0] == (std::array<size_t, 3> { 0, 1, 2 }));

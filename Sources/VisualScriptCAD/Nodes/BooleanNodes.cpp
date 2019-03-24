@@ -13,12 +13,12 @@
 NE::DynamicSerializationInfo	BooleanNode::serializationInfo (NE::ObjectId ("{558DB17B-A907-4A10-A187-6C317921BB53}"), NE::ObjectVersion (1), BooleanNode::CreateSerializableInstance);
 
 BooleanNode::BooleanNode () :
-	BooleanNode (L"", NUIE::Point (), CGALOperations::BooleanOperation::Difference)
+	BooleanNode (L"", NUIE::Point (), Operation::Difference)
 {
 
 }
 
-BooleanNode::BooleanNode (const std::wstring& name, const NUIE::Point& position, CGALOperations::BooleanOperation operation) :
+BooleanNode::BooleanNode (const std::wstring& name, const NUIE::Point& position, Operation operation) :
 	ShapeNode (name, position),
 	operation (operation)
 {
@@ -49,7 +49,14 @@ NE::ValueConstPtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
 	bool isValid = BI::CombineValues (this, {transformationValue, aValue, bValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr aShape = ShapeValue::Get (combination.GetValue (1));
 		Modeler::ShapePtr bShape = ShapeValue::Get (combination.GetValue (2));
-		Modeler::ShapePtr shape = CGALOperations::MeshBooleanOperation (aShape, bShape, operation);
+		Modeler::ShapePtr shape;
+		if (operation == Operation::Difference) {
+			shape = CGALOperations::ShapeDifference (aShape, bShape);
+		} else if (operation == Operation::Intersection) {
+			shape = CGALOperations::ShapeIntersection (aShape, bShape);
+		} else if (operation == Operation::Union) {
+			shape = CGALOperations::ShapeUnion (aShape, bShape);
+		}
 		if (shape == nullptr || !shape->Check ()) {
 			return false;
 		}
@@ -70,7 +77,7 @@ NE::Stream::Status BooleanNode::Read (NE::InputStream& inputStream)
 	ShapeNode::Read (inputStream);
 	int operationInt = 0;
 	inputStream.Read (operationInt);
-	operation = (CGALOperations::BooleanOperation) operationInt;
+	operation = (Operation) operationInt;
 	return inputStream.GetStatus ();
 }
 
