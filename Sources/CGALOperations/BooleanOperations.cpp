@@ -25,32 +25,6 @@ typedef CGAL_Polyhedron::HalfedgeDS							CGAL_HalfedgeDS;
 // https://stackoverflow.com/questions/53837772/cgal-convert-non-manifold-nef-polyhedron-3-to-triangle-mesh
 // https://github.com/CGAL/cgal/blob/master/Polygon_mesh_processing/examples/Polygon_mesh_processing/corefinement_mesh_union_with_attributes.cpp
 
-template <class Output_kernel, class Nef_polyhedron>
-void convert_nef_polyhedron_to_polygon_soup(const Nef_polyhedron& nef,
-                                            std::vector<typename Output_kernel::Point_3>& points,
-                                            std::vector< std::vector<std::size_t> >& polygons,
-                                            bool triangulate_all_faces = false)
-{
-  typedef typename Nef_polyhedron::Point_3 Point_3;
-  typedef typename CGAL::Kernel_traits<Point_3>::Kernel Nef_Kernel;
-  typedef CGAL::Cartesian_converter<Nef_Kernel, Output_kernel> Converter;
-  typedef typename Output_kernel::Point_3 Out_point;
-  typename Nef_polyhedron::Volume_const_iterator vol_it = nef.volumes_begin(),
-                                                 vol_end = nef.volumes_end();
-  if ( Nef_polyhedron::Infi_box::extended_kernel() ) ++vol_it; // skip Infi_box
-  CGAL_assertion ( vol_it != vol_end );
-  ++vol_it; // skip unbounded volume
-
-  Converter to_output;
-  for (;vol_it!=vol_end;++vol_it)
-    CGAL::nef_to_pm::collect_polygon_mesh_info<Out_point>(points,
-                                                          polygons,
-                                                          nef,
-                                                          vol_it->shells_begin(),
-                                                          to_output,
-                                                          triangulate_all_faces);
-}
-
 namespace CGALOperations
 {
 
@@ -227,60 +201,80 @@ enum class BooleanOperation
 	Union
 };
 
+class CGAL_MeshVisitor : public CGAL::Polygon_mesh_processing::Corefinement::Default_visitor<CGAL_Mesh>
+{
+public:
+	CGAL_MeshVisitor () :
+		faceId ()
+	{
+
+	}
+
+	void before_subface_creations (CGAL_Mesh::Face_index splitFace, CGAL_Mesh& mesh)
+	{
+		faceId = properties[&mesh][splitFace];
+	}
+
+	void after_subface_created (CGAL_Mesh::Face_index newFace, CGAL_Mesh& mesh)
+	{
+		properties[&mesh][newFace] = faceId;
+	}
+
+	void after_face_copy (face_descriptor sourceFace, CGAL_Mesh& sourceMesh, face_descriptor targetFace, CGAL_Mesh& targetMesh)
+	{
+		properties[&targetMesh][targetFace] = properties[&sourceMesh][sourceFace];
+	}
+
+	FaceId faceId;
+	std::unordered_map<const CGAL_Mesh*, CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId>> properties;
+};
+
+class CGALMeshData
+{
+public:
+	CGALMeshData ()
+	{
+		cgalMeshPropertyMap = cgalMesh.add_property_map<CGAL_Mesh::Face_index, FaceId> ("faceid", FaceId ()).first;
+	}
+
+	CGALMeshData (const Modeler::Mesh& mesh, NormalDirection normalDir)
+	{
+		ConvertMeshToCGALMesh (mesh, cgalMesh, normalDir, cgalMeshPropertyMap);
+	}
+
+	CGAL_Mesh& GetCGALMesh ()
+	{
+		return cgalMesh;
+	}
+
+	CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId>& GetPropertyMap ()
+	{
+		return cgalMeshPropertyMap;
+	}
+
+private:
+	CGAL_Mesh												cgalMesh;
+	CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId>	cgalMeshPropertyMap;
+};
+
 static bool MeshBooleanOperationWithCGALMesh (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
 {
-	class CGAL_MeshVisitor : public CGAL::Polygon_mesh_processing::Corefinement::Default_visitor<CGAL_Mesh>
-	{
-	public:
-		CGAL_MeshVisitor () :
-			faceId ()
-		{
-
-		}
-
-		void before_subface_creations (CGAL_Mesh::Face_index splitFace, CGAL_Mesh& mesh)
-		{
-			faceId = properties[&mesh][splitFace];
-		}
-
-		void after_subface_created (CGAL_Mesh::Face_index newFace, CGAL_Mesh& mesh)
-		{
-			properties[&mesh][newFace] = faceId;
-		}
-
-		void after_face_copy (face_descriptor sourceFace, CGAL_Mesh& sourceMesh, face_descriptor targetFace, CGAL_Mesh& targetMesh)
-		{
-			properties[&targetMesh][targetFace] = properties[&sourceMesh][sourceFace];
-		}
-
-		FaceId faceId;
-		std::unordered_map<const CGAL_Mesh*, CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId>> properties;
-	};
-
-	CGAL_Mesh aCGALMesh;
-	CGAL_Mesh bCGALMesh;
-
-	CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId> aCGALMeshPropertyMap;
-	CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId> bCGALMeshPropertyMap;
-
-	ConvertMeshToCGALMesh (aMesh, aCGALMesh, NormalDirection::Original, aCGALMeshPropertyMap);
-	ConvertMeshToCGALMesh (bMesh, bCGALMesh, operation == BooleanOperation::Difference ? NormalDirection::Reversed : NormalDirection::Original, bCGALMeshPropertyMap);
-
-	CGAL_Mesh resultCGALMesh;
-	CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId> resultCGALMeshPropertyMap = resultCGALMesh.add_property_map<CGAL_Mesh::Face_index, FaceId> ("faceid", FaceId ()).first;
+	CGALMeshData aCGALMesh (aMesh, NormalDirection::Original);
+	CGALMeshData bCGALMesh (bMesh, operation == BooleanOperation::Difference ? NormalDirection::Reversed : NormalDirection::Original);
+	CGALMeshData resultCGALMesh;
 
 	CGAL_MeshVisitor visitor;
-	visitor.properties.insert ({ &aCGALMesh, aCGALMeshPropertyMap} );
-	visitor.properties.insert ({ &bCGALMesh, bCGALMeshPropertyMap} );
-	visitor.properties.insert ({ &resultCGALMesh, resultCGALMeshPropertyMap} );
+	visitor.properties.insert ({ &aCGALMesh.GetCGALMesh (), aCGALMesh.GetPropertyMap () } );
+	visitor.properties.insert ({ &bCGALMesh.GetCGALMesh (), bCGALMesh.GetPropertyMap () } );
+	visitor.properties.insert ({ &resultCGALMesh.GetCGALMesh (), resultCGALMesh.GetPropertyMap () } );
 
 	bool opResult = false;
 	if (operation == BooleanOperation::Difference) {
-		opResult = CGAL::Polygon_mesh_processing::corefine_and_compute_difference (aCGALMesh, bCGALMesh, resultCGALMesh, CGAL::Polygon_mesh_processing::parameters::visitor (visitor));
+		opResult = CGAL::Polygon_mesh_processing::corefine_and_compute_difference (aCGALMesh.GetCGALMesh (), bCGALMesh.GetCGALMesh (), resultCGALMesh.GetCGALMesh (), CGAL::Polygon_mesh_processing::parameters::visitor (visitor));
 	} else if (operation == BooleanOperation::Intersection) {
-		opResult = CGAL::Polygon_mesh_processing::corefine_and_compute_intersection (aCGALMesh, bCGALMesh, resultCGALMesh, CGAL::Polygon_mesh_processing::parameters::visitor (visitor));
+		opResult = CGAL::Polygon_mesh_processing::corefine_and_compute_intersection (aCGALMesh.GetCGALMesh (), bCGALMesh.GetCGALMesh (), resultCGALMesh.GetCGALMesh (), CGAL::Polygon_mesh_processing::parameters::visitor (visitor));
 	} else if (operation == BooleanOperation::Union) {
-		opResult = CGAL::Polygon_mesh_processing::corefine_and_compute_union (aCGALMesh, bCGALMesh, resultCGALMesh, CGAL::Polygon_mesh_processing::parameters::visitor (visitor));
+		opResult = CGAL::Polygon_mesh_processing::corefine_and_compute_union (aCGALMesh.GetCGALMesh (), bCGALMesh.GetCGALMesh (), resultCGALMesh.GetCGALMesh (), CGAL::Polygon_mesh_processing::parameters::visitor (visitor));
 	} else {
 		throw std::exception ("invalid boolean operation");
 	}
@@ -289,7 +283,7 @@ static bool MeshBooleanOperationWithCGALMesh (const Modeler::Mesh& aMesh, const 
 		return false;
 	}
 
-	ConvertCGALMeshToMesh (resultCGALMesh, resultCGALMeshPropertyMap, resultMesh);
+	ConvertCGALMeshToMesh (resultCGALMesh.GetCGALMesh (), resultCGALMesh.GetPropertyMap (), resultMesh);
 	return true;
 }
 
