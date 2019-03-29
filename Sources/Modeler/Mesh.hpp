@@ -54,8 +54,8 @@ public:
 	MeshGeometry (const MeshGeometry& rhs) = default;
 	MeshGeometry (MeshGeometry&& rhs) = default;
 
-	MeshGeometry&			operator= (const MeshGeometry& rhs) = delete;
-	MeshGeometry&			operator= (MeshGeometry&& rhs) = delete;
+	MeshGeometry&			operator= (const MeshGeometry& rhs) = default;
+	MeshGeometry&			operator= (MeshGeometry&& rhs) = default;
 
 	unsigned int			AddVertex (double x, double y, double z);
 	unsigned int			AddVertex (const glm::dvec3& vertex);
@@ -94,6 +94,11 @@ class MeshMaterials
 {
 public:
 	MeshMaterials ();
+	MeshMaterials (const MeshMaterials& rhs) = default;
+	MeshMaterials (MeshMaterials&& rhs) = default;
+
+	MeshMaterials&			operator= (const MeshMaterials& rhs) = default;
+	MeshMaterials&			operator= (MeshMaterials&& MeshMaterials) = default;
 
 	MaterialId				AddMaterial (const Material& material);
 	const Material&			GetMaterial (MaterialId materialId) const;
@@ -117,8 +122,8 @@ public:
 	Mesh (const Mesh& rhs) = default;
 	Mesh (Mesh&& rhs) = default;
 	
-	Mesh&					operator= (const Mesh& rhs) = delete;
-	Mesh&					operator= (Mesh&& rhs) = delete;
+	Mesh&					operator= (const Mesh& rhs) = default;
+	Mesh&					operator= (Mesh&& rhs) = default;
 
 	MaterialId				AddMaterial (const Material& material);
 

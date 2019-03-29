@@ -194,17 +194,10 @@ static void ConvertCGALMeshToMesh (const CGAL_Mesh& cgalMesh, const CGAL_Mesh::P
 	}
 }
 
-enum class BooleanOperation
-{
-	Difference,
-	Intersection,
-	Union
-};
-
-class CGAL_MeshVisitor : public CGAL::Polygon_mesh_processing::Corefinement::Default_visitor<CGAL_Mesh>
+class CGALMeshVisitor : public CGAL::Polygon_mesh_processing::Corefinement::Default_visitor<CGAL_Mesh>
 {
 public:
-	CGAL_MeshVisitor () :
+	CGALMeshVisitor () :
 		faceId ()
 	{
 
@@ -257,13 +250,20 @@ private:
 	CGAL_Mesh::Property_map<CGAL_Mesh::Face_index, FaceId>	cgalMeshPropertyMap;
 };
 
+enum class BooleanOperation
+{
+	Difference,
+	Intersection,
+	Union
+};
+
 static bool MeshBooleanOperationWithCGALMesh (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, BooleanOperation operation, Modeler::Mesh& resultMesh)
 {
 	CGALMeshData aCGALMesh (aMesh, NormalDirection::Original);
 	CGALMeshData bCGALMesh (bMesh, operation == BooleanOperation::Difference ? NormalDirection::Reversed : NormalDirection::Original);
 	CGALMeshData resultCGALMesh;
 
-	CGAL_MeshVisitor visitor;
+	CGALMeshVisitor visitor;
 	visitor.properties.insert ({ &aCGALMesh.GetCGALMesh (), aCGALMesh.GetPropertyMap () } );
 	visitor.properties.insert ({ &bCGALMesh.GetCGALMesh (), bCGALMesh.GetPropertyMap () } );
 	visitor.properties.insert ({ &resultCGALMesh.GetCGALMesh (), resultCGALMesh.GetPropertyMap () } );
