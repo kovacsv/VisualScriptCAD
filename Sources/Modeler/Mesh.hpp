@@ -83,6 +83,7 @@ public:
 	void					EnumerateTriangles (const std::function<void (const MeshTriangle&)>& processor) const;
 
 	Checksum				CalcCheckSum () const;
+	void					Clear ();
 
 private:
 	std::vector<glm::dvec3>		vertices;
@@ -109,6 +110,7 @@ public:
 	MaterialId				GetTriangleMaterial (unsigned int triangleIndex) const;
 
 	Checksum				CalcCheckSum () const;
+	void					Clear ();
 
 private:
 	std::vector<Material>		materials;
@@ -141,6 +143,9 @@ public:
 
 	const glm::dmat4&		GetTransformation () const;
 	void					SetTransformation (const glm::dmat4& newTransformation);
+	void					AddTransformation (const glm::dmat4& newTransformation);
+
+	void					Clear ();
 
 private:
 	MeshGeometry			geometry;

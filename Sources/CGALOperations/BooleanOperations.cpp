@@ -303,13 +303,12 @@ static bool MeshBooleanOperation (const Modeler::Mesh& aMesh, const Modeler::Mes
 	return success;
 }
 
-static std::shared_ptr<Modeler::MeshShape> ShapeBooleanOperation (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape, BooleanOperation operation)
+static Modeler::ShapePtr ShapeBooleanOperation (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape, BooleanOperation operation)
 {
 	Modeler::Mesh aMesh = aShape->GenerateMesh ();
 	Modeler::Mesh bMesh = bShape->GenerateMesh ();
 	Modeler::Mesh resultMesh;
-	bool opResult = MeshBooleanOperation (aMesh, bMesh, operation, resultMesh);
-	if (!opResult) {
+	if (!MeshBooleanOperation (aMesh, bMesh, operation, resultMesh)) {
 		return nullptr;
 	}
 	return std::shared_ptr<Modeler::MeshShape> (new Modeler::MeshShape (glm::dmat4 (1.0), resultMesh));
@@ -330,19 +329,57 @@ bool MeshUnion (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler:
 	return MeshBooleanOperation (aMesh, bMesh, BooleanOperation::Union, resultMesh);
 }
 
-std::shared_ptr<Modeler::MeshShape> ShapeDifference (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
+bool MeshUnion (const std::vector<Modeler::Mesh>& meshes, Modeler::Mesh& resultMesh)
+{
+	if (meshes.empty ()) {
+		return false;
+	}
+	resultMesh = meshes[0];
+	for (size_t i = 1; i < meshes.size (); i++) {
+		Modeler::Mesh aMesh = resultMesh;
+		const Modeler::Mesh& bMesh = meshes[i];
+		resultMesh.Clear ();
+		if (!MeshUnion (aMesh, bMesh, resultMesh)) {
+			resultMesh.Clear ();
+			return false;
+		}
+	}
+	return true;
+}
+
+Modeler::ShapePtr ShapeDifference (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
 {
 	return ShapeBooleanOperation (aShape, bShape, BooleanOperation::Difference);
 }
 
-std::shared_ptr<Modeler::MeshShape> ShapeIntersection (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
+Modeler::ShapePtr ShapeIntersection (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
 {
 	return ShapeBooleanOperation (aShape, bShape, BooleanOperation::Intersection);
 }
 
-std::shared_ptr<Modeler::MeshShape> ShapeUnion (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
+Modeler::ShapePtr ShapeUnion (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape)
 {
 	return ShapeBooleanOperation (aShape, bShape, BooleanOperation::Union);
+}
+
+Modeler::ShapePtr ShapeUnion (const std::vector<Modeler::ShapeConstPtr>& shapes)
+{
+	//if (shapes.empty ()) {
+	//	return nullptr;
+	//}
+	//if (shapes.size () == 1) {
+	//	return shapes[0]->Clone ();
+	//}
+
+	std::vector<Modeler::Mesh> meshes;
+	for (const Modeler::ShapeConstPtr& shape : shapes) {
+		meshes.push_back (shape->GenerateMesh ());
+	}
+	Modeler::Mesh resultMesh;
+	if (!MeshUnion (meshes, resultMesh)) {
+		return nullptr;
+	}
+	return std::shared_ptr<Modeler::MeshShape> (new Modeler::MeshShape (glm::dmat4 (1.0), resultMesh));
 }
 
 }

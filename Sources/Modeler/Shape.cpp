@@ -360,7 +360,7 @@ std::wstring MeshShape::ToString () const
 Mesh MeshShape::GenerateMesh () const
 {
 	Mesh result = mesh;
-	result.SetTransformation (transformation);
+	result.AddTransformation (transformation);
 	return result;
 }
 

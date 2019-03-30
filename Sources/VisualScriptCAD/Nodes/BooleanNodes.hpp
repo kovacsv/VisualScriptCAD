@@ -14,8 +14,7 @@ public:
 	enum class Operation
 	{
 		Difference,
-		Intersection,
-		Union
+		Intersection
 	};
 
 	BooleanNode ();
@@ -29,6 +28,21 @@ public:
 
 private:
 	Operation	operation;
+};
+
+class UnionNode : public ShapeNode
+{
+	DYNAMIC_SERIALIZABLE (UnionNode);
+
+public:
+	UnionNode ();
+	UnionNode (const std::wstring& name, const NUIE::Point& position);
+
+	virtual void				Initialize () override;
+	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
+
+	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
+	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
 #endif

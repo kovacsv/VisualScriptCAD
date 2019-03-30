@@ -4,16 +4,20 @@
 #include "Shape.hpp"
 #include "Mesh.hpp"
 
+#include <vector>
+
 namespace CGALOperations
 {
 
-bool									MeshDifference (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
-bool									MeshIntersection (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
-bool									MeshUnion (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
+bool					MeshDifference (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
+bool					MeshIntersection (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
+bool					MeshUnion (const Modeler::Mesh& aMesh, const Modeler::Mesh& bMesh, Modeler::Mesh& resultMesh);
+bool					MeshUnion (const std::vector<Modeler::Mesh>& meshes, Modeler::Mesh& resultMesh);
 
-std::shared_ptr<Modeler::MeshShape>		ShapeDifference (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
-std::shared_ptr<Modeler::MeshShape>		ShapeIntersection (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
-std::shared_ptr<Modeler::MeshShape>		ShapeUnion (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
+Modeler::ShapePtr		ShapeDifference (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
+Modeler::ShapePtr		ShapeIntersection (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
+Modeler::ShapePtr		ShapeUnion (const Modeler::ShapeConstPtr& aShape, const Modeler::ShapeConstPtr& bShape);
+Modeler::ShapePtr		ShapeUnion (const std::vector<Modeler::ShapeConstPtr>& shapes);
 
 }
 

@@ -186,6 +186,13 @@ Checksum MeshGeometry::CalcCheckSum () const
 	return result;
 }
 
+void MeshGeometry::Clear()
+{
+	vertices.clear ();
+	normals.clear ();
+	triangles.clear ();
+}
+
 MeshMaterials::MeshMaterials ()
 {
 
@@ -234,6 +241,12 @@ Checksum MeshMaterials::CalcCheckSum () const
 		result.Add (materialId);
 	}
 	return result;
+}
+
+void MeshMaterials::Clear()
+{
+	materials.clear ();
+	triangleMaterials.clear ();
 }
 
 Mesh::Mesh () :
@@ -299,6 +312,18 @@ const glm::dmat4& Mesh::GetTransformation () const
 void Mesh::SetTransformation (const glm::dmat4& newTransformation)
 {
 	transformation = newTransformation;
+}
+
+void Mesh::AddTransformation (const glm::dmat4& newTransformation)
+{
+	transformation = newTransformation * transformation;
+}
+
+void Mesh::Clear ()
+{
+	geometry.Clear ();
+	materials.Clear ();
+	transformation = glm::dmat4 (1.0);
 }
 
 void EnumerateTrianglesByMaterial (const MeshGeometry& geometry, const MeshMaterials& materials, const std::function<void (MaterialId, const std::vector<unsigned int>&)>& processor)
