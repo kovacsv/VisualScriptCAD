@@ -47,8 +47,8 @@ void BooleanNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("ashapes"), L"Shape A", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("bshapes"), L"Shape B", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("ashapes"), L"Shapes A", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("bshapes"), L"Shapes B", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
 	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
 }
 
