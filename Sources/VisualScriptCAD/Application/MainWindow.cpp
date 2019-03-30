@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 
+#include "WXAS_wxFileIO.hpp"
 #include "ModelControl.hpp"
 #include "RenderModelConverter.hpp"
 #include "ModelEvaluationData.hpp"
@@ -9,7 +10,7 @@
 #include "IconStore.hpp"
 #include "Version.hpp"
 #include "VersionInfo.hpp"
-#include "WXAS_wxFileIO.hpp"
+#include "XMLUtilities.hpp"
 
 #include <locale>
 #include <codecvt>
