@@ -1,4 +1,5 @@
 #include <wx/wx.h>
+#include "NE_Debug.hpp"
 #include "MainWindow.hpp"
 
 #ifdef DEBUG
@@ -21,7 +22,7 @@ public:
 	Application () :
 		mainWindow (nullptr)
 	{
-
+		EnableLeakDetection ();
 	}
 
 	virtual bool OnInit ()
