@@ -136,7 +136,8 @@ public:
 			unsigned int next = (i == polygonVertexCount - 1) ? 0 : i + 1;
 			unsigned int ntop = next + polygonVertexCount;
 			unsigned int top = curr + polygonVertexCount;
-			AddRectangle (mesh, curr, next, ntop, top, materialId);
+			mesh.AddTriangle (curr, next, ntop, materialId);
+			mesh.AddTriangle (curr, ntop, top, materialId);
 		}
 
 		return mesh;
@@ -149,33 +150,32 @@ private:
 	std::vector<glm::dvec2>		basePolygon;
 };
 
+class NaiveTriangulator : public Triangulator
+{
+public:
+	virtual bool TriangulatePolygon (const std::vector<glm::dvec2>& points, std::vector<std::array<size_t, 3>>& result) override
+	{
+		if (points.size () < 3) {
+			return false;
+		}
+		for (size_t i = 1; i < points.size () - 1; i++) {
+			result.push_back ({ 0, i, i + 1 });
+		}
+		return true;
+	}
+};
+
 Mesh GenerateBox (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize)
 {
-	Mesh mesh;
-	MaterialId materialId = mesh.AddMaterial (material);
-	mesh.SetTransformation (transformation);
-
+	PrismGenerator generator (material, transformation, zSize);
 	double x = xSize / 2.0;
 	double y = ySize / 2.0;
-	double z = zSize / 2.0;
-
-	mesh.AddVertex (-x, -y, -z);
-	mesh.AddVertex (x, -y, -z);
-	mesh.AddVertex (x, -y, z);
-	mesh.AddVertex (-x, -y, z);
-	mesh.AddVertex (-x, y, -z);
-	mesh.AddVertex (x, y, -z);
-	mesh.AddVertex (x, y, z);
-	mesh.AddVertex (-x, y, z);
-
-	AddRectangle (mesh, 0, 1, 2, 3, materialId);
-	AddRectangle (mesh, 1, 5, 6, 2, materialId);
-	AddRectangle (mesh, 5, 4, 7, 6, materialId);
-	AddRectangle (mesh, 4, 0, 3, 7, materialId);
-	AddRectangle (mesh, 0, 4, 5, 1, materialId);
-	AddRectangle (mesh, 3, 2, 6, 7, materialId);
-	
-	return mesh;
+	generator.AddVertex (glm::dvec2 (-x, -y));
+	generator.AddVertex (glm::dvec2 (x, -y));
+	generator.AddVertex (glm::dvec2 (x, y));
+	generator.AddVertex (glm::dvec2 (-x, y));
+	NaiveTriangulator triangulator;
+	return generator.Generate (triangulator);
 }
 
 Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth)
