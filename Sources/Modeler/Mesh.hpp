@@ -155,6 +155,8 @@ private:
 	glm::dmat4				transformation;
 };
 
+extern const Mesh EmptyMesh;
+
 void EnumerateTrianglesByMaterial (const MeshGeometry& geometry, const MeshMaterials& materials, const std::function<void (MaterialId, const std::vector<unsigned int>&)>& processor);
 
 }

@@ -337,6 +337,8 @@ void Mesh::Clear ()
 	transformation = glm::dmat4 (1.0);
 }
 
+const Mesh EmptyMesh;
+
 void EnumerateTrianglesByMaterial (const MeshGeometry& geometry, const MeshMaterials& materials, const std::function<void (MaterialId, const std::vector<unsigned int>&)>& processor)
 {
 	std::vector<MaterialId> materialVector;
