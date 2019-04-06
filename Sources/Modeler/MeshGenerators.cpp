@@ -113,11 +113,14 @@ public:
 			mesh.AddVertex (point.x, point.y, halfHeight);
 		}
 
+		unsigned int bottomNormal = mesh.AddNormal (0.0, 0.0, -1.0);
+		unsigned int topNormal = mesh.AddNormal (0.0, 0.0, 1.0);
 		for (const std::array<size_t, 3>& triangle : baseTriangles) {
 			mesh.AddTriangle (
 				(unsigned int) triangle[0],
 				(unsigned int) triangle[2],
 				(unsigned int) triangle[1],
+				bottomNormal,
 				materialId
 			);
 		}
@@ -127,6 +130,7 @@ public:
 				polygonVertexCount + (unsigned int) triangle[0],
 				polygonVertexCount + (unsigned int) triangle[1],
 				polygonVertexCount + (unsigned int) triangle[2],
+				topNormal,
 				materialId
 			);
 		}
@@ -136,14 +140,27 @@ public:
 			unsigned int next = (i == polygonVertexCount - 1) ? 0 : i + 1;
 			unsigned int ntop = next + polygonVertexCount;
 			unsigned int top = curr + polygonVertexCount;
-			mesh.AddTriangle (curr, next, ntop, materialId);
-			mesh.AddTriangle (curr, ntop, top, materialId);
+			unsigned int normal = mesh.AddNormal (CalculateNormal (i));
+			mesh.AddTriangle (curr, next, ntop, normal, materialId);
+			mesh.AddTriangle (curr, ntop, top, normal, materialId);
 		}
 
 		return mesh;
 	}
 
 private:
+	glm::dvec3 CalculateNormal (unsigned int edgeIndex) const
+	{
+		unsigned int polygonVertexCount = (unsigned int) basePolygon.size ();
+		const glm::dvec2& beg = basePolygon[edgeIndex];
+		const glm::dvec2& end = basePolygon[edgeIndex < polygonVertexCount - 1 ? edgeIndex + 1 : 0];
+		glm::dvec2 normal = glm::normalize (glm::dvec2 (
+			end.y - beg.y,
+			-end.x + beg.x
+		));
+		return glm::dvec3 (normal, 0.0);
+	}
+
 	const Material&				material;
 	const glm::dmat4&			transformation; 
 	double						height;

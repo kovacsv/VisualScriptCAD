@@ -64,6 +64,7 @@ public:
 	unsigned int			AddNormal (const glm::dvec3& vertex);
 
 	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3);
+	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int normal);
 	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int n1, unsigned int n2, unsigned int n3);
 
 	unsigned int			VertexCount () const;
@@ -136,6 +137,7 @@ public:
 	unsigned int			AddNormal (const glm::dvec3& vertex);
 
 	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, MaterialId mat);
+	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int normal, MaterialId mat);
 	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int n1, unsigned int n2, unsigned int n3, MaterialId mat);
 
 	const MeshGeometry&		GetGeometry () const;

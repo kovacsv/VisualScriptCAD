@@ -99,6 +99,11 @@ unsigned int MeshGeometry::AddTriangle (unsigned int v1, unsigned int v2, unsign
 	return AddTriangle (v1, v2, v3, normalIndex, normalIndex, normalIndex);
 }
 
+unsigned int MeshGeometry::AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int normal)
+{
+	return AddTriangle (v1, v2, v3, normal, normal, normal);
+}
+
 unsigned int MeshGeometry::AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int n1, unsigned int n2, unsigned int n3)
 {
 	triangles.push_back (MeshTriangle (v1, v2, v3, n1, n2, n3));
@@ -286,6 +291,12 @@ unsigned int Mesh::AddTriangle (unsigned int v1, unsigned int v2, unsigned int v
 {
 	materials.AddTriangleMaterial (mat);
 	return geometry.AddTriangle (v1, v2, v3);
+}
+
+unsigned int Mesh::AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int normal, MaterialId mat)
+{
+	materials.AddTriangleMaterial (mat);
+	return geometry.AddTriangle (v1, v2, v3, normal);
 }
 
 unsigned int Mesh::AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int n1, unsigned int n2, unsigned int n3, MaterialId mat)
