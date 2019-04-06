@@ -32,6 +32,16 @@ static void AddCenteredConvexPolygon (Mesh& mesh, unsigned int centerVertex, con
 	}
 }
 
+static void GenerateCircularPoints (const glm::dvec2& center, double radius, unsigned int segmentation, const std::function<void (const glm::dvec2& point)>& processor)
+{
+	double segmentAngle = (2.0 * PI) / double (segmentation);
+	glm::dvec2 point (radius, 0.0);
+	for (unsigned int i = 0; i < segmentation; i++) {
+		processor (center + point);
+		point = glm::rotate (point, segmentAngle);
+	}
+}
+
 static void GenerateCircularPoints (const glm::dvec3& center, double radius, unsigned int segmentation, const std::function<void (const glm::dvec3& vertex)>& processor)
 {
 	double segmentAngle = (2.0 * PI) / double (segmentation);
@@ -75,6 +85,12 @@ Triangulator::~Triangulator ()
 class PrismGenerator
 {
 public:
+	enum class VertexType
+	{
+		Sharp,
+		Soft
+	};
+
 	PrismGenerator (const Material& material, const glm::dmat4& transformation, double height) :
 		material (material),
 		transformation (transformation),
@@ -88,9 +104,10 @@ public:
 	{
 	}
 
-	void AddVertex (const glm::dvec2& position)
+	void AddVertex (const glm::dvec2& position, VertexType vertexType)
 	{
 		basePolygon.push_back (position);
+		basePolygonVertexTypes.push_back (vertexType);
 		vertexCount += 1;
 	}
 
@@ -103,17 +120,75 @@ public:
 		Mesh mesh;
 		MaterialId materialId = mesh.AddMaterial (material);
 		mesh.SetTransformation (transformation);
-		if (!GenerateTopAndBottom (mesh, materialId)) {
+
+		if (!AddTopAndBottomVertices (mesh)) {
 			return EmptyMesh;
 		}
-		if (!GenerateSides (mesh, materialId)) {
+		if (!AddTopAndBottomTriangles (mesh, materialId)) {
 			return EmptyMesh;
 		}
+		if (!AddSideTriangles (mesh, materialId)) {
+			return EmptyMesh;
+		}
+
 		return mesh;
 	}
 
 protected:
+	bool AddTopAndBottomVertices (Mesh& mesh) const
+	{
+		double halfHeight = height / 2.0;
+		for (const glm::dvec2& point : basePolygon) {
+			mesh.AddVertex (point.x, point.y, -halfHeight);
+		}
+		for (const glm::dvec2& point : basePolygon) {
+			mesh.AddVertex (point.x, point.y, halfHeight);
+		}
+		return true;
+	}
+
+	bool AddSideTriangles (Mesh& mesh, MaterialId materialId) const
+	{
+		std::vector<unsigned int> normals;
+		for (unsigned int i = 0; i < vertexCount; i++) {
+			normals.push_back (mesh.AddNormal (CalculateNormal (i)));
+		}
+		for (unsigned int i = 0; i < vertexCount; i++) {
+			unsigned int curr = GetBottomVertex (i);
+			unsigned int next = GetBottomVertex (i + 1);
+			unsigned int ntop = GetTopVertex (i + 1);
+			unsigned int top = GetTopVertex (i);
+			VertexType vertexType = basePolygonVertexTypes[i];
+			if (vertexType == VertexType::Sharp) {
+				unsigned int normal = normals[i];
+				mesh.AddTriangle (curr, next, ntop, normal, materialId);
+				mesh.AddTriangle (curr, ntop, top, normal, materialId);
+			} else if (vertexType == VertexType::Soft) {
+				unsigned int currNormal = normals[i];
+				unsigned int nextNormal = normals[i < vertexCount - 1 ? i + 1 : 0];
+				mesh.AddTriangle (curr, next, ntop, currNormal, nextNormal, nextNormal, materialId);
+				mesh.AddTriangle (curr, ntop, top, currNormal, nextNormal, currNormal, materialId);
+			} else {
+				throw std::logic_error ("invalid vertex type");
+			}
+		}
+		return true;
+	}
+
 	glm::dvec3 CalculateNormal (unsigned int edgeIndex) const
+	{
+		VertexType vertexType = basePolygonVertexTypes[edgeIndex];
+		if (vertexType == VertexType::Sharp) {
+			return CalculateSharpNormal (edgeIndex);
+		} else if (vertexType == VertexType::Soft) {
+			glm::dvec3 normal = CalculateSharpNormal (edgeIndex);
+			glm::dvec3 prevNormal = CalculateSharpNormal (edgeIndex > 0 ? edgeIndex - 1 : vertexCount - 1);
+			return glm::normalize ((prevNormal + normal) / 2.0);
+		}
+		throw std::logic_error ("invalid vertex type");
+	}
+
+	glm::dvec3 CalculateSharpNormal (unsigned int edgeIndex) const
 	{
 		const glm::dvec2& beg = basePolygon[edgeIndex];
 		const glm::dvec2& end = basePolygon[edgeIndex < vertexCount - 1 ? edgeIndex + 1 : 0];
@@ -124,29 +199,24 @@ protected:
 		return glm::dvec3 (normal, 0.0);
 	}
 
-	bool GenerateSides (Mesh& mesh, MaterialId materialId) const
+	unsigned int GetBottomVertex (unsigned int vertexIndex) const
 	{
-		for (unsigned int i = 0; i < vertexCount; i++) {
-			unsigned int curr = GetBottomVertex (i);
-			unsigned int next = GetBottomVertex (i + 1);
-			unsigned int ntop = GetTopVertex (i + 1);
-			unsigned int top = GetTopVertex (i);
-			unsigned int normal = mesh.AddNormal (CalculateNormal (i));
-			mesh.AddTriangle (curr, next, ntop, normal, materialId);
-			mesh.AddTriangle (curr, ntop, top, normal, materialId);
-		}
-		return true;
+		return vertexIndex < vertexCount ? vertexIndex : 0;
 	}
 
-	virtual bool				GenerateTopAndBottom (Mesh& mesh, MaterialId materialId) const = 0;
-	virtual unsigned int		GetBottomVertex (unsigned int vertexIndex) const = 0;
-	virtual unsigned int		GetTopVertex (unsigned int vertexIndex) const = 0;
+	unsigned int GetTopVertex (unsigned int vertexIndex) const
+	{
+		return vertexIndex < vertexCount ? vertexIndex + vertexCount : vertexCount;
+	}
+
+	virtual bool				AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const = 0;
 
 	Material					material;
 	glm::dmat4					transformation; 
 	double						height;
 
 	std::vector<glm::dvec2>		basePolygon;
+	std::vector<VertexType>		basePolygonVertexTypes;
 	unsigned int				vertexCount;
 };
 
@@ -160,20 +230,11 @@ public:
 	}
 
 private:
-	virtual bool GenerateTopAndBottom (Mesh& mesh, MaterialId materialId) const override
+	virtual bool AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const override
 	{
 		std::vector<std::array<size_t, 3>> baseTriangles;
 		if (!triangulator.TriangulatePolygon (basePolygon, baseTriangles)) {
 			return false;
-		}
-
-		double halfHeight = height / 2.0;
-		for (const glm::dvec2& point : basePolygon) {
-			mesh.AddVertex (point.x, point.y, -halfHeight);
-		}
-
-		for (const glm::dvec2& point : basePolygon) {
-			mesh.AddVertex (point.x, point.y, halfHeight);
 		}
 
 		unsigned int bottomNormal = mesh.AddNormal (0.0, 0.0, -1.0);
@@ -201,23 +262,51 @@ private:
 		return true;
 	}
 
-	virtual unsigned int GetBottomVertex (unsigned int vertexIndex) const override
-	{
-		if (vertexIndex == vertexCount) {
-			return 0;
-		}
-		return vertexIndex;
-	}
-
-	virtual unsigned int GetTopVertex (unsigned int vertexIndex) const override
-	{
-		if (vertexIndex == vertexCount) {
-			return vertexCount;
-		}
-		return vertexIndex + vertexCount;
-	}
-
 	Triangulator&	triangulator;
+};
+
+class CenterPointTriangulatedPrismGenerator : public PrismGenerator
+{
+public:
+	CenterPointTriangulatedPrismGenerator (const Material& material, const glm::dmat4& transformation, const glm::dvec2& center, double height) :
+		PrismGenerator (material, transformation, height),
+		center (center)
+	{
+	}
+
+private:
+	virtual bool AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const override
+	{
+		double halfHeight = height / 2.0;
+
+		unsigned int bottomVertex = mesh.AddVertex (glm::dvec3 (center, -halfHeight));
+		unsigned int bottomNormal = mesh.AddNormal (0.0, 0.0, -1.0);
+		for (unsigned int i = 0; i < vertexCount; i++) {
+			mesh.AddTriangle (
+				bottomVertex,
+				GetBottomVertex (i + 1),
+				GetBottomVertex (i),
+				bottomNormal,
+				materialId
+			);
+		}
+
+		unsigned int topVertex = mesh.AddVertex (glm::dvec3 (center, halfHeight));
+		unsigned int topNormal = mesh.AddNormal (0.0, 0.0, 1.0);
+		for (unsigned int i = 0; i < vertexCount; i++) {
+			mesh.AddTriangle (
+				topVertex,
+				GetTopVertex (i),
+				GetTopVertex (i + 1),
+				topNormal,
+				materialId
+			);
+		}
+
+		return true;
+	}
+
+	glm::dvec2 center;
 };
 
 class NaiveTriangulator : public Triangulator
@@ -241,56 +330,21 @@ Mesh GenerateBox (const Material& material, const glm::dmat4& transformation, do
 	TriangulatedPrismGenerator generator (material, transformation, zSize, triangulator);
 	double x = xSize / 2.0;
 	double y = ySize / 2.0;
-	generator.AddVertex (glm::dvec2 (-x, -y));
-	generator.AddVertex (glm::dvec2 (x, -y));
-	generator.AddVertex (glm::dvec2 (x, y));
-	generator.AddVertex (glm::dvec2 (-x, y));
+	generator.AddVertex (glm::dvec2 (-x, -y), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (x, -y), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (x, y), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (-x, y), PrismGenerator::VertexType::Sharp);
 	return generator.Generate ();
 }
 
 Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth)
 {
-	Mesh mesh;
-	MaterialId materialId = mesh.AddMaterial (material);
-	mesh.SetTransformation (transformation);
-
-	double halfHeight = height / 2.0;
-	glm::dvec3 bottomPoint (0.0, 0.0, -halfHeight);
-	glm::dvec3 topPoint (0.0, 0.0, halfHeight);
-	unsigned int bottomVertex = mesh.AddVertex (bottomPoint);
-	unsigned int topVertex = mesh.AddVertex (topPoint);
-
-	std::vector<unsigned int> bottomVertices = AddCircularVertices (mesh, bottomPoint, radius, segmentation);
-	std::vector<unsigned int> topVertices = AddCircularVertices (mesh, topPoint, radius, segmentation);
-
-	std::vector<unsigned int> bottomVerticesReversed = bottomVertices;
-	std::reverse (bottomVerticesReversed.begin (), bottomVerticesReversed.end ());
-
-	AddCenteredConvexPolygon (mesh, bottomVertex, bottomVerticesReversed, glm::dvec3 (0.0, 0.0, -1.0), materialId);
-	AddCenteredConvexPolygon (mesh, topVertex, topVertices, glm::dvec3 (0.0, 0.0, 1.0), materialId);
-
-	double segmentAngle = (2.0 * PI) / double (segmentation);
-	glm::dmat4 rotMatrix = glm::rotate (glm::dmat4 (1.0), segmentAngle, glm::dvec3 (0.0, 0.0, 1.0));
-	glm::dvec3 normal (1.0, 0.0, 0.0);
-	for (size_t i = 0; i < segmentation; i++) {
-		unsigned int a = bottomVertices[i];
-		unsigned int b = bottomVertices[i == segmentation - 1 ? 0 : i + 1];
-		unsigned int c = topVertices[i == segmentation - 1 ? 0 : i + 1];
-		unsigned int d = topVertices[i];
-		glm::dvec3 begNormal = normal;
-		glm::dvec3 endNormal = rotMatrix * glm::dvec4 (normal, 1.0);
-		if (isSmooth) {
-			unsigned int n1 = mesh.AddNormal (begNormal);
-			unsigned int n2 = mesh.AddNormal (endNormal);
-			mesh.AddTriangle (a, b, c, n1, n2, n2, materialId);
-			mesh.AddTriangle (a, c, d, n1, n2, n1, materialId);
-		} else {
-			AddRectangle (mesh, a, b, c, d, materialId);
-		}
-		normal = endNormal;
-	}
-
-	return mesh;
+	glm::dvec2 center (0.0, 0.0);
+	CenterPointTriangulatedPrismGenerator generator (material, transformation, center, height);
+	GenerateCircularPoints (center, radius, segmentation, [&] (const glm::dvec2& point) {
+		generator.AddVertex (point, isSmooth ? PrismGenerator::VertexType::Soft : PrismGenerator::VertexType::Sharp);
+	});
+	return generator.Generate ();
 }
 
 Mesh GenerateTube (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth)
@@ -584,7 +638,7 @@ Mesh GeneratePrism (const Material& material, const glm::dmat4& transformation, 
 {
 	TriangulatedPrismGenerator generator (material, transformation, height, triangulator);
 	for (const glm::dvec2& vertex : basePolygon) {
-		generator.AddVertex (vertex);
+		generator.AddVertex (vertex, PrismGenerator::VertexType::Sharp);
 	}
 	return generator.Generate ();
 }
