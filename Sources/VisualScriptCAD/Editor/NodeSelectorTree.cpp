@@ -102,6 +102,7 @@ void NodeSelectorTree::OnText (wxCommandEvent&)
 {
 	NodeTreeFiller filler (nodeTree, searchControl->GetValue ().ToStdWstring ());
 	filler.Fill ();
+	searchControl->SetFocus ();
 }
 
 void NodeSelectorTree::OnDoubleClick (wxTreeEvent& evt)
