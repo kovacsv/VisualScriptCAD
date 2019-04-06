@@ -78,7 +78,9 @@ public:
 	PrismGenerator (const Material& material, const glm::dmat4& transformation, double height) :
 		material (material),
 		transformation (transformation),
-		height (height)
+		height (height),
+		basePolygon (),
+		vertexCount (0)
 	{
 	}
 
