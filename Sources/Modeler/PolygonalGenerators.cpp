@@ -66,6 +66,30 @@ Mesh PolygonalGenerator::Generate () const
 	return mesh;
 }
 
+glm::dvec3 PolygonalGenerator::CalculateNormal (unsigned int vertexIndex) const
+{
+	VertexType vertexType = basePolygonVertexTypes[vertexIndex];
+	if (vertexType == VertexType::Sharp) {
+		return CalculateSharpNormal (vertexIndex);
+	} else if (vertexType == VertexType::Soft) {
+		glm::dvec3 normal = CalculateSharpNormal (vertexIndex);
+		glm::dvec3 prevNormal = CalculateSharpNormal (vertexIndex > 0 ? vertexIndex - 1 : vertexCount - 1);
+		return glm::normalize ((prevNormal + normal) / 2.0);
+	}
+	throw std::logic_error ("invalid vertex type");
+}
+
+glm::dvec3 PolygonalGenerator::CalculateSharpNormal (unsigned int vertexIndex) const
+{
+	const glm::dvec2& beg = basePolygon[vertexIndex];
+	const glm::dvec2& end = basePolygon[vertexIndex < vertexCount - 1 ? vertexIndex + 1 : 0];
+	glm::dvec2 normal = glm::normalize (glm::dvec2 (
+		end.y - beg.y,
+		-end.x + beg.x
+	));
+	return glm::dvec3 (normal, 0.0);
+}
+
 PrismGenerator::PrismGenerator (const Material& material, const glm::dmat4& transformation, double height) :
 	PolygonalGenerator (material, transformation, height)
 {
@@ -126,30 +150,6 @@ bool PrismGenerator::AddSideTriangles (Mesh& mesh, MaterialId materialId) const
 		}
 	}
 	return true;
-}
-
-glm::dvec3 PrismGenerator::CalculateNormal (unsigned int edgeIndex) const
-{
-	VertexType vertexType = basePolygonVertexTypes[edgeIndex];
-	if (vertexType == VertexType::Sharp) {
-		return CalculateSharpNormal (edgeIndex);
-	} else if (vertexType == VertexType::Soft) {
-		glm::dvec3 normal = CalculateSharpNormal (edgeIndex);
-		glm::dvec3 prevNormal = CalculateSharpNormal (edgeIndex > 0 ? edgeIndex - 1 : vertexCount - 1);
-		return glm::normalize ((prevNormal + normal) / 2.0);
-	}
-	throw std::logic_error ("invalid vertex type");
-}
-
-glm::dvec3 PrismGenerator::CalculateSharpNormal (unsigned int edgeIndex) const
-{
-	const glm::dvec2& beg = basePolygon[edgeIndex];
-	const glm::dvec2& end = basePolygon[edgeIndex < vertexCount - 1 ? edgeIndex + 1 : 0];
-	glm::dvec2 normal = glm::normalize (glm::dvec2 (
-		end.y - beg.y,
-		-end.x + beg.x
-	));
-	return glm::dvec3 (normal, 0.0);
 }
 
 unsigned int PrismGenerator::GetBottomVertex (unsigned int vertexIndex) const

@@ -44,6 +44,9 @@ public:
 	Mesh						Generate () const;
 
 protected:
+	glm::dvec3					CalculateNormal (unsigned int vertexIndex) const;
+	glm::dvec3					CalculateSharpNormal (unsigned int vertexIndex) const;
+
 	virtual bool				GenerateInternal (Mesh& mesh, MaterialId materialId) const = 0;
 
 	Material					material;
@@ -67,9 +70,6 @@ protected:
 	bool			AddTopAndBottomVertices (Mesh& mesh) const;
 	bool			AddSideTriangles (Mesh& mesh, MaterialId materialId) const;
 	virtual bool	AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const = 0;
-
-	glm::dvec3		CalculateNormal (unsigned int edgeIndex) const;
-	glm::dvec3		CalculateSharpNormal (unsigned int edgeIndex) const;
 
 	unsigned int	GetBottomVertex (unsigned int vertexIndex) const;
 	unsigned int	GetTopVertex (unsigned int vertexIndex) const;
