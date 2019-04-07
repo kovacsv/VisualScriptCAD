@@ -28,7 +28,7 @@ public:
 	virtual bool TriangulatePolygon (const std::vector<glm::dvec2>& points, std::vector<std::array<size_t, 3>>& result) override;
 };
 
-class PrismGenerator
+class PolygonalGenerator
 {
 public:
 	enum class VertexType
@@ -37,22 +37,14 @@ public:
 		Soft
 	};
 
-	PrismGenerator (const Material& material, const glm::dmat4& transformation, double height);
-	virtual ~PrismGenerator ();
+	PolygonalGenerator (const Material& material, const glm::dmat4& transformation, double height);
+	virtual ~PolygonalGenerator ();
 
 	void						AddVertex (const glm::dvec2& position, VertexType vertexType);
 	Mesh						Generate () const;
 
 protected:
-	bool						AddTopAndBottomVertices (Mesh& mesh) const;
-	bool						AddSideTriangles (Mesh& mesh, MaterialId materialId) const;
-	virtual bool				AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const = 0;
-
-	glm::dvec3					CalculateNormal (unsigned int edgeIndex) const;
-	glm::dvec3					CalculateSharpNormal (unsigned int edgeIndex) const;
-
-	unsigned int				GetBottomVertex (unsigned int vertexIndex) const;
-	unsigned int				GetTopVertex (unsigned int vertexIndex) const;
+	virtual bool				GenerateInternal (Mesh& mesh, MaterialId materialId) const = 0;
 
 	Material					material;
 	glm::dmat4					transformation; 
@@ -61,6 +53,26 @@ protected:
 	std::vector<glm::dvec2>		basePolygon;
 	std::vector<VertexType>		basePolygonVertexTypes;
 	unsigned int				vertexCount;
+};
+
+class PrismGenerator : public PolygonalGenerator
+{
+public:
+	PrismGenerator (const Material& material, const glm::dmat4& transformation, double height);
+	virtual ~PrismGenerator ();
+
+protected:
+	virtual bool	GenerateInternal (Mesh& mesh, MaterialId materialId) const;
+
+	bool			AddTopAndBottomVertices (Mesh& mesh) const;
+	bool			AddSideTriangles (Mesh& mesh, MaterialId materialId) const;
+	virtual bool	AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const = 0;
+
+	glm::dvec3		CalculateNormal (unsigned int edgeIndex) const;
+	glm::dvec3		CalculateSharpNormal (unsigned int edgeIndex) const;
+
+	unsigned int	GetBottomVertex (unsigned int vertexIndex) const;
+	unsigned int	GetTopVertex (unsigned int vertexIndex) const;
 };
 
 class TriangulatedPrismGenerator : public PrismGenerator

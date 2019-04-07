@@ -30,7 +30,7 @@ bool NaiveTriangulator::TriangulatePolygon (const std::vector<glm::dvec2>& point
 	return true;
 }
 
-PrismGenerator::PrismGenerator (const Material& material, const glm::dmat4& transformation, double height) :
+PolygonalGenerator::PolygonalGenerator (const Material& material, const glm::dmat4& transformation, double height) :
 	material (material),
 	transformation (transformation),
 	height (height),
@@ -39,18 +39,18 @@ PrismGenerator::PrismGenerator (const Material& material, const glm::dmat4& tran
 {
 }
 
-PrismGenerator::~PrismGenerator ()
+PolygonalGenerator::~PolygonalGenerator ()
 {
 }
 
-void PrismGenerator::AddVertex (const glm::dvec2& position, VertexType vertexType)
+void PolygonalGenerator::AddVertex (const glm::dvec2& position, VertexType vertexType)
 {
 	basePolygon.push_back (position);
 	basePolygonVertexTypes.push_back (vertexType);
 	vertexCount += 1;
 }
 
-Mesh PrismGenerator::Generate () const
+Mesh PolygonalGenerator::Generate () const
 {
 	if (vertexCount < 3) {
 		return EmptyMesh;
@@ -59,18 +59,34 @@ Mesh PrismGenerator::Generate () const
 	Mesh mesh;
 	MaterialId materialId = mesh.AddMaterial (material);
 	mesh.SetTransformation (transformation);
-
-	if (!AddTopAndBottomVertices (mesh)) {
-		return EmptyMesh;
-	}
-	if (!AddTopAndBottomTriangles (mesh, materialId)) {
-		return EmptyMesh;
-	}
-	if (!AddSideTriangles (mesh, materialId)) {
+	if (!GenerateInternal (mesh, materialId)) {
 		return EmptyMesh;
 	}
 
 	return mesh;
+}
+
+PrismGenerator::PrismGenerator (const Material& material, const glm::dmat4& transformation, double height) :
+	PolygonalGenerator (material, transformation, height)
+{
+}
+
+PrismGenerator::~PrismGenerator ()
+{
+}
+
+bool PrismGenerator::GenerateInternal (Mesh& mesh, MaterialId materialId) const
+{
+	if (!AddTopAndBottomVertices (mesh)) {
+		return false;
+	}
+	if (!AddTopAndBottomTriangles (mesh, materialId)) {
+		return false;
+	}
+	if (!AddSideTriangles (mesh, materialId)) {
+		return false;
+	}
+	return true;
 }
 
 bool PrismGenerator::AddTopAndBottomVertices (Mesh& mesh) const
