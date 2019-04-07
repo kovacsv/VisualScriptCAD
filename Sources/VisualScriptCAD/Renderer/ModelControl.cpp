@@ -21,7 +21,7 @@ ModelControl::ModelControl (wxWindow *parent) :
 	wxGLCanvas (parent, wxID_ANY, canvasAttributes, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
 	glContext (nullptr),
 	renderModelConverter (),
-	renderSceneSettings (ViewMode::Polygons, AxisMode::Off),
+	renderSceneSettings (),
 	renderScene (),
 	lastMousePosition (0, 0),
 	lastMouseButton (-1),
@@ -133,6 +133,7 @@ const RenderSettings& ModelControl::GetRenderSettings () const
 void ModelControl::SetRenderSettings (const RenderSettings& newSettings)
 {
 	renderSceneSettings = newSettings;
+	renderScene.InitAxisLines (renderSceneSettings.axisSize);
 	Refresh ();
 }
 

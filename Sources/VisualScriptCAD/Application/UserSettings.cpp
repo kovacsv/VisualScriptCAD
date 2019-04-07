@@ -6,53 +6,6 @@
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
 
-template <typename EnumType>
-class XmlEnum
-{
-public:
-	XmlEnum (const std::string& tagName, const std::vector<std::pair<EnumType, std::string>> enumStrings) :
-		tagName (tagName),
-		enumStrings (enumStrings)
-	{
-	}
-
-	void Read (const tinyxml2::XMLNode* parent, EnumType* result) const
-	{
-		const tinyxml2::XMLElement* element = parent->FirstChildElement (tagName.c_str ());
-		if (element == nullptr) {
-			return;
-		}
-		std::string enumString = element->GetText ();
-		for (const auto& it : enumStrings) {
-			if (it.second == enumString) {
-				*result = it.first;
-				break;
-			}
-		}
-	}
-
-	void Write (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, EnumType enumValue) const
-	{
-		std::string enumString;
-		for (const auto& it : enumStrings) {
-			if (it.first == enumValue) {
-				enumString = it.second;
-				break;
-			}
-		}
-		if (enumString.empty ()) {
-			return;
-		}
-		tinyxml2::XMLElement* elem = doc.NewElement (tagName.c_str ());
-		elem->SetText (enumString.c_str ());
-		parent->InsertEndChild (elem);
-	}
-
-private:
-	std::string										tagName;
-	std::vector<std::pair<EnumType, std::string>>	enumStrings;
-};
-
 static const size_t MaxRecentFileNumber = 10;
 
 static std::string GetXmlFilePath ()
@@ -68,6 +21,7 @@ static std::string GetXmlFilePath ()
 
 static const char SettingsNodeName[] = "VisualScriptCADSettings";
 static const char RenderSettingsNodeName[] = "RenderSettings";
+static const char RenderAxisSizeNodeName[] = "AxisSize";
 static const char ExportSettingsNodeName[] = "ExportSettings";
 static const char ImageSettingsNodeName[] = "ImageSettings";
 static const char ImageWidthNodeName[] = "ImageWidth";
@@ -96,9 +50,22 @@ static const XmlEnum<ExportSettings::FormatId> ExportFormatEnum ("ExportFormat",
 	{ ExportSettings::FormatId::Png, "Png" },
 });
 
-RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode) :
+RenderSettings::RenderSettings () :
+	RenderSettings (ViewMode::Polygons, AxisMode::On, 20)
+{
+
+}
+
+RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode, int axisSize) :
 	viewMode (viewMode),
-	axisMode (axisMode)
+	axisMode (axisMode),
+	axisSize (axisSize)
+{
+
+}
+
+ImageSettings::ImageSettings () :
+	ImageSettings (800, 600, 4)
 {
 
 }
@@ -116,17 +83,22 @@ bool ImageSettings::IsValid () const
 	return width >= 50 && height >= 50 && multisampling > 0;
 }
 
-ExportSettings::ExportSettings (FormatId format, const ImageSettings& image, const std::wstring& folder, const std::wstring& name) :
+ExportSettings::ExportSettings () :
+	ExportSettings (ExportSettings::FormatId::Obj, wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model")
+{
+}
+
+ExportSettings::ExportSettings (FormatId format, const std::wstring& folder, const std::wstring& name) :
 	format (format),
-	image (image),
+	image (),
 	folder (folder),
 	name (name)
 {
 }
 
 UserSettings::UserSettings () :
-	renderSettings (ViewMode::Polygons, AxisMode::Off),
-	exportSettings (ExportSettings::FormatId::Obj, ImageSettings (800, 600, 4), wxStandardPaths::Get ().GetUserDir (wxStandardPathsBase::Dir_Desktop).ToStdWstring (), L"model"),
+	renderSettings (),
+	exportSettings (),
 	isMaximized (true)
 {
 
@@ -149,13 +121,14 @@ void UserSettings::Load ()
 
 	const tinyxml2::XMLNode* renderSettingsNode = settingsNode->FirstChildElement (RenderSettingsNodeName);
 	if (renderSettingsNode != nullptr) {
-		ViewModeEnum.Read (renderSettingsNode, &renderSettings.viewMode);
-		AxisModeEnum.Read (renderSettingsNode, &renderSettings.axisMode);
+		ViewModeEnum.Read (renderSettingsNode, renderSettings.viewMode);
+		AxisModeEnum.Read (renderSettingsNode, renderSettings.axisMode);
+		ReadIntegerNode (renderSettingsNode, RenderAxisSizeNodeName, renderSettings.axisSize);
 	}
 
 	const tinyxml2::XMLNode* exportSettingsNode = settingsNode->FirstChildElement (ExportSettingsNodeName);
 	if (exportSettingsNode != nullptr) {
-		ExportFormatEnum.Read (exportSettingsNode, &exportSettings.format);
+		ExportFormatEnum.Read (exportSettingsNode, exportSettings.format);
 		const tinyxml2::XMLNode* imageSettingsNode = exportSettingsNode->FirstChildElement (ImageSettingsNodeName);
 		if (imageSettingsNode != nullptr) {
 			ReadIntegerNode (imageSettingsNode, ImageWidthNodeName, exportSettings.image.width);
@@ -190,6 +163,7 @@ void UserSettings::Save ()
 	tinyxml2::XMLNode* renderSettingsNode = doc.NewElement (RenderSettingsNodeName);
 	ViewModeEnum.Write (doc, renderSettingsNode, renderSettings.viewMode);
 	AxisModeEnum.Write (doc, renderSettingsNode, renderSettings.axisMode);
+	WriteIntegerNode (doc, renderSettingsNode, RenderAxisSizeNodeName, renderSettings.axisSize);
 	settingsNode->InsertEndChild (renderSettingsNode);
 
 	tinyxml2::XMLNode* exportSettingsNode = doc.NewElement (ExportSettingsNodeName);

@@ -1,5 +1,8 @@
 #include "SettingsDialog.hpp"
 
+static const wxSize ChoiceControlSize (250, 25);
+static const wxSize SliderControlSize (250, 35);
+
 SettingsDialogPanel::SettingsDialogPanel (const std::wstring& name, wxDialog* parent) :
 	name (name),
 	panel (new wxPanel (parent, wxID_ANY)),
@@ -24,18 +27,21 @@ public:
 	enum DialogIds
 	{
 		ViewModeChoiceId = 1001,
-		AxisModeChoiceId = 1002
+		AxisModeChoiceId = 1002,
+		AxisSizeSliderId = 1002
 	};
 
 	ModelViewPanel (wxDialog* parent) :
 		SettingsDialogPanel (L"Model View", parent),
-		gridSizer (new wxGridSizer (2, 2, 5, 5)),
+		gridSizer (new wxFlexGridSizer (3, 2, 5, 20)),
 		boxSizer (new wxBoxSizer (wxVERTICAL)),
-		viewModeChoice (new wxChoice (panel, DialogIds::ViewModeChoiceId)),
-		axisModeChoice (new wxChoice (panel, DialogIds::AxisModeChoiceId))
+		viewModeChoice (new wxChoice (panel, DialogIds::ViewModeChoiceId, wxDefaultPosition, ChoiceControlSize)),
+		axisModeChoice (new wxChoice (panel, DialogIds::AxisModeChoiceId, wxDefaultPosition, ChoiceControlSize)),
+		axisSizeSlider (new wxSlider (panel, DialogIds::AxisSizeSliderId, 10, 5, 50, wxDefaultPosition, SliderControlSize, wxSL_LABELS))
 	{
 		viewModeChoice->Append (L"Lines");
 		viewModeChoice->Append (L"Polygons");
+
 		axisModeChoice->Append (L"On");
 		axisModeChoice->Append (L"Off");
 
@@ -43,6 +49,8 @@ public:
 		gridSizer->Add (viewModeChoice, 1, wxEXPAND);
 		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"Axis Mode"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
 		gridSizer->Add (axisModeChoice, 1, wxEXPAND);
+		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"Axis Size"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
+		gridSizer->Add (axisSizeSlider, 1, wxEXPAND);
 
 		boxSizer->Add (gridSizer, 1, wxEXPAND | wxALL, 5);
 		panel->SetSizer (boxSizer);
@@ -61,6 +69,8 @@ public:
 		} else if (userSettings.renderSettings.axisMode == AxisMode::Off) {
 			axisModeChoice->Select (1);
 		}
+
+		axisSizeSlider->SetValue (userSettings.renderSettings.axisSize);
 	}
 
 	virtual void SaveToUserSettings (UserSettings& userSettings) const override
@@ -76,18 +86,31 @@ public:
 		} else if (axisModeChoice->GetSelection () == 1) {
 			userSettings.renderSettings.axisMode = AxisMode::Off;
 		}
+
+		userSettings.renderSettings.axisSize = axisSizeSlider->GetValue ();
 	}
 
 private:
-	wxGridSizer*	gridSizer;
-	wxBoxSizer*		boxSizer;
-	wxChoice*		viewModeChoice;
-	wxChoice*		axisModeChoice;
+	wxFlexGridSizer*	gridSizer;
+	wxBoxSizer*			boxSizer;
+	wxChoice*			viewModeChoice;
+	wxChoice*			axisModeChoice;
+	wxSlider*			axisSizeSlider;
 };
 
 wxPanel* SettingsDialogPanel::GetPanel ()
 {
 	return panel;
+}
+
+void SettingsDialogPanel::SetLoaded ()
+{
+	loaded = true;
+}
+
+bool SettingsDialogPanel::IsLoaded () const
+{
+	return loaded;
 }
 
 SettingsDialog::SettingsDialog (wxWindow *parent, const UserSettings& userSettings) :
@@ -143,7 +166,9 @@ void SettingsDialog::AddPanels ()
 void SettingsDialog::SaveAllPanels ()
 {
 	for (std::unique_ptr<SettingsDialogPanel>& panel : panels) {
-		panel->SaveToUserSettings (userSettings);
+		if (panel->IsLoaded ()) {
+			panel->SaveToUserSettings (userSettings);
+		}
 	}
 }
 
@@ -157,6 +182,7 @@ void SettingsDialog::ActivatePanel (size_t index)
 	}
 	activePanel->GetPanel ()->Show ();
 	activePanel->LoadFromUserSettings (userSettings);
+	activePanel->SetLoaded ();
 
 	if (horizontalSizer->GetItemCount () > 1) {
 		horizontalSizer->Remove (1);

@@ -438,6 +438,11 @@ void RenderLineModel::EnumerateRenderLineGeometries (const std::function<void (c
 	}
 }
 
+void RenderLineModel::Clear ()
+{
+	renderLineGeometries.clear ();
+}
+
 RenderPixels::RenderPixels (int width, int height) :
 	width (width),
 	height (height),
@@ -501,12 +506,36 @@ bool RenderScene::Init ()
 		return false;
 	}
 
-	InitAxisLines ();
+	InitAxisLines (0);
 
 	glEnable (GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	return true;
+}
+
+void RenderScene::InitAxisLines (int size)
+{
+	lineModel.Clear ();
+	if (size == 0) {
+		return;
+	}
+
+	RenderLineGeometry mainAxisLines (RenderLineMaterial (glm::vec3 (0.5f, 0.5f, 0.5f)));
+	mainAxisLines.AddLine (glm::vec3 (-size, 0.0f, 0.0f), glm::vec3 (size, 0.0f, 0.0f));
+	mainAxisLines.AddLine (glm::vec3 (0.0f, -size, 0.0f), glm::vec3 (0.0f, size, 0.0f));
+	mainAxisLines.AddLine (glm::vec3 (0.0f, 0.0f, -size), glm::vec3 (0.0f, 0.0f, size));
+	lineModel.AddRenderLineGeometry (mainAxisLines);
+
+	RenderLineGeometry secondaryAxisLines (RenderLineMaterial (glm::vec3 (0.8f, 0.8f, 0.8f)));
+	for (int i = -size; i <= size; i++) {
+		if (i == 0) {
+			continue;
+		}
+		secondaryAxisLines.AddLine (glm::vec3 (-size, i, 0.0f), glm::vec3 (size, i, 0.0f));
+		secondaryAxisLines.AddLine (glm::vec3 (i, -size, 0.0f), glm::vec3 (i, size, 0.0f));
+	}
+	lineModel.AddRenderLineGeometry (secondaryAxisLines);
 }
 
 void RenderScene::Draw (int width, int height, const RenderSettings& settings) const
@@ -601,27 +630,6 @@ void RenderScene::FitToWindow (int width, int height)
 	}
 	
 	camera.ZoomToSphere (center, radius, width, height);
-}
-
-void RenderScene::InitAxisLines ()
-{
-	static const int axisSize = 10;
-
-	RenderLineGeometry mainAxisLines (RenderLineMaterial (glm::vec3 (0.5f, 0.5f, 0.5f)));
-	mainAxisLines.AddLine (glm::vec3 (-axisSize, 0.0f, 0.0f), glm::vec3 (axisSize, 0.0f, 0.0f));
-	mainAxisLines.AddLine (glm::vec3 (0.0f, -axisSize, 0.0f), glm::vec3 (0.0f, axisSize, 0.0f));
-	mainAxisLines.AddLine (glm::vec3 (0.0f, 0.0f, -axisSize), glm::vec3 (0.0f, 0.0f, axisSize));
-	lineModel.AddRenderLineGeometry (mainAxisLines);
-
-	RenderLineGeometry secondaryAxisLines (RenderLineMaterial (glm::vec3 (0.8f, 0.8f, 0.8f)));
-	for (int i = -axisSize; i <= axisSize; i++) {
-		if (i == 0) {
-			continue;
-		}
-		secondaryAxisLines.AddLine (glm::vec3 (-axisSize, i, 0.0f), glm::vec3 (axisSize, i, 0.0f));
-		secondaryAxisLines.AddLine (glm::vec3 (i, -axisSize, 0.0f), glm::vec3 (i, axisSize, 0.0f));
-	}
-	lineModel.AddRenderLineGeometry (secondaryAxisLines);
 }
 
 void RenderScene::DrawModel (int width, int height, ViewMode drawMode) const

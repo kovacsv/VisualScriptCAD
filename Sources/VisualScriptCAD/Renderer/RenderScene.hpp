@@ -153,6 +153,9 @@ public:
 
 	void				AddRenderLineGeometry (const RenderLineGeometry& lineGeometry);
 	void				EnumerateRenderLineGeometries (const std::function<void (const RenderLineGeometry&)>& processor) const;
+
+	void				Clear ();
+
 private:
 	std::vector<RenderLineGeometry>		renderLineGeometries;
 };
@@ -189,6 +192,8 @@ public:
 	RenderScene ();
 
 	bool				Init ();
+	void				InitAxisLines (int size);
+
 	void				Draw (int width, int height, const RenderSettings& settings) const;
 	void				DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const;
 	RenderModel&		GetModel ();
@@ -199,8 +204,6 @@ public:
 	void				FitToWindow (int width, int height);
 
 private:
-	void				InitAxisLines ();
-
 	void				DrawModel (int width, int height, ViewMode drawMode) const;
 	void				DrawLines (int width, int height, AxisMode axisMode) const;
 

@@ -16,6 +16,8 @@ public:
 
 	const std::wstring&		GetName () const;
 	wxPanel*				GetPanel ();
+	void					SetLoaded ();
+	bool					IsLoaded () const;
 
 	virtual void			LoadFromUserSettings (const UserSettings& userSettings) = 0;
 	virtual void			SaveToUserSettings (UserSettings& userSettings) const = 0;

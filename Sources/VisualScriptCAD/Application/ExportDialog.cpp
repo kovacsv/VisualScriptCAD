@@ -59,7 +59,7 @@ public:
 		boxSizer (new wxBoxSizer (wxVERTICAL)),
 		widthText (new wxTextCtrl (this, DialogIds::WidthId, wxEmptyString, wxDefaultPosition, controlMinSize)),
 		heightText (new wxTextCtrl (this, DialogIds::HeightId, wxEmptyString, wxDefaultPosition, controlMinSize)),
-		multisamplingSlider (new wxSlider (this, DialogIds::HeightId, 1, 1, 8, wxDefaultPosition, controlMinSize, wxSL_LABELS | wxSL_AUTOTICKS)),
+		multisamplingSlider (new wxSlider (this, DialogIds::HeightId, 1, 1, 8, wxDefaultPosition, controlMinSize, wxSL_LABELS)),
 		saveButton (new wxButton (this, DialogIds::SaveButtonId, L"Save"))
 	{
 		WXAS::SetTextControlValidator (widthText, L"0123456789");
@@ -225,7 +225,7 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 		} else if (exportSettings.format == ExportSettings::FormatId::Png) {
 			if (exportSettings.image.IsValid ()) {
 				RenderPixels pixels (exportSettings.image.width * exportSettings.image.multisampling, exportSettings.image.height * exportSettings.image.multisampling);
-				RenderSettings renderSettings (ViewMode::Polygons, AxisMode::Off);
+				RenderSettings renderSettings (ViewMode::Polygons, AxisMode::Off, 10);
 				scene.DrawOffscreen (renderSettings, pixels);
 
 				wxImage image (pixels.GetWidth (), pixels.GetHeight ());

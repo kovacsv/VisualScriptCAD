@@ -21,15 +21,18 @@ enum class AxisMode
 class RenderSettings
 {
 public:
-	RenderSettings (ViewMode viewMode, AxisMode axisMode);
+	RenderSettings ();
+	RenderSettings (ViewMode viewMode, AxisMode axisMode, int axisSize);
 
-	ViewMode viewMode;
-	AxisMode axisMode;
+	ViewMode	viewMode;
+	AxisMode	axisMode;
+	int			axisSize;
 };
 
 class ImageSettings
 {
 public:
+	ImageSettings ();
 	ImageSettings (int width, int height, int multisampling);
 
 	bool IsValid () const;
@@ -50,7 +53,8 @@ public:
 		Png = 3
 	};
 
-	ExportSettings (FormatId format, const ImageSettings& image, const std::wstring& folder, const std::wstring& name);
+	ExportSettings ();
+	ExportSettings (FormatId format, const std::wstring& folder, const std::wstring& name);
 
 	FormatId		format;
 	ImageSettings	image;
