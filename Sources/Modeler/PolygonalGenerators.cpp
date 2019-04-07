@@ -75,12 +75,11 @@ Mesh PrismGenerator::Generate () const
 
 bool PrismGenerator::AddTopAndBottomVertices (Mesh& mesh) const
 {
-	double halfHeight = height / 2.0;
 	for (const glm::dvec2& point : basePolygon) {
-		mesh.AddVertex (point.x, point.y, -halfHeight);
+		mesh.AddVertex (point.x, point.y, 0.0);
 	}
 	for (const glm::dvec2& point : basePolygon) {
-		mesh.AddVertex (point.x, point.y, halfHeight);
+		mesh.AddVertex (point.x, point.y, height);
 	}
 	return true;
 }
@@ -193,9 +192,7 @@ CenterPointTriangulatedPrismGenerator::CenterPointTriangulatedPrismGenerator (co
 
 bool CenterPointTriangulatedPrismGenerator::AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const
 {
-	double halfHeight = height / 2.0;
-
-	unsigned int bottomVertex = mesh.AddVertex (glm::dvec3 (center, -halfHeight));
+	unsigned int bottomVertex = mesh.AddVertex (glm::dvec3 (center, 0.0));
 	unsigned int bottomNormal = mesh.AddNormal (0.0, 0.0, -1.0);
 	for (unsigned int i = 0; i < vertexCount; i++) {
 		mesh.AddTriangle (
@@ -207,7 +204,7 @@ bool CenterPointTriangulatedPrismGenerator::AddTopAndBottomTriangles (Mesh& mesh
 		);
 	}
 
-	unsigned int topVertex = mesh.AddVertex (glm::dvec3 (center, halfHeight));
+	unsigned int topVertex = mesh.AddVertex (glm::dvec3 (center, height));
 	unsigned int topNormal = mesh.AddNormal (0.0, 0.0, 1.0);
 	for (unsigned int i = 0; i < vertexCount; i++) {
 		mesh.AddTriangle (

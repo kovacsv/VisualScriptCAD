@@ -76,7 +76,7 @@ TEST (CubeDifferenceTestWithMaterials)
 TEST (CubeCylinderNonManifoldDifferenceTest)
 {
 	Mesh cube1 = GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0);
-	Mesh cube2 = GenerateCylinder (DefaultMaterial, glm::dmat4 (1.0), 0.5, 1.0, 3, true);
+	Mesh cube2 = GenerateCylinder (DefaultMaterial, glm::translate (glm::dmat4 (1.0), glm::dvec3 (0.5, 0.5, 0.0)), 0.5, 1.0, 3, true);
 	Mesh result;
 	bool opResult = MeshDifference (cube1, cube2, result);
 	ASSERT (opResult == false);

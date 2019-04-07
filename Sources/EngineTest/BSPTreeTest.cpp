@@ -42,7 +42,7 @@ public:
 
 TEST (BSPTreeClipTest)
 {
-	Mesh cube = GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0);
+	Mesh cube = GenerateBox (DefaultMaterial, glm::translate (glm::dmat4 (1.0), glm::dvec3 (-0.5, -0.5, -0.5)), 1.0, 1.0, 1.0);
 
 	BSPTree tree;
 

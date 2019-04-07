@@ -81,12 +81,10 @@ Mesh GenerateBox (const Material& material, const glm::dmat4& transformation, do
 {
 	NaiveTriangulator triangulator;
 	TriangulatedPrismGenerator generator (material, transformation, zSize, triangulator);
-	double x = xSize / 2.0;
-	double y = ySize / 2.0;
-	generator.AddVertex (glm::dvec2 (-x, -y), PrismGenerator::VertexType::Sharp);
-	generator.AddVertex (glm::dvec2 (x, -y), PrismGenerator::VertexType::Sharp);
-	generator.AddVertex (glm::dvec2 (x, y), PrismGenerator::VertexType::Sharp);
-	generator.AddVertex (glm::dvec2 (-x, y), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (0.0, 0.0), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (xSize, 0.0), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (xSize, ySize), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (0.0, ySize), PrismGenerator::VertexType::Sharp);
 	return generator.Generate ();
 }
 
@@ -106,9 +104,8 @@ Mesh GenerateTube (const Material& material, const glm::dmat4& transformation, d
 	MaterialId materialId = mesh.AddMaterial (material);
 	mesh.SetTransformation (transformation);
 
-	double halfHeight = height / 2.0;
-	glm::dvec3 bottomPoint (0.0, 0.0, -halfHeight);
-	glm::dvec3 topPoint (0.0, 0.0, halfHeight);
+	glm::dvec3 bottomPoint (0.0, 0.0, 0.0);
+	glm::dvec3 topPoint (0.0, 0.0, height);
 
 	std::vector<unsigned int> bottomOutsideVertices = AddCircularVertices (mesh, bottomPoint, radius, segmentation);
 	std::vector<unsigned int> bottomInsideVertices = AddCircularVertices (mesh, bottomPoint, radius - thickness, segmentation);
@@ -164,15 +161,14 @@ Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, d
 	MaterialId materialId = mesh.AddMaterial (material);
 	mesh.SetTransformation (transformation);
 
-	double halfHeight = height / 2.0;
 	bool onePointBottom = Geometry::IsEqual (bottomRadius, 0.0);
 	bool onePointTop = Geometry::IsEqual (topRadius, 0.0);
 
 	std::vector<unsigned int> bottomVertices;
 	if (onePointBottom) {
-		bottomVertices.push_back (mesh.AddVertex (glm::dvec3 (0.0, 0.0, -halfHeight)));
+		bottomVertices.push_back (mesh.AddVertex (glm::dvec3 (0.0, 0.0, 0.0)));
 	} else {
-		glm::dvec3 bottomPoint (0.0, 0.0, -halfHeight);
+		glm::dvec3 bottomPoint (0.0, 0.0, 0.0);
 		unsigned int bottomVertex = mesh.AddVertex (bottomPoint);
 		bottomVertices = AddCircularVertices (mesh, bottomPoint, bottomRadius, segmentation);
 		std::vector<unsigned int> bottomVerticesReversed = bottomVertices;
@@ -182,9 +178,9 @@ Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, d
 
 	std::vector<unsigned int> topVertices;
 	if (onePointTop) {
-		topVertices.push_back (mesh.AddVertex (glm::dvec3 (0.0, 0.0, halfHeight)));
+		topVertices.push_back (mesh.AddVertex (glm::dvec3 (0.0, 0.0, height)));
 	} else {
-		glm::dvec3 topPoint (0.0, 0.0, halfHeight);
+		glm::dvec3 topPoint (0.0, 0.0, height);
 		unsigned int topVertex = mesh.AddVertex (topPoint);
 		topVertices = AddCircularVertices (mesh, topPoint, topRadius, segmentation);
 		AddCenteredConvexPolygon (mesh, topVertex, topVertices, glm::dvec3 (0.0, 0.0, 1.0), materialId);
@@ -193,8 +189,8 @@ Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, d
 	double coneAngle = atan (height / (bottomRadius - topRadius));
 	double topCenterOffset = topRadius * tan (PI / 2.0 - coneAngle);
 	double bottomCenterOffset = bottomRadius * tan (PI / 2.0 - coneAngle);
-	glm::dvec3 topNormalCenter (0.0, 0.0, halfHeight - topCenterOffset);
-	glm::dvec3 bottomNormalCenter (0.0, 0.0, -halfHeight - bottomCenterOffset);
+	glm::dvec3 topNormalCenter (0.0, 0.0, height - topCenterOffset);
+	glm::dvec3 bottomNormalCenter (0.0, 0.0, 0.0 - bottomCenterOffset);
 
 	if (onePointTop) {
 		for (size_t i = 0; i < segmentation; i++) {
