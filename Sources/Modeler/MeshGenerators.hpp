@@ -3,21 +3,12 @@
 
 #include "Model.hpp"
 #include "IncludeGLM.hpp"
+#include "PolygonalGenerators.hpp"
 
 #include <array>
 
 namespace Modeler
 {
-
-class Triangulator
-{
-public:
-	virtual ~Triangulator ();
-
-	virtual bool TriangulatePolygon (const std::vector<glm::dvec2>& points, std::vector<std::array<size_t, 3>>& result) = 0;
-};
-
-typedef std::shared_ptr<Triangulator> TriangulatorPtr;
 
 enum class PlatonicSolidType
 {
