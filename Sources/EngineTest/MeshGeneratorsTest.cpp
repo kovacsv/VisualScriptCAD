@@ -21,6 +21,8 @@ namespace MeshGeneratorsTest
 
 TEST (MeshGeneratorsTest)
 {
+	// TODO: PrismShellGenerator tests for all orientations
+
 	std::vector<Mesh> meshes {
 		GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0),
 		GenerateCylinder (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 10, false),

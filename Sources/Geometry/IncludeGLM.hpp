@@ -16,4 +16,6 @@
 
 #pragma warning (pop)
 
+#define PI glm::pi<double> ()
+
 #endif

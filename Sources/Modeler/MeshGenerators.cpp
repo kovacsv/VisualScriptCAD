@@ -4,8 +4,6 @@
 namespace Modeler
 {
 
-#define PI glm::pi<double> ()
-
 static void AddRectangle (Mesh& mesh, unsigned int v1, unsigned int v2, unsigned int v3, unsigned int v4, MaterialId mat)
 {
 	mesh.AddTriangle (v1, v2, v3, mat);
@@ -100,6 +98,8 @@ Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformatio
 
 Mesh GenerateTube (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth)
 {
+	// TODO: use PrismShellGenerator
+
 	Mesh mesh;
 	MaterialId materialId = mesh.AddMaterial (material);
 	mesh.SetTransformation (transformation);

@@ -44,10 +44,12 @@ public:
 	Mesh						Generate () const;
 
 protected:
+	virtual bool				AddTopAndBottomVertices (Mesh& mesh) const = 0;
+	virtual bool				AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const = 0;
+	virtual bool				AddSideTriangles (Mesh& mesh, MaterialId materialId) const = 0;
+	
 	glm::dvec3					CalculateNormal (unsigned int vertexIndex) const;
 	glm::dvec3					CalculateSharpNormal (unsigned int vertexIndex) const;
-
-	virtual bool				GenerateInternal (Mesh& mesh, MaterialId materialId) const = 0;
 
 	Material					material;
 	glm::dmat4					transformation; 
@@ -65,11 +67,8 @@ public:
 	virtual ~PrismGenerator ();
 
 protected:
-	virtual bool	GenerateInternal (Mesh& mesh, MaterialId materialId) const;
-
-	bool			AddTopAndBottomVertices (Mesh& mesh) const;
-	bool			AddSideTriangles (Mesh& mesh, MaterialId materialId) const;
-	virtual bool	AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const = 0;
+	virtual bool	AddTopAndBottomVertices (Mesh& mesh) const override;
+	virtual bool	AddSideTriangles (Mesh& mesh, MaterialId materialId) const override;
 
 	unsigned int	GetBottomVertex (unsigned int vertexIndex) const;
 	unsigned int	GetTopVertex (unsigned int vertexIndex) const;
@@ -95,6 +94,25 @@ private:
 	virtual bool	AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const override;
 
 	glm::dvec2		center;
+};
+
+class PrismShellGenerator : public PolygonalGenerator
+{
+public:
+	PrismShellGenerator (const Material& material, const glm::dmat4& transformation, double height, double thickness);
+	virtual ~PrismShellGenerator ();
+
+private:
+	virtual bool	AddTopAndBottomVertices (Mesh& mesh) const override;
+	virtual bool	AddTopAndBottomTriangles (Mesh& mesh, MaterialId materialId) const override;
+	virtual bool	AddSideTriangles (Mesh& mesh, MaterialId materialId) const override;
+
+	unsigned int	GetBottomVertex (unsigned int vertexIndex) const;
+	unsigned int	GetTopVertex (unsigned int vertexIndex) const;
+	unsigned int	GetInnerBottomVertex (unsigned int vertexIndex) const;
+	unsigned int	GetInnerTopVertex (unsigned int vertexIndex) const;
+
+	double			thickness;
 };
 
 }
