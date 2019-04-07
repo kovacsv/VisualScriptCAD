@@ -2,7 +2,7 @@
 #define SHAPENODES_HPP
 
 #include "Model.hpp"
-#include "Shape.hpp"
+#include "Shapes.hpp"
 #include "ShapeNode.hpp"
 #include "Basic3DNodeValues.hpp"
 
@@ -38,13 +38,13 @@ public:
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
 
-class TubeNode : public ShapeNode
+class CylinderShellNode : public ShapeNode
 {
-	DYNAMIC_SERIALIZABLE (TubeNode);
+	DYNAMIC_SERIALIZABLE (CylinderShellNode);
 
 public:
-	TubeNode ();
-	TubeNode (const std::wstring& name, const NUIE::Point& position);
+	CylinderShellNode ();
+	CylinderShellNode (const std::wstring& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

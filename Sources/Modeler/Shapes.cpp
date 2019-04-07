@@ -1,4 +1,4 @@
-#include "Shape.hpp"
+#include "Shapes.hpp"
 #include "Geometry.hpp"
 #include "TriangleUtils.hpp"
 
@@ -98,7 +98,7 @@ Mesh CylinderShape::GenerateMesh () const
 	return GenerateCylinder (material, transformation, radius, height, segmentation, isSmooth);
 }
 
-TubeShape::TubeShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth) :
+CylinderShellShape::CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth) :
 	Shape (transformation),
 	material (material),
 	radius (radius),
@@ -109,28 +109,28 @@ TubeShape::TubeShape (const Material& material, const glm::dmat4& transformation
 {
 }
 
-TubeShape::~TubeShape ()
+CylinderShellShape::~CylinderShellShape ()
 {
 }
 
-bool TubeShape::Check () const
+bool CylinderShellShape::Check () const
 {
 	return Geometry::IsGreater (radius, 0.0) && Geometry::IsGreater (height, 0.0) && Geometry::IsLower (thickness, radius) && segmentation >= 3;
 }
 
-ShapePtr TubeShape::Clone () const
+ShapePtr CylinderShellShape::Clone () const
 {
-	return ShapePtr (new TubeShape (*this));
+	return ShapePtr (new CylinderShellShape (*this));
 }
 
-std::wstring TubeShape::ToString () const
+std::wstring CylinderShellShape::ToString () const
 {
-	return L"Tube";
+	return L"Cylinder Shell";
 }
 
-Mesh TubeShape::GenerateMesh () const
+Mesh CylinderShellShape::GenerateMesh () const
 {
-	return GenerateTube (material, transformation, radius, height, thickness, segmentation, isSmooth);
+	return GenerateCylinderShell (material, transformation, radius, height, thickness, segmentation, isSmooth);
 }
 
 ConeShape::ConeShape (const Material& material, const glm::dmat4& transformation, double topRadius, double bottomRadius, double height, int segmentation, bool isSmooth) :

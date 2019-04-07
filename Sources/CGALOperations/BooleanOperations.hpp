@@ -1,7 +1,7 @@
 #ifndef CGAL_BOOLEANOPERATIONS_HPP
 #define CGAL_BOOLEANOPERATIONS_HPP
 
-#include "Shape.hpp"
+#include "Shapes.hpp"
 #include "Mesh.hpp"
 
 #include <vector>

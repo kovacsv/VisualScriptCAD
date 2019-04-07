@@ -1,5 +1,5 @@
-#ifndef MODELER_SHAPE_HPP
-#define MODELER_SHAPE_HPP
+#ifndef MODELER_SHAPES_HPP
+#define MODELER_SHAPES_HPP
 
 #include "Mesh.hpp"
 #include "MeshGenerators.hpp"
@@ -69,11 +69,11 @@ private:
 	bool		isSmooth;
 };
 
-class TubeShape : public Shape
+class CylinderShellShape : public Shape
 {
 public:
-	TubeShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth);
-	virtual ~TubeShape ();
+	CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth);
+	virtual ~CylinderShellShape ();
 
 	virtual bool			Check () const override;
 	virtual ShapePtr		Clone () const override;

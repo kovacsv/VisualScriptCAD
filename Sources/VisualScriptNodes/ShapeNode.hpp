@@ -4,7 +4,7 @@
 #include "NE_GenericValue.hpp"
 #include "BI_BasicUINode.hpp"
 #include "Model.hpp"
-#include "Shape.hpp"
+#include "Shapes.hpp"
 
 class ShapeValue : public NE::GenericValue<Modeler::ShapePtr>
 {

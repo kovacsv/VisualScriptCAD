@@ -96,7 +96,7 @@ Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformatio
 	return generator.Generate ();
 }
 
-Mesh GenerateTube (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth)
+Mesh GenerateCylinderShell (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth)
 {
 	// TODO: use PrismShellGenerator
 

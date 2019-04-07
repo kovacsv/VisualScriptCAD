@@ -98,8 +98,8 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Shape Nodes", L"Cylinder",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderNode (L"Cylinder", position)); }
 	);
-	RegisterNode (L"Shape Nodes", L"Tube",
-		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TubeNode (L"Tube", position)); }
+	RegisterNode (L"Shape Nodes", L"Cylinder Shell",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderShellNode (L"Cylinder Shell", position)); }
 	);
 	RegisterNode (L"Shape Nodes", L"Cone",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ConeNode (L"Cone", position)); }
