@@ -501,12 +501,7 @@ bool RenderScene::Init ()
 		return false;
 	}
 
-	static const double axisSize = 5.0;
-	RenderLineGeometry axis (RenderLineMaterial (glm::vec3 (0.7f, 0.7f, 0.7f)));
-	axis.AddLine (glm::vec3 (-axisSize, 0.0f, 0.0f), glm::vec3 (axisSize, 0.0f, 0.0f));
-	axis.AddLine (glm::vec3 (0.0f, -axisSize, 0.0f), glm::vec3 (0.0f, axisSize, 0.0f));
-	axis.AddLine (glm::vec3 (0.0f, 0.0f, -axisSize), glm::vec3 (0.0f, 0.0f, axisSize));
-	lineModel.AddRenderLineGeometry (axis);
+	InitAxisLines ();
 
 	glEnable (GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
@@ -606,6 +601,27 @@ void RenderScene::FitToWindow (int width, int height)
 	}
 	
 	camera.ZoomToSphere (center, radius, width, height);
+}
+
+void RenderScene::InitAxisLines ()
+{
+	static const int axisSize = 10;
+
+	RenderLineGeometry mainAxisLines (RenderLineMaterial (glm::vec3 (0.5f, 0.5f, 0.5f)));
+	mainAxisLines.AddLine (glm::vec3 (-axisSize, 0.0f, 0.0f), glm::vec3 (axisSize, 0.0f, 0.0f));
+	mainAxisLines.AddLine (glm::vec3 (0.0f, -axisSize, 0.0f), glm::vec3 (0.0f, axisSize, 0.0f));
+	mainAxisLines.AddLine (glm::vec3 (0.0f, 0.0f, -axisSize), glm::vec3 (0.0f, 0.0f, axisSize));
+	lineModel.AddRenderLineGeometry (mainAxisLines);
+
+	RenderLineGeometry secondaryAxisLines (RenderLineMaterial (glm::vec3 (0.8f, 0.8f, 0.8f)));
+	for (int i = -axisSize; i <= axisSize; i++) {
+		if (i == 0) {
+			continue;
+		}
+		secondaryAxisLines.AddLine (glm::vec3 (-axisSize, i, 0.0f), glm::vec3 (axisSize, i, 0.0f));
+		secondaryAxisLines.AddLine (glm::vec3 (i, -axisSize, 0.0f), glm::vec3 (i, axisSize, 0.0f));
+	}
+	lineModel.AddRenderLineGeometry (secondaryAxisLines);
 }
 
 void RenderScene::DrawModel (int width, int height, ViewMode drawMode) const

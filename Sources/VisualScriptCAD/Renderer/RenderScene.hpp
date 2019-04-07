@@ -199,6 +199,8 @@ public:
 	void				FitToWindow (int width, int height);
 
 private:
+	void				InitAxisLines ();
+
 	void				DrawModel (int width, int height, ViewMode drawMode) const;
 	void				DrawLines (int width, int height, AxisMode axisMode) const;
 
