@@ -114,7 +114,7 @@ CylinderShellShape::~CylinderShellShape ()
 
 bool CylinderShellShape::Check () const
 {
-	return CylinderShape::Check () && Geometry::IsLower (thickness, radius);
+	return CylinderShape::Check () && Geometry::IsGreater (thickness, 0.0) && Geometry::IsLower (thickness, radius);
 }
 
 ShapePtr CylinderShellShape::Clone () const
