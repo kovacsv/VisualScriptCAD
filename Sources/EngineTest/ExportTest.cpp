@@ -2,43 +2,12 @@
 #include "Model.hpp"
 #include "MeshGenerators.hpp"
 #include "Export.hpp"
+#include "TestUtils.hpp"
 
 using namespace Modeler;
 
-class ModelWriterForTest : public ModelWriter
-{
-public:
-	virtual void OpenFile (const std::wstring& fileName) override
-	{
-		result += L"# open file " + fileName + L"\n";
-	}
-
-	virtual void CloseFile () override
-	{
-		result += L"# close file\n";
-	}
-
-	virtual void WriteLine (const std::wstring& text) override
-	{
-		result += text + L"\n";
-	}
-
-	std::wstring result;
-};
-
 namespace ExportTest
 {
-
-static bool CheckResult (const std::wstring& expected, const std::wstring& result)
-{
-	if (result == expected) {
-		return true;
-	} else {
-		std::wcout << std::endl << expected;
-		std::wcout << std::endl << result << std::endl;
-		return false;
-	}
-}
 
 TEST (Obj_OneMeshExportTest)
 {
@@ -84,7 +53,7 @@ TEST (Obj_OneMeshExportTest)
 	expected += L"f 4//6 5//6 8//6\n";
 	expected += L"# close file\n";
 
-	ASSERT (CheckResult (expected, writer.result));
+	ASSERT (CheckString (expected, writer.result));
 }
 
 TEST (Obj_TwoMeshExportTest)
@@ -163,7 +132,7 @@ TEST (Obj_TwoMeshExportTest)
 	expected += L"f 12//12 13//12 16//12\n";
 	expected += L"# close file\n";
 
-	ASSERT (CheckResult (expected, writer.result));
+	ASSERT (CheckString (expected, writer.result));
 }
 
 TEST (Obj_TwoMaterialsInOneMeshExportTest)
@@ -209,7 +178,7 @@ TEST (Obj_TwoMaterialsInOneMeshExportTest)
 	expected += L"f 4//2 5//2 6//2\n";
 	expected += L"# close file\n";
 
-	ASSERT (CheckResult (expected, writer.result));
+	ASSERT (CheckString (expected, writer.result));
 }
 
 TEST (Stl_TwoMeshExportTest)
@@ -395,7 +364,7 @@ TEST (Stl_TwoMeshExportTest)
 	expected += L"endsolid model\n";
 	expected += L"# close file\n";
 
-	ASSERT (CheckResult (expected, writer.result));
+	ASSERT (CheckString (expected, writer.result));
 }
 
 }
