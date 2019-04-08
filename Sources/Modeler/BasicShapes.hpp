@@ -39,7 +39,7 @@ public:
 	virtual std::wstring	ToString () const override;
 	virtual Mesh			GenerateMesh () const override;
 
-private:
+protected:
 	Material	material;
 	double		radius;
 	double		height;
@@ -47,10 +47,10 @@ private:
 	bool		isSmooth;
 };
 
-class CylinderShellShape : public Shape
+class CylinderShellShape : public CylinderShape
 {
 public:
-	CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth);
+	CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth, double thickness);
 	virtual ~CylinderShellShape ();
 
 	virtual bool			Check () const override;
@@ -59,12 +59,7 @@ public:
 	virtual Mesh			GenerateMesh () const override;
 
 private:
-	Material	material;
-	double		radius;
-	double		height;
-	double		thickness;
-	int			segmentation;
-	bool		isSmooth;
+	double thickness;
 };
 
 class ConeShape : public Shape

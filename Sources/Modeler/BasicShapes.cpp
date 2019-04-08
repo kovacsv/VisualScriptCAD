@@ -72,14 +72,9 @@ Mesh CylinderShape::GenerateMesh () const
 	return GenerateCylinder (material, transformation, radius, height, segmentation, isSmooth);
 }
 
-CylinderShellShape::CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth) :
-	Shape (transformation),
-	material (material),
-	radius (radius),
-	height (height),
-	thickness (thickness),
-	segmentation (segmentation),
-	isSmooth (isSmooth)
+CylinderShellShape::CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth, double thickness) :
+	CylinderShape (material, transformation, radius, height, segmentation, isSmooth),
+	thickness (thickness)
 {
 }
 
@@ -89,7 +84,7 @@ CylinderShellShape::~CylinderShellShape ()
 
 bool CylinderShellShape::Check () const
 {
-	return Geometry::IsGreater (radius, 0.0) && Geometry::IsGreater (height, 0.0) && Geometry::IsLower (thickness, radius) && segmentation >= 3;
+	return CylinderShape::Check () && Geometry::IsLower (thickness, radius);
 }
 
 ShapePtr CylinderShellShape::Clone () const

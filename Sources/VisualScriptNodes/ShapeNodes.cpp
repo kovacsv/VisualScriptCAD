@@ -232,9 +232,9 @@ NE::ValueConstPtr CylinderShellNode::Calculate (NE::EvaluationEnv& env) const
 			TransformationValue::Get (combination.GetValue (1)),
 			NE::NumberValue::ToDouble (combination.GetValue (2)),
 			NE::NumberValue::ToDouble (combination.GetValue (3)),
-			NE::NumberValue::ToDouble (combination.GetValue (4)),
 			segmentation,
-			IsSmooth (segmentation)
+			IsSmooth (segmentation),
+			NE::NumberValue::ToDouble (combination.GetValue (4))
 		));
 		if (!shape->Check ()) {
 			return false;
