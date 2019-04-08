@@ -95,6 +95,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Shape Nodes", L"Box",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BoxNode (L"Box", position)); }
 	);
+	RegisterNode (L"Shape Nodes", L"Box Shell",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BoxShellNode (L"Box Shell", position)); }
+	);
 	RegisterNode (L"Shape Nodes", L"Cylinder",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderNode (L"Cylinder", position)); }
 	);

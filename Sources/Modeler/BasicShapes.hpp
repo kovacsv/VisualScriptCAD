@@ -21,11 +21,26 @@ public:
 	virtual std::wstring	ToString () const override;
 	virtual Mesh			GenerateMesh () const override;
 
-private:
+protected:
 	Material	material;
 	double		xSize;
 	double		ySize;
 	double		zSize;
+};
+
+class BoxShellShape : public BoxShape
+{
+public:
+	BoxShellShape (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize, double thickness);
+	virtual ~BoxShellShape ();
+
+	virtual bool			Check () const override;
+	virtual ShapePtr		Clone () const override;
+	virtual std::wstring	ToString () const override;
+	virtual Mesh			GenerateMesh () const override;
+
+private:
+	double thickness;
 };
 
 class CylinderShape : public Shape

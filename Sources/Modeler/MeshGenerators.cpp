@@ -86,6 +86,16 @@ Mesh GenerateBox (const Material& material, const glm::dmat4& transformation, do
 	return generator.Generate ();
 }
 
+Mesh GenerateBoxShell (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize, double thickness)
+{
+	PrismShellGenerator generator (material, transformation, zSize, thickness);
+	generator.AddVertex (glm::dvec2 (0.0, 0.0), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (xSize, 0.0), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (xSize, ySize), PrismGenerator::VertexType::Sharp);
+	generator.AddVertex (glm::dvec2 (0.0, ySize), PrismGenerator::VertexType::Sharp);
+	return generator.Generate ();
+}
+
 Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth)
 {
 	glm::dvec2 center (0.0, 0.0);
@@ -96,7 +106,7 @@ Mesh GenerateCylinder (const Material& material, const glm::dmat4& transformatio
 	return generator.Generate ();
 }
 
-Mesh GenerateCylinderShell (const Material& material, const glm::dmat4& transformation, double radius, double height, double thickness, int segmentation, bool isSmooth)
+Mesh GenerateCylinderShell (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth, double thickness)
 {
 	// TODO: use PrismShellGenerator
 

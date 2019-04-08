@@ -38,6 +38,36 @@ Mesh BoxShape::GenerateMesh () const
 	return GenerateBox (material, transformation, xSize, ySize, zSize);
 }
 
+BoxShellShape::BoxShellShape (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize, double thickness) :
+	BoxShape (material, transformation, xSize, ySize, zSize),
+	thickness (thickness)
+{
+}
+
+BoxShellShape::~BoxShellShape ()
+{
+}
+
+bool BoxShellShape::Check () const
+{
+	return BoxShape::Check () && Geometry::IsGreater (thickness, 0.0) && Geometry::IsLower (thickness, std::min (xSize, ySize) / 2.0);
+}
+
+ShapePtr BoxShellShape::Clone () const
+{
+	return ShapePtr (new BoxShellShape (*this));
+}
+
+std::wstring BoxShellShape::ToString () const
+{
+	return L"Box Shell";
+}
+
+Mesh BoxShellShape::GenerateMesh () const
+{
+	return GenerateBoxShell (material, transformation, xSize, ySize, zSize, thickness);
+}
+
 CylinderShape::CylinderShape (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth) :
 	Shape (transformation),
 	material (material),
@@ -99,7 +129,7 @@ std::wstring CylinderShellShape::ToString () const
 
 Mesh CylinderShellShape::GenerateMesh () const
 {
-	return GenerateCylinderShell (material, transformation, radius, height, thickness, segmentation, isSmooth);
+	return GenerateCylinderShell (material, transformation, radius, height, segmentation, isSmooth, thickness);
 }
 
 ConeShape::ConeShape (const Material& material, const glm::dmat4& transformation, double topRadius, double bottomRadius, double height, int segmentation, bool isSmooth) :

@@ -24,10 +24,11 @@ TEST (MeshGeneratorsTest)
 {
 	std::vector<Mesh> meshes {
 		GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0),
+		GenerateBoxShell (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0, 0.1),
 		GenerateCylinder (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 10, false),
 		GenerateCylinder (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 10, true),
-		GenerateCylinderShell (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 0.1, 10, false),
-		GenerateCylinderShell (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 0.1, 10, true),
+		GenerateCylinderShell (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 10, false, 0.1),
+		GenerateCylinderShell (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 10, true, 0.1),
 		GenerateCone (DefaultMaterial, glm::dmat4 (1.0), 1.0, 2.0, 1.0, 10, false),
 		GenerateCone (DefaultMaterial, glm::dmat4 (1.0), 1.0, 2.0, 1.0, 10, true),
 		GenerateCone (DefaultMaterial, glm::dmat4 (1.0), 0.0, 2.0, 1.0, 10, false),

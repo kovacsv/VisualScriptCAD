@@ -11,6 +11,7 @@
 #include "BasicShapes.hpp"
 
 NE::DynamicSerializationInfo	BoxNode::serializationInfo (NE::ObjectId ("{9C29EF6D-AD3B-466C-8574-95B82D4EC0D4}"), NE::ObjectVersion (1), BoxNode::CreateSerializableInstance);
+NE::DynamicSerializationInfo	BoxShellNode::serializationInfo (NE::ObjectId ("{CCCCF9ED-6B97-4EAA-BDCF-D2A982B7D37A}"), NE::ObjectVersion (1), BoxShellNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	CylinderNode::serializationInfo (NE::ObjectId ("{6C457800-788A-4747-A2D1-54158EFB2794}"), NE::ObjectVersion (1), CylinderNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	CylinderShellNode::serializationInfo (NE::ObjectId ("{73164BBB-3971-46FB-9D17-E6BCA5814420}"), NE::ObjectVersion (1), CylinderShellNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	ConeNode::serializationInfo (NE::ObjectId ("{586F0D6E-CBEB-4C19-8B9E-7358E3E75FD2}"), NE::ObjectVersion (1), ConeNode::CreateSerializableInstance);
@@ -98,6 +99,90 @@ NE::Stream::Status BoxNode::Read (NE::InputStream& inputStream)
 }
 
 NE::Stream::Status BoxNode::Write (NE::OutputStream& outputStream) const
+{
+	NE::ObjectHeader header (outputStream, serializationInfo);
+	ShapeNode::Write (outputStream);
+	return outputStream.GetStatus ();
+}
+
+BoxShellNode::BoxShellNode () :
+	BoxShellNode (L"", NUIE::Point ())
+{
+
+}
+
+BoxShellNode::BoxShellNode (const std::wstring& name, const NUIE::Point& position) :
+	ShapeNode (name, position)
+{
+
+}
+
+void BoxShellNode::Initialize ()
+{
+	ShapeNode::Initialize ();
+	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), L"Size A", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("b"), L"Size B", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("c"), L"Size C", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("thickness"), L"Thickness", NE::ValuePtr (new NE::FloatValue (0.1f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+}
+
+NE::ValueConstPtr BoxShellNode::Calculate (NE::EvaluationEnv& env) const
+{
+	NE::ValueConstPtr material = EvaluateInputSlot (NE::SlotId ("material"), env);
+	NE::ValueConstPtr transformation = EvaluateInputSlot (NE::SlotId ("transformation"), env);
+	NE::ValueConstPtr aValue = EvaluateInputSlot (NE::SlotId ("a"), env);
+	NE::ValueConstPtr bValue = EvaluateInputSlot (NE::SlotId ("b"), env);
+	NE::ValueConstPtr cValue = EvaluateInputSlot (NE::SlotId ("c"), env);
+	NE::ValueConstPtr thicknessValue = EvaluateInputSlot (NE::SlotId ("thickness"), env);
+
+	if (!NE::IsComplexType<MaterialValue> (material) || !NE::IsComplexType<TransformationValue> (transformation) || !NE::IsComplexType<NE::NumberValue> (aValue) || !NE::IsComplexType<NE::NumberValue> (bValue) || !NE::IsComplexType<NE::NumberValue> (cValue) || !NE::IsComplexType<NE::NumberValue> (thicknessValue)) {
+		return nullptr;
+	}
+
+	NE::ListValuePtr result (new NE::ListValue ());
+	bool isValid = BI::CombineValues (this, {material, transformation, aValue, bValue, cValue, thicknessValue}, [&] (const NE::ValueCombination& combination) {
+		Modeler::ShapePtr shape (new Modeler::BoxShellShape (
+			MaterialValue::Get (combination.GetValue (0)),
+			TransformationValue::Get (combination.GetValue (1)),
+			NE::NumberValue::ToDouble (combination.GetValue (2)),
+			NE::NumberValue::ToDouble (combination.GetValue (3)),
+			NE::NumberValue::ToDouble (combination.GetValue (4)),
+			NE::NumberValue::ToDouble (combination.GetValue (5))
+		));
+		if (!shape->Check ()) {
+			return false;
+		}
+		result->Push (NE::ValuePtr (new ShapeValue (shape)));
+		return true;
+	});
+
+	if (!isValid) {
+		return nullptr;
+	}
+	return result;
+}
+
+void BoxShellNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
+{
+	ShapeNode::RegisterParameters (parameterList);
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Size A", NUIE::ParameterType::Float, NE::SlotId ("a"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Size B", NUIE::ParameterType::Float, NE::SlotId ("b"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Size C", NUIE::ParameterType::Float, NE::SlotId ("c"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Thickness", NUIE::ParameterType::Float, NE::SlotId ("thickness"));
+}
+
+NE::Stream::Status BoxShellNode::Read (NE::InputStream& inputStream)
+{
+	NE::ObjectHeader header (inputStream);
+	ShapeNode::Read (inputStream);
+	return inputStream.GetStatus ();
+}
+
+NE::Stream::Status BoxShellNode::Write (NE::OutputStream& outputStream) const
 {
 	NE::ObjectHeader header (outputStream, serializationInfo);
 	ShapeNode::Write (outputStream);
