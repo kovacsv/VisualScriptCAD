@@ -39,7 +39,11 @@ Mesh BoxShape::GenerateMesh () const
 }
 
 BoxShellShape::BoxShellShape (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize, double thickness) :
-	BoxShape (material, transformation, xSize, ySize, zSize),
+	Shape (transformation),
+	material (material),
+	xSize (xSize),
+	ySize (ySize),
+	zSize (zSize),
 	thickness (thickness)
 {
 }
@@ -50,7 +54,7 @@ BoxShellShape::~BoxShellShape ()
 
 bool BoxShellShape::Check () const
 {
-	return BoxShape::Check () && Geometry::IsGreater (thickness, 0.0) && Geometry::IsLower (thickness, std::min (xSize, ySize) / 2.0);
+	return Geometry::IsGreater (xSize, 0.0) && Geometry::IsGreater (ySize, 0.0) && Geometry::IsGreater (zSize, 0.0) && Geometry::IsGreater (thickness, 0.0) && Geometry::IsLower (thickness, std::min (xSize, ySize) / 2.0);
 }
 
 ShapePtr BoxShellShape::Clone () const
@@ -103,7 +107,12 @@ Mesh CylinderShape::GenerateMesh () const
 }
 
 CylinderShellShape::CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth, double thickness) :
-	CylinderShape (material, transformation, radius, height, segmentation, isSmooth),
+	Shape (transformation),
+	material (material),
+	radius (radius),
+	height (height),
+	segmentation (segmentation),
+	isSmooth (isSmooth),
 	thickness (thickness)
 {
 }
@@ -114,7 +123,7 @@ CylinderShellShape::~CylinderShellShape ()
 
 bool CylinderShellShape::Check () const
 {
-	return CylinderShape::Check () && Geometry::IsGreater (thickness, 0.0) && Geometry::IsLower (thickness, radius);
+	return Geometry::IsGreater (radius, 0.0) && Geometry::IsGreater (height, 0.0) && segmentation >= 3 && Geometry::IsGreater (thickness, 0.0) && Geometry::IsLower (thickness, radius);
 }
 
 ShapePtr CylinderShellShape::Clone () const

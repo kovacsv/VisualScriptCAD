@@ -21,14 +21,14 @@ public:
 	virtual std::wstring	ToString () const override;
 	virtual Mesh			GenerateMesh () const override;
 
-protected:
+private:
 	Material	material;
 	double		xSize;
 	double		ySize;
 	double		zSize;
 };
 
-class BoxShellShape : public BoxShape
+class BoxShellShape : public Shape
 {
 public:
 	BoxShellShape (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize, double thickness);
@@ -40,7 +40,11 @@ public:
 	virtual Mesh			GenerateMesh () const override;
 
 private:
-	double thickness;
+	Material	material;
+	double		xSize;
+	double		ySize;
+	double		zSize;
+	double		thickness;
 };
 
 class CylinderShape : public Shape
@@ -54,7 +58,7 @@ public:
 	virtual std::wstring	ToString () const override;
 	virtual Mesh			GenerateMesh () const override;
 
-protected:
+private:
 	Material	material;
 	double		radius;
 	double		height;
@@ -62,7 +66,7 @@ protected:
 	bool		isSmooth;
 };
 
-class CylinderShellShape : public CylinderShape
+class CylinderShellShape : public Shape
 {
 public:
 	CylinderShellShape (const Material& material, const glm::dmat4& transformation, double radius, double height, int segmentation, bool isSmooth, double thickness);
@@ -74,7 +78,12 @@ public:
 	virtual Mesh			GenerateMesh () const override;
 
 private:
-	double thickness;
+	Material	material;
+	double		radius;
+	double		height;
+	int			segmentation;
+	bool		isSmooth;
+	double		thickness;
 };
 
 class ConeShape : public Shape
