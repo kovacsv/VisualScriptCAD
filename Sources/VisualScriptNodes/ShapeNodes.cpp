@@ -8,6 +8,7 @@
 #include "MaterialNode.hpp"
 
 #include "IncludeGLM.hpp"
+#include "BasicShapes.hpp"
 
 NE::DynamicSerializationInfo	BoxNode::serializationInfo (NE::ObjectId ("{9C29EF6D-AD3B-466C-8574-95B82D4EC0D4}"), NE::ObjectVersion (1), BoxNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	CylinderNode::serializationInfo (NE::ObjectId ("{6C457800-788A-4747-A2D1-54158EFB2794}"), NE::ObjectVersion (1), CylinderNode::CreateSerializableInstance);

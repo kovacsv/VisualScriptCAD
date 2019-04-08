@@ -1,35 +1,9 @@
-#include "Shapes.hpp"
+#include "BasicShapes.hpp"
 #include "Geometry.hpp"
 #include "TriangleUtils.hpp"
 
 namespace Modeler
 {
-
-Shape::Shape (const glm::dmat4& transformation) :
-	transformation (transformation)
-{
-}
-
-Shape::~Shape ()
-{
-}
-
-const glm::dmat4& Shape::GetTransformation () const
-{
-	return transformation;
-}
-
-void Shape::SetTransformation (const glm::dmat4& newTransformation)
-{
-	transformation = newTransformation;
-}
-
-Modeler::ShapePtr Shape::Transform (const glm::dmat4& newTransformation) const
-{
-	Modeler::ShapePtr transformed = Clone ();
-	transformed->SetTransformation (newTransformation * transformed->GetTransformation ());
-	return transformed;
-}
 
 BoxShape::BoxShape (const Material& material, const glm::dmat4& transformation, double xSize, double ySize, double zSize) :
 	Shape (transformation),

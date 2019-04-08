@@ -6,6 +6,7 @@
 #include "MaterialNode.hpp"
 #include "PolygonEditor.hpp"
 #include "Triangulation.hpp"
+#include "BasicShapes.hpp"
 
 NE::DynamicSerializationInfo	PrismNode::serializationInfo (NE::ObjectId ("{9D1E49DE-FD64-4079-A75B-DE1900FD2C2F}"), NE::ObjectVersion (1), PrismNode::CreateSerializableInstance);
 

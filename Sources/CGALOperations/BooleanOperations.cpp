@@ -1,6 +1,7 @@
 #include "BooleanOperations.hpp"
 #include "TriangleUtils.hpp"
 #include "IncludeGLM.hpp"
+#include "BasicShapes.hpp"
 
 #pragma warning (push)
 #pragma warning (disable : 4456)

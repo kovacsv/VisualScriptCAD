@@ -2,7 +2,7 @@
 #define BOOLEANNODES_HPP
 
 #include "Model.hpp"
-#include "Shapes.hpp"
+#include "Shape.hpp"
 #include "ShapeNode.hpp"
 #include "BooleanOperations.hpp"
 

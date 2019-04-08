@@ -1,6 +1,7 @@
 #include "Subdivision.hpp"
 #include "TriangleUtils.hpp"
 #include "IncludeGLM.hpp"
+#include "BasicShapes.hpp"
 
 #pragma warning (push)
 #pragma warning (disable : 4456)
@@ -72,7 +73,7 @@ bool MeshSubdivision (const Modeler::Mesh& mesh, const Modeler::Material& materi
 	return success;
 }
 
-std::shared_ptr<Modeler::MeshShape> MeshSubdivision (const Modeler::ShapeConstPtr& shape, const Modeler::Material& material, int steps)
+Modeler::ShapePtr MeshSubdivision (const Modeler::ShapeConstPtr& shape, const Modeler::Material& material, int steps)
 {
 	Modeler::Mesh mesh = shape->GenerateMesh ();
 	Modeler::Mesh resultMesh;
@@ -80,7 +81,7 @@ std::shared_ptr<Modeler::MeshShape> MeshSubdivision (const Modeler::ShapeConstPt
 	if (!opResult) {
 		return nullptr;
 	}
-	return std::shared_ptr<Modeler::MeshShape> (new Modeler::MeshShape (glm::dmat4 (1.0), resultMesh));
+	return Modeler::ShapePtr (new Modeler::MeshShape (glm::dmat4 (1.0), resultMesh));
 }
 
 }
