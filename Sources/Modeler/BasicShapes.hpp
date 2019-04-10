@@ -162,6 +162,24 @@ private:
 	TriangulatorPtr				triangulator;
 };
 
+class PrismShellShape : public Shape
+{
+public:
+	PrismShellShape (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, double thickness);
+	virtual ~PrismShellShape ();
+
+	virtual bool			Check () const override;
+	virtual ShapePtr		Clone () const override;
+	virtual std::wstring	ToString () const override;
+	virtual Mesh			GenerateMesh () const override;
+
+private:
+	Material					material;
+	std::vector<glm::dvec2>		basePolygon;
+	double						height;
+	double						thickness;
+};
+
 class PlatonicShape : public Shape
 {
 public:

@@ -293,6 +293,45 @@ Mesh PrismShape::GenerateMesh () const
 	return GeneratePrism (material, transformation, basePolygon, height, *triangulator);
 }
 
+PrismShellShape::PrismShellShape (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, double thickness) :
+	Shape (transformation),
+	material (material),
+	basePolygon (basePolygon),
+	height (height),
+	thickness (thickness)
+{
+}
+
+PrismShellShape::~PrismShellShape ()
+{
+}
+
+bool PrismShellShape::Check () const
+{
+	if (basePolygon.size () < 3 || !Geometry::IsGreater (height, 0.0) || !Geometry::IsGreater (thickness, 0.0)) {
+		return false;
+	}
+	if (Geometry::GetPolygonOrientation2D (basePolygon) != Geometry::Orientation::CounterClockwise) {
+		return false;
+	}
+	return true;
+}
+
+ShapePtr PrismShellShape::Clone () const
+{
+	return ShapePtr (new PrismShellShape (*this));
+}
+
+std::wstring PrismShellShape::ToString () const
+{
+	return L"Prism Shell";
+}
+
+Mesh PrismShellShape::GenerateMesh () const
+{
+	return GeneratePrismShell (material, transformation, basePolygon, height, thickness);
+}
+
 PlatonicShape::PlatonicShape (const Material& material, const glm::dmat4& transformation, PlatonicSolidType type, double radius) :
 	Shape (transformation),
 	material (material),

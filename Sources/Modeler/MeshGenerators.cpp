@@ -353,6 +353,15 @@ Mesh GeneratePrism (const Material& material, const glm::dmat4& transformation, 
 	return generator.Generate ();
 }
 
+Mesh GeneratePrismShell (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, double thickness)
+{
+	PrismShellGenerator generator (material, transformation, height, thickness);
+	for (const glm::dvec2& vertex : basePolygon) {
+		generator.AddVertex (vertex, PrismGenerator::VertexType::Sharp);
+	}
+	return generator.Generate ();
+}
+
 Mesh GeneratePlatonicSolid (const Material& material, const glm::dmat4& transformation, PlatonicSolidType type, double radius)
 {
 	Mesh mesh;

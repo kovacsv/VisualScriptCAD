@@ -27,6 +27,7 @@ Mesh GenerateCone (const Material& material, const glm::dmat4& transformation, d
 Mesh GenerateSphere (const Material& material, const glm::dmat4& transformation, double radius, int segmentation, bool isSmooth);
 Mesh GenerateTorus (const Material& material, const glm::dmat4& transformation, double outerRadius, double innerRadius, int outerSegmentation, int innerSegmentation, bool isSmooth);
 Mesh GeneratePrism (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, Triangulator& triangulator);
+Mesh GeneratePrismShell (const Material& material, const glm::dmat4& transformation, const std::vector<glm::dvec2>& basePolygon, double height, double thickness);
 Mesh GeneratePlatonicSolid (const Material& material, const glm::dmat4& transformation, PlatonicSolidType type, double radius);
 
 }

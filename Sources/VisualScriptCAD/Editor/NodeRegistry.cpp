@@ -116,6 +116,9 @@ NodeRegistry::NodeRegistry () :
 	RegisterNode (L"Shape Nodes", L"Prism",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismNode (L"Prism", position)); }
 	);
+	RegisterNode (L"Shape Nodes", L"Prism Shell",
+		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismShellNode (L"Prism Shell", position)); }
+	);
 	RegisterNode (L"Shape Nodes", L"Platonic",
 		[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PlatonicNode (L"Platonic", position)); }
 	);

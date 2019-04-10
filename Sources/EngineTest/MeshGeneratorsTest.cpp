@@ -74,13 +74,22 @@ TEST (PrismGeneratorTest)
 		glm::dvec2 (0.0, 1.0)
 	};
 
-	CGALTriangulator triangulator;
-	Mesh mesh = GeneratePrism (DefaultMaterial, glm::dmat4 (1.0), basePolygon, 1.0, triangulator);
+	{
+		CGALTriangulator triangulator;
+		Mesh mesh = GeneratePrism (DefaultMaterial, glm::dmat4 (1.0), basePolygon, 1.0, triangulator);
+		MeshTopology topology = GetTopology (mesh);
+		ASSERT (topology.IsValid ());
+		ASSERT (!topology.IsEmpty ());
+		ASSERT (topology.IsClosed ());
+	}
 
-	MeshTopology topology = GetTopology (mesh);
-	ASSERT (topology.IsValid ());
-	ASSERT (!topology.IsEmpty ());
-	ASSERT (topology.IsClosed ());
+	{
+		Mesh mesh = GeneratePrismShell (DefaultMaterial, glm::dmat4 (1.0), basePolygon, 1.0, 0.1);
+		MeshTopology topology = GetTopology (mesh);
+		ASSERT (topology.IsValid ());
+		ASSERT (!topology.IsEmpty ());
+		ASSERT (topology.IsClosed ());
+	}
 }
 
 TEST (PrismShellGeneratorTest)
