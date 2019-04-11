@@ -4,6 +4,8 @@
 namespace Modeler
 {
 
+static const float MinZoomDistance = 1.0f;
+
 Camera::Camera (const glm::vec3& eye,
 				const glm::vec3& center,
 				const glm::vec3& up,
@@ -96,8 +98,7 @@ void Camera::Zoom (float ratio)
 	float distance = glm::length (direction);
 	float movement = distance * ratio;
 	bool zoomIn = ratio > 0.0f;
-	// TODO: set limit from outside
-	if (zoomIn && distance < 1.0f) {
+	if (zoomIn && distance < MinZoomDistance) {
 		return;
 	}
 	eye = eye + glm::normalize (direction) * movement;
