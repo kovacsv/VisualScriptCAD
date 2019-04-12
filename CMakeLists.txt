@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 3.6)
 
 set (VSCAD_VERSION_1 0)
-set (VSCAD_VERSION_2 0)
-set (VSCAD_VERSION_3 12)
+set (VSCAD_VERSION_2 1)
+set (VSCAD_VERSION_3 0)
 set (VSCAD_APP_NAME VisualScriptCAD)
 
 function (SetCompilerOptions module)
