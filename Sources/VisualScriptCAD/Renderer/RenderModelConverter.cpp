@@ -65,7 +65,7 @@ void RenderModelConverter::ConvertMeshRefToRenderMesh (const Modeler::Model& mod
 	std::unordered_map<Modeler::MaterialId, size_t> materialToRenderGeometry;
 	EnumerateTrianglesByMaterial (geometry, materials, [&] (Modeler::MaterialId materialId, const std::vector<unsigned int>& triangles) {
 		if (materialToRenderGeometry.find (materialId) == materialToRenderGeometry.end ()) {
-			renderMesh.AddRenderGeometry ( RenderGeometry (MaterialToRenderMaterial (materials.GetMaterial (materialId))));
+			renderMesh.AddRenderGeometry (RenderGeometry (MaterialToRenderMaterial (materials.GetMaterial (materialId))));
 			materialToRenderGeometry.insert ({ materialId, renderMesh.RenderGeometryCount () - 1 });
 		}
 		RenderGeometry& renderGeometry = renderMesh.GetRenderGeometry (materialToRenderGeometry[materialId]);
