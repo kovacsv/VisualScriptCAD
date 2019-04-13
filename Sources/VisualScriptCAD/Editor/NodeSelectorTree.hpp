@@ -18,6 +18,8 @@ public:
 	void	OnBeginDrag (wxTreeEvent& evt);
 
 private:
+	void	RegisterNodes ();
+
 	wxBoxSizer*					boxSizer;
 	wxTextCtrl*					searchControl;
 	wxTreeCtrl*					nodeTree;
@@ -26,7 +28,7 @@ private:
 	DECLARE_EVENT_TABLE ()
 };
 
-void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, NodeTypeId nodeType);
+void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, NodeRegistryId nodeType);
 void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, const std::wstring& nodeName);
 
 #endif
