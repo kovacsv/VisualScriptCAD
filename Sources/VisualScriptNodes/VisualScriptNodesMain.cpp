@@ -12,6 +12,9 @@ NodeUICallbackInterface::~NodeUICallbackInterface ()
 
 NodeUICallbackInterfacePtr GetNodeUICallbackInterface ()
 {
+	if (nodeUICallbackInterface == nullptr) {
+		throw std::logic_error ("invalid ui callback interface");
+	}
 	return nodeUICallbackInterface;
 }
 
