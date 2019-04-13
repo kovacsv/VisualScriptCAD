@@ -14,6 +14,7 @@
 
 #include "VisualScriptNodesMain.hpp"
 #include "ExpressionEditor.hpp"
+#include "PolygonEditor.hpp"
 
 #include <locale>
 #include <codecvt>
@@ -70,6 +71,16 @@ public:
 		ExpressionEditorDialog expEditor (nullptr, expression);
 		if (expEditor.ShowModal () == wxID_OK) {
 			expression = expEditor.GetExpression ();
+			return true;
+		}
+		return false;
+	}
+
+	virtual bool EditPolygon (std::vector<glm::dvec2>& polygon) override
+	{
+		PolygonEditorDialog polygonEditor (nullptr, polygon);
+		if (polygonEditor.ShowModal () == wxID_OK && polygonEditor.HasPolygon ()) {
+			polygon = polygonEditor.GetPolygon ();
 			return true;
 		}
 		return false;

@@ -4,9 +4,9 @@
 #include "NUIE_NodeCommonParameters.hpp"
 #include "Basic3DNodeValues.hpp"
 #include "MaterialNode.hpp"
-#include "PolygonEditor.hpp"
 #include "Triangulation.hpp"
 #include "BasicShapes.hpp"
+#include "VisualScriptNodesMain.hpp"
 
 NE::DynamicSerializationInfo	PrismNode::serializationInfo (NE::ObjectId ("{9D1E49DE-FD64-4079-A75B-DE1900FD2C2F}"), NE::ObjectVersion (1), PrismNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	PrismShellNode::serializationInfo (NE::ObjectId ("{69CF8F09-274E-4CCE-97F8-594F580295A5}"), NE::ObjectVersion (1), PrismShellNode::CreateSerializableInstance);
@@ -29,22 +29,21 @@ public:
 	virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
 	{
 		NE::InputSlotPtr inputSlot = uiNode->GetInputSlot (NE::SlotId ("basepoints"));
-		std::vector<glm::dvec2> initPolygon;
+		std::vector<glm::dvec2> polygon;
 		NE::ValueConstPtr defaultPolygon = NE::FlattenValue (inputSlot->GetDefaultValue ());
 		if (NE::IsComplexType<Point2DValue> (defaultPolygon)) {
 			NE::FlatEnumerate (defaultPolygon, [&] (const NE::ValueConstPtr& value) {
-				initPolygon.push_back (Point2DValue::Get (value));
+				polygon.push_back (Point2DValue::Get (value));
 			});
 		}
 
-		PolygonEditorDialog polygonEditor (nullptr, initPolygon);
-		if (polygonEditor.ShowModal () == wxID_OK && polygonEditor.HasPolygon ()) {
+		NodeUICallbackInterfacePtr uiInterface = GetNodeUICallbackInterface ();
+		if (uiInterface != nullptr && uiInterface->EditPolygon (polygon)) {
 			NE::ListValuePtr basePointsDefaultValue (new NE::ListValue ());
-			for (const glm::dvec2& point : polygonEditor.GetPolygon ()) { 
+			for (const glm::dvec2& point : polygon) { 
 				basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (point)));
 			}
 			inputSlot->SetDefaultValue (basePointsDefaultValue);
-
 			uiManager.InvalidateNodeValue (uiNode);
 			uiManager.InvalidateNodeDrawing (uiNode);
 		}
