@@ -5,8 +5,8 @@
 #include <wx/treectrl.h>
 #include <wx/dnd.h>
 
+#include "NUIE_NodeRegistry.hpp"
 #include "WXAS_NodeEditorControl.hpp"
-#include "NodeRegistry.hpp"
 
 class NodeSelectorTree : public wxPanel
 {
@@ -28,7 +28,7 @@ private:
 	DECLARE_EVENT_TABLE ()
 };
 
-void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, NodeRegistryId nodeType);
+void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, NUIE::NodeRegistryId nodeType);
 void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, const std::wstring& nodeName);
 
 #endif

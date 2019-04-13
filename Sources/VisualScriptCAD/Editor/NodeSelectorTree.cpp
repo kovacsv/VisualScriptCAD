@@ -1,6 +1,6 @@
 #include "NodeSelectorTree.hpp"
-#include "NodeRegistry.hpp"
 
+#include "NUIE_NodeRegistry.hpp"
 #include "BI_InputUINodes.hpp"
 #include "BI_ArithmeticUINodes.hpp"
 #include "BI_ViewerUINodes.hpp"
@@ -15,18 +15,18 @@
 #include "ExpressionNode.hpp"
 #include "PrismNode.hpp"
 
-static NodeRegistry nodeRegistry;
+static NUIE::NodeRegistry nodeRegistry;
 
 class TreeItemData : public wxTreeItemData
 {
 public:
-	TreeItemData (NodeRegistryId nodeType) :
+	TreeItemData (NUIE::NodeRegistryId nodeType) :
 		nodeType (nodeType)
 	{
 
 	}
 
-	NodeRegistryId nodeType;
+	NUIE::NodeRegistryId nodeType;
 };
 
 static std::wstring ToUpperCase (const std::wstring& text)
@@ -53,7 +53,7 @@ public:
 		wxTreeItemId rootId = nodeTree->AddRoot (L"");
 		nodeRegistry.EnumerateGroups ([&] (const std::wstring& groupName) {
 			AddTreeGroup (rootId, groupName, [&] (wxTreeItemId groupId) {
-				nodeRegistry.EnumerateGroupNodes (groupName, [&] (const NodeRegistry::NodeData& nodeData) {
+				nodeRegistry.EnumerateGroupNodes (groupName, [&] (const NUIE::NodeRegistry::NodeData& nodeData) {
 					AddTreeItem (groupId, nodeData.GetNodeName (), nodeData.GetNodeId ());
 				});
 			});
@@ -73,7 +73,7 @@ private:
 		}
 	}
 
-	void AddTreeItem (wxTreeItemId parentId, const std::wstring& text, NodeRegistryId nodeType)
+	void AddTreeItem (wxTreeItemId parentId, const std::wstring& text, NUIE::NodeRegistryId nodeType)
 	{
 		if (NeedToShow (text)) {
 			nodeTree->AppendItem (parentId, text, -1, -1, new TreeItemData (nodeType));
@@ -284,7 +284,7 @@ EVT_TREE_ITEM_ACTIVATED (wxID_ANY, NodeSelectorTree::OnDoubleClick)
 EVT_TREE_BEGIN_DRAG (wxID_ANY, NodeSelectorTree::OnBeginDrag)
 END_EVENT_TABLE ()
 
-void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, NodeRegistryId nodeType)
+void CreateNode (WXAS::NodeEditorControl* nodeEditor, NUIE::Point viewPosition, NUIE::NodeRegistryId nodeType)
 {
 	if (!nodeRegistry.Contains (nodeType)) {
 		return;

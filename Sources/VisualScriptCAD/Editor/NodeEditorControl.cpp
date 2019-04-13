@@ -4,7 +4,6 @@
 #include "WXAS_ParameterDialog.hpp"
 
 #include "ModelEvaluationData.hpp"
-#include "NodeRegistry.hpp"
 
 class NodeEditorUIEnvironment : public WXAS::NodeEditorUIEnvironment
 {
