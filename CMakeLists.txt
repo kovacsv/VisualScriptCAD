@@ -183,12 +183,13 @@ target_include_directories (
 	${GLMSourcesFolder}
 	${GeometrySourcesFolder}
 	${ModelerSourcesFolder}
+	${BoostOperationsSourcesFolder}
 	${CGALOperationsSourcesFolder}
 	${VisualScriptNodesHeaderFiles}
 	${VisualScriptNodesSourceFiles}
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (VisualScriptNodes Geometry Modeler CGALOperations)
+target_link_libraries (VisualScriptNodes Geometry Modeler BoostOperations CGALOperations)
 SetCompilerOptions (VisualScriptNodes)
 
 # VisualScriptCAD

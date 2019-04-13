@@ -12,6 +12,9 @@
 #include "VersionInfo.hpp"
 #include "XMLUtilities.hpp"
 
+#include "VisualScriptNodesMain.hpp"
+#include "ExpressionEditor.hpp"
+
 #include <locale>
 #include <codecvt>
 
@@ -48,6 +51,28 @@ public:
 		outputStream.Write (std::wstring (VSCAD_APP_NAME));
 		AppVersion.Write (outputStream);
 		outputStream.Write (FileVersion);
+	}
+};
+
+class ApplicationNodeUICallbackInterface : public NodeUICallbackInterface
+{
+public:
+	ApplicationNodeUICallbackInterface ()
+	{
+	}
+
+	virtual ~ApplicationNodeUICallbackInterface ()
+	{
+	}
+
+	virtual bool EditExpression (std::wstring& expression) override
+	{
+		ExpressionEditorDialog expEditor (nullptr, expression);
+		if (expEditor.ShowModal () == wxID_OK) {
+			expression = expEditor.GetExpression ();
+			return true;
+		}
+		return false;
 	}
 };
 
@@ -292,9 +317,10 @@ MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	editorAndModelSplitter->SetMinimumPaneSize (100);
 	editorAndModelSplitter->SplitVertically (nodeEditorControl, modelControl, sashPosition);
 
+	SetNodeUICallbackInterface (NodeUICallbackInterfacePtr (new ApplicationNodeUICallbackInterface ()));
+
 	userSettings.Load ();
 	SyncUserSettings ();
-
 	if (!defaultFileName.empty ()) {
 		OpenFile (defaultFileName);
 	}

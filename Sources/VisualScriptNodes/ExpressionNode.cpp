@@ -3,8 +3,9 @@
 #include "NE_SingleValues.hpp"
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
+
+#include "VisualScriptNodesMain.hpp"
 #include "ExpressionCalculator.hpp"
-#include "ExpressionEditor.hpp"
 
 NE::DynamicSerializationInfo	ExpressionNode::serializationInfo (NE::ObjectId ("{63CF9382-20BE-48EA-B185-DE8A6A23DBF6}"), NE::ObjectVersion (1), ExpressionNode::CreateSerializableInstance);
 
@@ -81,9 +82,9 @@ void ExpressionNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegi
 			std::shared_ptr<ExpressionNode> expNode = std::dynamic_pointer_cast<ExpressionNode> (uiNode);
 			std::wstring expression = expNode->GetExpression ();
 
-			ExpressionEditorDialog expEditor (nullptr, expression);
-			if (expEditor.ShowModal () == wxID_OK) {
-				expNode->SetExpression (expEditor.GetExpression ());
+			NodeUICallbackInterfacePtr uiInterface = GetNodeUICallbackInterface ();
+			if (uiInterface != nullptr && uiInterface->EditExpression (expression)) {
+				expNode->SetExpression (expression);
 				uiManager.InvalidateNodeValue (expNode);
 				uiManager.InvalidateNodeDrawing (expNode);
 			}
