@@ -203,6 +203,8 @@ public:
 
 	void				FitToWindow (int width, int height);
 
+	void				Clear ();
+
 private:
 	void				DrawModel (int width, int height, ViewMode drawMode) const;
 	void				DrawLines (int width, int height, AxisMode axisMode) const;

@@ -2,7 +2,7 @@
 #include "ShaderProgram.hpp"
 #include "IncludeGLM.hpp"
 
-const char* lineVertexShaderSource = R"(
+static const char* lineVertexShaderSource = R"(
 #version 330 core
 precision mediump float;
 
@@ -18,7 +18,7 @@ void main()
 }
 )";
 
-const char* lineFragmentShaderSource = R"(
+static const char* lineFragmentShaderSource = R"(
 #version 330 core
 precision mediump float;
 
@@ -31,7 +31,7 @@ void main()
 }
 )";
 
-const char* triangleVertexShaderSource = R"(
+static const char* triangleVertexShaderSource = R"(
 #version 330 core
 precision mediump float;
 
@@ -54,7 +54,7 @@ void main()
 }
 )";
 
-const char* triangleFragmentShaderSource = R"(
+static const char* triangleFragmentShaderSource = R"(
 #version 330 core
 precision mediump float;
 
@@ -91,6 +91,8 @@ void main()
 	fragmentColor = vec4 (result, 1.0f);
 }
 )";
+
+static const Modeler::Camera DefaultCamera (glm::vec3 (-2.0, -3.0, 1.5), glm::vec3 (0.0, 0.0, 0.0), glm::vec3 (0.0, 0.0, 1.0), 45.0f, 0.1f, 10000.0f);
 
 static void EnumerateAllTransformedVertices (const RenderModel& renderModel, const std::function<void (const glm::vec3&)>& processor)
 {
@@ -485,7 +487,7 @@ RenderScene::RenderScene () :
 	model (),
 	lineModel (),
 	light (),
-	camera (glm::vec3 (-2.0, -3.0, 1.5), glm::vec3 (0.0, 0.0, 0.0), glm::vec3 (0.0, 0.0, 1.0), 45.0f, 0.1f, 10000.0f)
+	camera (DefaultCamera)
 {
 
 }
@@ -630,6 +632,12 @@ void RenderScene::FitToWindow (int width, int height)
 	}
 	
 	camera.ZoomToSphere (center, radius, width, height);
+}
+
+void RenderScene::Clear ()
+{
+	model.Clear ();
+	camera = DefaultCamera;
 }
 
 void RenderScene::DrawModel (int width, int height, ViewMode drawMode) const

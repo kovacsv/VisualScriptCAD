@@ -58,7 +58,7 @@ void ModelControl::RemoveMesh (Modeler::MeshId meshId)
 void ModelControl::Clear ()
 {
 	renderModelConverter.Clear ();
-	renderScene.GetModel ().Clear ();
+	renderScene.Clear ();
 	Refresh ();
 }
 
