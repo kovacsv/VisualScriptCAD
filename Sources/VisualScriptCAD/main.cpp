@@ -43,8 +43,6 @@ public:
 
 		return true;
 	}
-
-private:
 };
 
 IMPLEMENT_APP (Application)
