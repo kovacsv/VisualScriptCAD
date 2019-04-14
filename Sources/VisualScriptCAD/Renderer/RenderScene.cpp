@@ -123,7 +123,7 @@ RenderMaterial::RenderMaterial (const glm::vec3& color) :
 RenderLight::RenderLight () :
 	lightColor (0.7f, 0.7f, 0.7f),
 	lightAmbientStrength (0.6f),
-	lightSpecularStrength (0.3f)
+	lightSpecularStrength (0.1f)
 {
 
 }
