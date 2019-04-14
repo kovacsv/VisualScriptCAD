@@ -208,7 +208,6 @@ file (GLOB VisualScriptCADSourceFiles ${VisualScriptCADSourcesFolder}/*.hpp ${Vi
 if (MSVC)
 	file (GLOB VisualScriptCADSourceFiles ${VisualScriptCADSourceFiles} ${VisualScriptCADSourcesFolder}/appicon.rc ${VisualScriptCADSourcesFolder}/appicon.ico)
 endif ()
-file (GLOB VisualScriptCADNodesSourceFiles ${VisualScriptCADSourcesFolder}/Nodes/*.hpp ${VisualScriptCADSourcesFolder}/Nodes/*.cpp)
 file (GLOB VisualScriptCADEditorSourceFiles ${VisualScriptCADSourcesFolder}/Editor/*.hpp ${VisualScriptCADSourcesFolder}/Editor/*.cpp)
 file (GLOB VisualScriptCADRendererSourceFiles ${VisualScriptCADSourcesFolder}/Renderer/*.hpp ${VisualScriptCADSourcesFolder}/Renderer/*.cpp)
 file (GLOB VisualScriptCADApplicationSourceFiles ${VisualScriptCADSourcesFolder}/Application/*.hpp ${VisualScriptCADSourcesFolder}/Application/*.cpp ${PROJECT_BINARY_DIR}/VersionInfo.hpp)
@@ -217,7 +216,6 @@ set (
 	${VisualScriptCADGladSourceFiles}
 	${VisualScriptCADTinyXMLSourceFiles}
 	${VisualScriptCADSourceFiles}
-	${VisualScriptCADNodesSourceFiles}
 	${VisualScriptCADEditorSourceFiles}
 	${VisualScriptCADRendererSourceFiles}
 	${VisualScriptCADApplicationSourceFiles}
@@ -226,7 +224,6 @@ set (
 source_group ("Libs" FILES ${VisualScriptCADGladSourceFiles})
 source_group ("Libs" FILES ${VisualScriptCADTinyXMLSourceFiles})
 source_group ("Sources" FILES ${VisualScriptCADSourceFiles})
-source_group ("Nodes" FILES ${VisualScriptCADNodesSourceFiles})
 source_group ("Editor" FILES ${VisualScriptCADEditorSourceFiles})
 source_group ("Renderer" FILES ${VisualScriptCADRendererSourceFiles})
 source_group ("Application" FILES ${VisualScriptCADApplicationSourceFiles})
@@ -241,7 +238,6 @@ target_include_directories (
 	${VisualScriptNodesSourcesFolder}
 	${GladSourcesFolder}/include
 	${TinyXMLSourcesFolder}
-	${VisualScriptCADSourcesFolder}/Nodes
 	${VisualScriptCADSourcesFolder}/Editor
 	${VisualScriptCADSourcesFolder}/Renderer
 	${VisualScriptCADSourcesFolder}/Application
