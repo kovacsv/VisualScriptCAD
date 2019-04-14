@@ -19,26 +19,32 @@
 class Application : public wxApp
 {
 public:
-	Application () :
-		mainWindow (nullptr)
+	Application ()
 	{
 		EnableLeakDetection ();
 	}
 
 	virtual bool OnInit ()
 	{
-		wxImage::AddHandler (new wxPNGHandler ());
-		std::wstring defaultFileName;
-		if (argc == 2) {
-			defaultFileName = wxString (argv[1]).ToStdWstring ();
+		if (argc == 1 || argc == 2) {
+			wxInitAllImageHandlers ();
+			std::wstring defaultFileName;
+			if (argc == 2) {
+				defaultFileName = wxString (argv[1]).ToStdWstring ();
+			}
+			MainWindow* mainWindow = new MainWindow (defaultFileName);
+			mainWindow->Show (true);
+			return true;
 		}
-		mainWindow = new MainWindow (defaultFileName);
-		mainWindow->Show (true);
+
+		// make sure to exit the app correctly
+		wxFrame* dummyFrame = new wxFrame (nullptr, wxID_ANY, L"");
+		dummyFrame->Destroy ();
+
 		return true;
 	}
 
 private:
-	MainWindow* mainWindow;
 };
 
 IMPLEMENT_APP (Application)
