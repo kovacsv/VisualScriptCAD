@@ -205,8 +205,9 @@ include_directories (${PROJECT_BINARY_DIR})
 file (GLOB VisualScriptCADGladSourceFiles ${GladSourcesFolder}/include/glad/*.h ${GladSourcesFolder}/src/*.c)
 file (GLOB VisualScriptCADTinyXMLSourceFiles ${TinyXMLSourcesFolder}/*.h ${TinyXMLSourcesFolder}/*.cpp)
 file (GLOB VisualScriptCADSourceFiles ${VisualScriptCADSourcesFolder}/*.hpp ${VisualScriptCADSourcesFolder}/*.cpp)
+file (GLOB VisualScriptCADResourceFiles)
 if (MSVC)
-	file (GLOB VisualScriptCADSourceFiles ${VisualScriptCADSourceFiles} ${VisualScriptCADSourcesFolder}/appicon.rc ${VisualScriptCADSourcesFolder}/appicon.ico)
+	file (GLOB VisualScriptCADResourceFiles ${VisualScriptCADSourcesFolder}/appicon.rc ${VisualScriptCADSourcesFolder}/appicon.ico)
 endif ()
 file (GLOB VisualScriptCADEditorSourceFiles ${VisualScriptCADSourcesFolder}/Editor/*.hpp ${VisualScriptCADSourcesFolder}/Editor/*.cpp)
 file (GLOB VisualScriptCADRendererSourceFiles ${VisualScriptCADSourcesFolder}/Renderer/*.hpp ${VisualScriptCADSourcesFolder}/Renderer/*.cpp)
@@ -215,6 +216,7 @@ set (
 	VisualScriptCADFiles
 	${VisualScriptCADGladSourceFiles}
 	${VisualScriptCADTinyXMLSourceFiles}
+	${VisualScriptCADResourceFiles}
 	${VisualScriptCADSourceFiles}
 	${VisualScriptCADEditorSourceFiles}
 	${VisualScriptCADRendererSourceFiles}
@@ -223,6 +225,9 @@ set (
 
 source_group ("Libs" FILES ${VisualScriptCADGladSourceFiles})
 source_group ("Libs" FILES ${VisualScriptCADTinyXMLSourceFiles})
+if (MSVC)
+	source_group ("Resources" FILES ${VisualScriptCADResourceFiles})
+endif ()
 source_group ("Sources" FILES ${VisualScriptCADSourceFiles})
 source_group ("Editor" FILES ${VisualScriptCADEditorSourceFiles})
 source_group ("Renderer" FILES ${VisualScriptCADRendererSourceFiles})
