@@ -12,7 +12,7 @@
 #include "VersionInfo.hpp"
 #include "XMLUtilities.hpp"
 
-#include "VisualScriptNodesMain.hpp"
+#include "VisualScriptLogicMain.hpp"
 #include "ExpressionEditor.hpp"
 #include "PolygonEditor.hpp"
 

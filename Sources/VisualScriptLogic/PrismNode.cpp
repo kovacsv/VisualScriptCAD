@@ -6,7 +6,7 @@
 #include "MaterialNode.hpp"
 #include "Triangulation.hpp"
 #include "BasicShapes.hpp"
-#include "VisualScriptNodesMain.hpp"
+#include "VisualScriptLogicMain.hpp"
 
 NE::DynamicSerializationInfo	PrismNode::serializationInfo (NE::ObjectId ("{9D1E49DE-FD64-4079-A75B-DE1900FD2C2F}"), NE::ObjectVersion (1), PrismNode::CreateSerializableInstance);
 NE::DynamicSerializationInfo	PrismShellNode::serializationInfo (NE::ObjectId ("{69CF8F09-274E-4CCE-97F8-594F580295A5}"), NE::ObjectVersion (1), PrismShellNode::CreateSerializableInstance);

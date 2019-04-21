@@ -4,7 +4,7 @@
 #include "NUIE_NodeCommonParameters.hpp"
 #include "BI_BuiltInFeatures.hpp"
 
-#include "VisualScriptNodesMain.hpp"
+#include "VisualScriptLogicMain.hpp"
 #include "ExpressionCalculator.hpp"
 
 NE::DynamicSerializationInfo	ExpressionNode::serializationInfo (NE::ObjectId ("{63CF9382-20BE-48EA-B185-DE8A6A23DBF6}"), NE::ObjectVersion (1), ExpressionNode::CreateSerializableInstance);

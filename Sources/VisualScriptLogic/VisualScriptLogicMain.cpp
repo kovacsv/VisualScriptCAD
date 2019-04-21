@@ -1,4 +1,4 @@
-#include "VisualScriptNodesMain.hpp"
+#include "VisualScriptLogicMain.hpp"
 
 static NodeUICallbackInterfacePtr nodeUICallbackInterface = nullptr;
 
