@@ -9,6 +9,7 @@
 #include "ExportDialog.hpp"
 #include "IconStore.hpp"
 #include "Version.hpp"
+#include "ApplicationHeaderIO.hpp"
 #include "XMLUtilities.hpp"
 
 #include "VisualScriptLogicMain.hpp"
@@ -17,42 +18,6 @@
 
 #include <locale>
 #include <codecvt>
-
-class ApplicationHeaderIO : public NUIE::ExternalHeaderIO
-{
-public:
-	ApplicationHeaderIO ()
-	{
-
-	}
-
-	virtual bool Read (NE::InputStream& inputStream) const override
-	{
-		std::wstring appName;
-		inputStream.Read (appName);
-		if (appName != VSCAD_APP_NAME) {
-			return false;
-		}
-		Version readVersion;
-		readVersion.Read (inputStream);
-		if (readVersion > AppVersion) {
-			return false;
-		}
-		int readFileVersion = 0;
-		inputStream.Read (readFileVersion);
-		if (readFileVersion != FileVersion) {
-			return false;
-		}
-		return true;
-	}
-
-	virtual void Write (NE::OutputStream& outputStream) const override
-	{
-		outputStream.Write (std::wstring (VSCAD_APP_NAME));
-		AppVersion.Write (outputStream);
-		outputStream.Write (FileVersion);
-	}
-};
 
 class ApplicationNodeUICallbackInterface : public NodeUICallbackInterface
 {
@@ -85,8 +50,6 @@ public:
 		return false;
 	}
 };
-
-static const ApplicationHeaderIO appHeaderIO;
 
 EvaluationData::EvaluationData (Modeler::Model& model) :
 	model (model)
