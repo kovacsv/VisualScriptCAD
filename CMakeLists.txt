@@ -166,31 +166,31 @@ target_link_libraries (EngineTest Geometry Modeler BoostOperations CGALOperation
 SetCompilerOptions (EngineTest)
 add_test (EngineTest EngineTest)
 
-# VisualScriptNodes
+# VisualScriptLogic
 
-set (VisualScriptNodesSourcesFolder Sources/VisualScriptNodes)
-file (GLOB VisualScriptNodesHeaderFiles ${VisualScriptNodesSourcesFolder}/*.hpp)
-file (GLOB VisualScriptNodesSourceFiles ${VisualScriptNodesSourcesFolder}/*.cpp)
+set (VisualScriptLogicSourcesFolder Sources/VisualScriptLogic)
+file (GLOB VisualScriptLogicHeaderFiles ${VisualScriptLogicSourcesFolder}/*.hpp)
+file (GLOB VisualScriptLogicSourceFiles ${VisualScriptLogicSourcesFolder}/*.cpp)
 set (
-	VisualScriptNodesFiles
-	${VisualScriptNodesHeaderFiles}
-	${VisualScriptNodesSourceFiles}
+	VisualScriptLogicFiles
+	${VisualScriptLogicHeaderFiles}
+	${VisualScriptLogicSourceFiles}
 )
-source_group ("Sources" FILES ${VisualScriptNodesFiles})
-add_library (VisualScriptNodes STATIC ${VisualScriptNodesFiles})
+source_group ("Sources" FILES ${VisualScriptLogicFiles})
+add_library (VisualScriptLogic STATIC ${VisualScriptLogicFiles})
 target_include_directories (
-	VisualScriptNodes PUBLIC
+	VisualScriptLogic PUBLIC
 	${GLMSourcesFolder}
 	${GeometrySourcesFolder}
 	${ModelerSourcesFolder}
 	${BoostOperationsSourcesFolder}
 	${CGALOperationsSourcesFolder}
-	${VisualScriptNodesHeaderFiles}
-	${VisualScriptNodesSourceFiles}
+	${VisualScriptLogicHeaderFiles}
+	${VisualScriptLogicSourceFiles}
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (VisualScriptNodes Geometry Modeler BoostOperations CGALOperations)
-SetCompilerOptions (VisualScriptNodes)
+target_link_libraries (VisualScriptLogic Geometry Modeler BoostOperations CGALOperations)
+SetCompilerOptions (VisualScriptLogic)
 
 # VisualScriptCAD
 
@@ -240,7 +240,7 @@ target_include_directories (
 	${ModelerSourcesFolder}
 	${BoostOperationsSourcesFolder}
 	${CGALOperationsSourcesFolder}
-	${VisualScriptNodesSourcesFolder}
+	${VisualScriptLogicSourcesFolder}
 	${GladSourcesFolder}/include
 	${TinyXMLSourcesFolder}
 	${VisualScriptCADSourcesFolder}/Editor
@@ -251,6 +251,6 @@ target_include_directories (
 	${WXWIDGETS_DIR}/include/msvc
 	${VSE_DEVKIT_DIR}/include
 )
-target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations VisualScriptNodes)
+target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
 SetCompilerOptions (VisualScriptCAD)
