@@ -40,6 +40,11 @@ set (GLMSourcesFolder ${LibSourcesFolder}/glm-0.9.9.2)
 set (GladSourcesFolder ${LibSourcesFolder}/glad-opengl-3.3)
 set (TinyXMLSourcesFolder ${LibSourcesFolder}/tinyxml2-7.0.1)
 
+link_directories (${CGAL_DIR}/build/lib)
+link_directories (${CGAL_DIR}/auxiliary/gmp/lib)
+link_directories (${WXWIDGETS_DIR}/lib/vc_x64_lib)
+link_directories (${VSE_DEVKIT_DIR}/lib)
+
 # Geometry
 
 set (GeometrySourcesFolder Sources/Geometry)
@@ -140,9 +145,6 @@ add_custom_command (TARGET CGALOperations POST_BUILD
 
 # EngineTest
 
-link_directories (${CGAL_DIR}/build/lib)
-link_directories (${CGAL_DIR}/auxiliary/gmp/lib)
-
 set (TestFrameworkSourcesFolder Sources/TestFramework)
 set (EngineTestSourcesFolder Sources/EngineTest)
 file (GLOB TestFrameworkFiles ${TestFrameworkSourcesFolder}/*.hpp ${TestFrameworkSourcesFolder}/*.cpp)
@@ -194,10 +196,28 @@ target_include_directories (
 target_link_libraries (VisualScriptLogic Geometry Modeler BoostOperations CGALOperations)
 SetCompilerOptions (VisualScriptLogic)
 
-# VisualScriptCAD
+# VisualScriptCADCLI
 
-link_directories (${WXWIDGETS_DIR}/lib/vc_x64_lib)
-link_directories (${VSE_DEVKIT_DIR}/lib)
+set (TestFrameworkSourcesFolder Sources/TestFramework)
+set (VisualScriptCADCLISourcesFolder Sources/VisualScriptCADCLI)
+file (GLOB TestFrameworkFiles ${TestFrameworkSourcesFolder}/*.hpp ${TestFrameworkSourcesFolder}/*.cpp)
+file (GLOB VisualScriptCADCLIHeaderFiles ${VisualScriptCADCLISourcesFolder}/*.hpp)
+file (GLOB VisualScriptCADCLISourceFiles ${VisualScriptCADCLISourcesFolder}/*.cpp)
+set (
+	VisualScriptCADCLIFiles
+	${VisualScriptCADCLIHeaderFiles}
+	${VisualScriptCADCLISourceFiles}
+)
+set (
+	VisualScriptCADCLIFiles
+	${VisualScriptCADCLIFiles}
+)
+add_executable (VisualScriptCADCLI ${VisualScriptCADCLIFiles})
+target_include_directories (VisualScriptCADCLI PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder} ${BoostOperationsSourcesFolder} ${CGALOperationsSourcesFolder} ${VisualScriptLogicSourcesFolder})
+target_link_libraries (EngineTest Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
+SetCompilerOptions (VisualScriptCADCLI)
+
+# VisualScriptCAD
 
 set (VisualScriptCADSourcesFolder Sources/VisualScriptCAD)
 
