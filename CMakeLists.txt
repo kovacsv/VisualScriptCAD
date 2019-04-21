@@ -171,6 +171,8 @@ add_test (EngineTest EngineTest)
 set (VisualScriptLogicSourcesFolder Sources/VisualScriptLogic)
 file (GLOB VisualScriptLogicHeaderFiles ${VisualScriptLogicSourcesFolder}/*.hpp)
 file (GLOB VisualScriptLogicSourceFiles ${VisualScriptLogicSourcesFolder}/*.cpp)
+configure_file (${VisualScriptLogicSourcesFolder}/VersionInfo.hpp.in ${PROJECT_BINARY_DIR}/VersionInfo.hpp)
+include_directories (${PROJECT_BINARY_DIR})
 set (
 	VisualScriptLogicFiles
 	${VisualScriptLogicHeaderFiles}
@@ -198,9 +200,6 @@ link_directories (${WXWIDGETS_DIR}/lib/vc_x64_lib)
 link_directories (${VSE_DEVKIT_DIR}/lib)
 
 set (VisualScriptCADSourcesFolder Sources/VisualScriptCAD)
-
-configure_file (${VisualScriptCADSourcesFolder}/Application/VersionInfo.hpp.in ${PROJECT_BINARY_DIR}/VersionInfo.hpp)
-include_directories (${PROJECT_BINARY_DIR})
 
 file (GLOB VisualScriptCADGladSourceFiles ${GladSourcesFolder}/include/glad/*.h ${GladSourcesFolder}/src/*.c)
 file (GLOB VisualScriptCADTinyXMLSourceFiles ${TinyXMLSourcesFolder}/*.h ${TinyXMLSourcesFolder}/*.cpp)

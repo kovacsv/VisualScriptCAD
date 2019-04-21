@@ -2,7 +2,6 @@
 #define VERSION_HPP
 
 #include "NE_Stream.hpp"
-#include "VersionInfo.hpp"
 
 class Version
 {

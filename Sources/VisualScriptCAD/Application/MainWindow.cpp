@@ -9,7 +9,6 @@
 #include "ExportDialog.hpp"
 #include "IconStore.hpp"
 #include "Version.hpp"
-#include "VersionInfo.hpp"
 #include "XMLUtilities.hpp"
 
 #include "VisualScriptLogicMain.hpp"
