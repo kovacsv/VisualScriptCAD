@@ -9,6 +9,7 @@
 #include "ExportDialog.hpp"
 #include "IconStore.hpp"
 #include "Version.hpp"
+#include "VersionInfo.hpp"
 #include "ApplicationHeaderIO.hpp"
 #include "XMLUtilities.hpp"
 
