@@ -15,7 +15,7 @@ public:
 
 	const std::wstring&		GetName () const;
 	int						GetParameterCount () const;
-	virtual bool			Do () const = 0;
+	virtual bool			Do (const std::vector<std::wstring>& parameters) const = 0;
 
 private:
 	std::wstring	commandName;

@@ -8,7 +8,7 @@ class OpenExportCommand : public CLI::Command
 public:
 	OpenExportCommand ();
 
-	virtual bool Do () const override;
+	virtual bool Do (const std::vector<std::wstring>& parameters) const override;
 };
 
 #endif

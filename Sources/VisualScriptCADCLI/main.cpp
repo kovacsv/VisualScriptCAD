@@ -2,6 +2,7 @@
 #include <io.h>
 #include <fcntl.h>
 
+#include "NodeRegistry.hpp"
 #include "CLICommand.hpp"
 #include "OpenExportCommand.hpp"
 
@@ -22,6 +23,9 @@ void PrintUsage ()
 
 int wmain (int argc, wchar_t* argv[])
 {
+	// make sure every node is statically initialized
+	GetNodeRegistry ();
+
 	_setmode (_fileno (stdout), _O_WTEXT);
 	if (argc < 2) {
 		PrintUsage ();
@@ -37,13 +41,20 @@ int wmain (int argc, wchar_t* argv[])
 		PrintUsage ();
 		return 1;
 	}
-	if (command->GetParameterCount () != argc - 2) {
+
+	std::vector<std::wstring> parameters;
+	for (int i = 2; i < argc; i++) {
+		parameters.push_back (argv[i]);
+	}
+
+	if (command->GetParameterCount () != parameters.size ()) {
 		PrintUsage ();
 		return 1;
 	}
 
-	if (!command->Do ()) {
+	if (!command->Do (parameters)) {
 		return 1;
 	}
+
 	return 0;
 }

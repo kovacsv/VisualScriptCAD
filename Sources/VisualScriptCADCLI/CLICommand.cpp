@@ -7,6 +7,7 @@ Command::Command (const std::wstring& commandName, int parameterCount) :
 	commandName (commandName),
 	parameterCount (parameterCount)
 {
+
 }
 
 Command::~Command ()

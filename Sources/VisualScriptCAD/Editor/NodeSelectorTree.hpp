@@ -5,8 +5,8 @@
 #include <wx/treectrl.h>
 #include <wx/dnd.h>
 
-#include "NUIE_NodeRegistry.hpp"
 #include "WXAS_NodeEditorControl.hpp"
+#include "NUIE_NodeRegistry.hpp"
 
 class NodeSelectorTree : public wxPanel
 {
@@ -18,8 +18,6 @@ public:
 	void	OnBeginDrag (wxTreeEvent& evt);
 
 private:
-	void	RegisterNodes ();
-
 	wxBoxSizer*					boxSizer;
 	wxTextCtrl*					searchControl;
 	wxTreeCtrl*					nodeTree;
