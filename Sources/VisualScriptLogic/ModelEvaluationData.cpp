@@ -39,14 +39,14 @@ const std::unordered_set<Modeler::MeshId>& ModelEvaluationData::GetDeletedMeshes
 	return deletedMeshes;
 }
 
-void ModelEvaluationData::Clear ()
-{
-	model.Clear ();
-	ClearAddedDeletedMeshes ();
-}
-
 void ModelEvaluationData::ClearAddedDeletedMeshes ()
 {
 	addedMeshes.clear ();
 	deletedMeshes.clear ();
+}
+
+void ModelEvaluationData::Clear ()
+{
+	model.Clear ();
+	ClearAddedDeletedMeshes ();
 }

@@ -16,9 +16,9 @@ public:
 
 	const std::unordered_set<Modeler::MeshId>&	GetAddedMeshes () const;
 	const std::unordered_set<Modeler::MeshId>&	GetDeletedMeshes () const;
+	void										ClearAddedDeletedMeshes ();
 
 	void										Clear ();
-	void										ClearAddedDeletedMeshes ();
 
 private:
 	Modeler::Model							model;
