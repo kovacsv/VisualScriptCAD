@@ -11,7 +11,7 @@ ModelEvaluationData::~ModelEvaluationData ()
 {
 }
 
-Modeler::Model& ModelEvaluationData::GetModel ()
+const Modeler::Model& ModelEvaluationData::GetModel () const
 {
 	return model;
 }
@@ -27,11 +27,6 @@ void ModelEvaluationData::RemoveMesh (Modeler::MeshId meshId)
 {
 	model.RemoveMesh (meshId);
 	deletedMeshes.insert (meshId);
-}
-
-const Modeler::Model& ModelEvaluationData::GetModel () const
-{
-	return model;
 }
 
 const std::unordered_set<Modeler::MeshId>& ModelEvaluationData::GetAddedMeshes () const
