@@ -4,6 +4,9 @@
 #include <memory>
 #include <vector>
 
+namespace CLI
+{
+
 class Command
 {
 public:
@@ -33,5 +36,7 @@ public:
 private:
 	std::vector<CommandPtr> commands;
 };
+
+}
 
 #endif

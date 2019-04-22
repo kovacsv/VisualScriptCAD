@@ -214,8 +214,17 @@ set (
 )
 source_group ("Sources" FILES ${VisualScriptCADCLIFiles})
 add_executable (VisualScriptCADCLI ${VisualScriptCADCLIFiles})
-target_include_directories (VisualScriptCADCLI PUBLIC ${GeometrySourcesFolder} ${ModelerSourcesFolder} ${BoostOperationsSourcesFolder} ${CGALOperationsSourcesFolder} ${VisualScriptLogicSourcesFolder})
-target_link_libraries (EngineTest Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
+target_include_directories (
+	VisualScriptCADCLI PUBLIC
+	${GLMSourcesFolder}
+	${GeometrySourcesFolder}
+	${ModelerSourcesFolder}
+	${BoostOperationsSourcesFolder}
+	${CGALOperationsSourcesFolder}
+	${VisualScriptLogicSourcesFolder}
+	${VSE_DEVKIT_DIR}/include
+)
+target_link_libraries (VisualScriptCADCLI Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
 SetCompilerOptions (VisualScriptCADCLI)
 
 # VisualScriptCAD

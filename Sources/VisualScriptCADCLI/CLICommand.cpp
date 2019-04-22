@@ -1,5 +1,8 @@
 #include "CLICommand.hpp"
 
+namespace CLI
+{
+
 Command::Command (const std::wstring& commandName, int parameterCount) :
 	commandName (commandName),
 	parameterCount (parameterCount)
@@ -41,4 +44,6 @@ CommandPtr CommandHandler::GetCommand (const std::wstring& name) const
 		}
 	}
 	return nullptr;
+}
+
 }

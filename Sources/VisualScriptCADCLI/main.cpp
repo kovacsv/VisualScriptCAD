@@ -3,25 +3,22 @@
 #include <fcntl.h>
 
 #include "CLICommand.hpp"
+#include "OpenExportCommand.hpp"
+
+#ifdef DEBUG
+#pragma comment(lib, "NodeEngineDebug.lib")
+#pragma comment(lib, "NodeUIEngineDebug.lib")
+#pragma comment(lib, "BuiltInNodesDebug.lib")
+#else
+#pragma comment(lib, "NodeEngine.lib")
+#pragma comment(lib, "NodeUIEngine.lib")
+#pragma comment(lib, "BuiltInNodes.lib")
+#endif
 
 void PrintUsage ()
 {
 	std::wcout << "Usage: VisualScriptCADCLI <command> [parameters]" << std::endl;
 }
-
-class OpenSaveCommand : public Command
-{
-public:
-	OpenSaveCommand () :
-		Command (L"open_save_obj", 1)
-	{
-	}
-
-	virtual bool Do () const override
-	{
-		return true;
-	}
-};
 
 int wmain (int argc, wchar_t* argv[])
 {
@@ -31,11 +28,11 @@ int wmain (int argc, wchar_t* argv[])
 		return 1;
 	}
 
-	CommandHandler commandHandler;
-	commandHandler.RegisterCommand (CommandPtr (new OpenSaveCommand ()));
+	CLI::CommandHandler commandHandler;
+	commandHandler.RegisterCommand (CLI::CommandPtr (new OpenExportCommand ()));
 
 	std::wstring commandName = argv[1];
-	CommandPtr command = commandHandler.GetCommand (commandName);
+	CLI::CommandPtr command = commandHandler.GetCommand (commandName);
 	if (command == nullptr) {
 		PrintUsage ();
 		return 1;
