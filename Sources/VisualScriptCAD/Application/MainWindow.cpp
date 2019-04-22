@@ -52,55 +52,7 @@ public:
 	}
 };
 
-EvaluationData::EvaluationData (Modeler::Model& model) :
-	model (model)
-{
-}
-
-EvaluationData::~EvaluationData ()
-{
-}
-
-Modeler::Model& EvaluationData::GetModel ()
-{
-	return model;
-}
-
-Modeler::MeshId EvaluationData::AddMesh (const Modeler::Mesh& mesh)
-{
-	Modeler::MeshId meshId = model.AddMesh (mesh);
-	addedMeshes.insert (meshId);
-	return meshId;
-}
-
-void EvaluationData::RemoveMesh (Modeler::MeshId meshId)
-{
-	model.RemoveMesh (meshId);
-	deletedMeshes.insert (meshId);
-}
-
-const Modeler::Model& EvaluationData::GetModel () const
-{
-	return model;
-}
-
-const std::unordered_set<Modeler::MeshId>& EvaluationData::GetAddedMeshes () const
-{
-	return addedMeshes;
-}
-
-const std::unordered_set<Modeler::MeshId>& EvaluationData::GetDeletedMeshes () const
-{
-	return deletedMeshes;
-}
-
-void EvaluationData::Clear ()
-{
-	addedMeshes.clear ();
-	deletedMeshes.clear ();
-}
-
-ModelControlSynchronizer::ModelControlSynchronizer (std::shared_ptr<EvaluationData>& evalData, ModelControl* modelControl) :
+ModelControlSynchronizer::ModelControlSynchronizer (std::shared_ptr<ModelEvaluationData>& evalData, ModelControl* modelControl) :
 	evalData (evalData),
 	modelControl (modelControl)
 {
@@ -114,7 +66,7 @@ void ModelControlSynchronizer::Synchronize ()
 	for (Modeler::MeshId meshId : evalData->GetAddedMeshes ()) {
 		modelControl->AddMesh (evalData->GetModel (), meshId);
 	}
-	evalData->Clear ();
+	evalData->ClearAddedDeletedMeshes ();
 }
 
 ApplicationState::ApplicationState () :
@@ -261,8 +213,7 @@ wxToolBarToolBase* ToolBar::AddRadioButton (int toolId, const void* imageData, s
 
 MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	wxFrame (NULL, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize (1000, 600)),
-	model (),
-	evaluationData (new EvaluationData (model)),
+	evaluationData (new ModelEvaluationData ()),
 	menuBar (new MenuBar ()),
 	toolBar (new ToolBar (this)),
 	editorAndModelSplitter (new wxSplitterWindow (this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_THIN_SASH | wxSP_LIVE_UPDATE)),
@@ -447,6 +398,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_Info:
 			{
+				const Modeler::Model& model = evaluationData->GetModel ();
 				Modeler::ModelInfo modelInfo = model.GetModelInfo ();
 				std::wstring modelInfoText = L"";
 				modelInfoText += L"Mesh geometry count: " + std::to_wstring (modelInfo.meshGeometryCount) + L"\n";
@@ -459,6 +411,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case Model_Export:
 			{
+				const Modeler::Model& model = evaluationData->GetModel ();
 				ExportDialog modelExportDialog (this, model, modelControl->GetRenderScene (), userSettings.exportSettings);
 				if (modelExportDialog.ShowModal () == wxID_OK) {
 					userSettings.exportSettings = modelExportDialog.GetExportSettings ();
@@ -557,7 +510,7 @@ void MainWindow::NewFile ()
 {
 	nodeEditorControl->Clear ();
 	modelControl->Clear ();
-	model.Clear ();
+	evaluationData->Clear ();
 	applicationState.ClearCurrentFileName ();
 }
 

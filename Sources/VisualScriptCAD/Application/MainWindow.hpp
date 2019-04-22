@@ -40,38 +40,16 @@ enum class SplitViewMode
 	Split
 };
 
-class EvaluationData : public ModelEvaluationData
-{
-public:
-	EvaluationData (Modeler::Model& model);
-	virtual ~EvaluationData ();
-
-	virtual Modeler::Model&						GetModel () override;
-	virtual Modeler::MeshId						AddMesh (const Modeler::Mesh& mesh) override;
-	virtual void								RemoveMesh (Modeler::MeshId meshId) override;
-
-	const Modeler::Model&						GetModel () const;
-
-	const std::unordered_set<Modeler::MeshId>&	GetAddedMeshes () const;
-	const std::unordered_set<Modeler::MeshId>&	GetDeletedMeshes () const;
-	void										Clear ();
-
-private:
-	Modeler::Model&							model;
-	std::unordered_set<Modeler::MeshId>		addedMeshes;
-	std::unordered_set<Modeler::MeshId>		deletedMeshes;
-};
-
 class ModelControlSynchronizer : public ModelSynchronizer
 {
 public:
-	ModelControlSynchronizer (std::shared_ptr<EvaluationData>& evalData, ModelControl* modelControl);
+	ModelControlSynchronizer (std::shared_ptr<ModelEvaluationData>& evalData, ModelControl* modelControl);
 
 	virtual void Synchronize () override;
 
 private:
-	std::shared_ptr<EvaluationData>& evalData;
-	ModelControl* modelControl;
+	std::shared_ptr<ModelEvaluationData>&	evalData;
+	ModelControl*							modelControl;
 };
 
 class MenuBar : public wxMenuBar
@@ -131,19 +109,18 @@ private:
 	void	NewFile ();
 	void	OpenFile (const std::wstring& fileName);
 
-	Modeler::Model						model;
-	std::shared_ptr<EvaluationData>		evaluationData;
-	MenuBar*							menuBar;
-	ToolBar*							toolBar;
-	wxSplitterWindow*					editorAndModelSplitter;
-	ModelControl*						modelControl;
-	ModelControlSynchronizer			modelControlSynchronizer;
-	NodeEditorControl*					nodeEditorControl;
+	std::shared_ptr<ModelEvaluationData>	evaluationData;
+	MenuBar*								menuBar;
+	ToolBar*								toolBar;
+	wxSplitterWindow*						editorAndModelSplitter;
+	ModelControl*							modelControl;
+	ModelControlSynchronizer				modelControlSynchronizer;
+	NodeEditorControl*						nodeEditorControl;
 
-	ApplicationState					applicationState;
-	SplitViewMode						splitViewMode;
-	UserSettings						userSettings;
-	int									sashPosition;
+	ApplicationState						applicationState;
+	SplitViewMode							splitViewMode;
+	UserSettings							userSettings;
+	int										sashPosition;
 
 	DECLARE_EVENT_TABLE ()
 };
