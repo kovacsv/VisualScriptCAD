@@ -19,11 +19,10 @@ bool OpenExportCommand::Do () const
 	NUIE::NodeEditor nodeEditor (env);
 
 	// TODO: location and FileIO
-	ApplicationHeaderIO headerIO;
-	if (!nodeEditor.Open (L"", nullptr, &headerIO)) {
-		return false;
-	}
-
+	// ApplicationHeaderIO headerIO;
+	// if (!nodeEditor.Open (L"", nullptr, &headerIO)) {
+	// 	return false;
+	// }
 	
 	return true;
 }
