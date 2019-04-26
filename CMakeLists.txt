@@ -198,34 +198,36 @@ SetCompilerOptions (VisualScriptLogic)
 
 # VisualScriptCADCLI
 
-set (TestFrameworkSourcesFolder Sources/TestFramework)
-set (VisualScriptCADCLISourcesFolder Sources/VisualScriptCADCLI)
-file (GLOB TestFrameworkFiles ${TestFrameworkSourcesFolder}/*.hpp ${TestFrameworkSourcesFolder}/*.cpp)
-file (GLOB VisualScriptCADCLIHeaderFiles ${VisualScriptCADCLISourcesFolder}/*.hpp)
-file (GLOB VisualScriptCADCLISourceFiles ${VisualScriptCADCLISourcesFolder}/*.cpp)
-set (
-	VisualScriptCADCLIFiles
-	${VisualScriptCADCLIHeaderFiles}
-	${VisualScriptCADCLISourceFiles}
-)
-set (
-	VisualScriptCADCLIFiles
-	${VisualScriptCADCLIFiles}
-)
-source_group ("Sources" FILES ${VisualScriptCADCLIFiles})
-add_executable (VisualScriptCADCLI ${VisualScriptCADCLIFiles})
-target_include_directories (
-	VisualScriptCADCLI PUBLIC
-	${GLMSourcesFolder}
-	${GeometrySourcesFolder}
-	${ModelerSourcesFolder}
-	${BoostOperationsSourcesFolder}
-	${CGALOperationsSourcesFolder}
-	${VisualScriptLogicSourcesFolder}
-	${VSE_DEVKIT_DIR}/include
-)
-target_link_libraries (VisualScriptCADCLI Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
-SetCompilerOptions (VisualScriptCADCLI)
+if (MSVC)
+	set (TestFrameworkSourcesFolder Sources/TestFramework)
+	set (VisualScriptCADCLISourcesFolder Sources/VisualScriptCADCLI)
+	file (GLOB TestFrameworkFiles ${TestFrameworkSourcesFolder}/*.hpp ${TestFrameworkSourcesFolder}/*.cpp)
+	file (GLOB VisualScriptCADCLIHeaderFiles ${VisualScriptCADCLISourcesFolder}/*.hpp)
+	file (GLOB VisualScriptCADCLISourceFiles ${VisualScriptCADCLISourcesFolder}/*.cpp)
+	set (
+		VisualScriptCADCLIFiles
+		${VisualScriptCADCLIHeaderFiles}
+		${VisualScriptCADCLISourceFiles}
+	)
+	set (
+		VisualScriptCADCLIFiles
+		${VisualScriptCADCLIFiles}
+	)
+	source_group ("Sources" FILES ${VisualScriptCADCLIFiles})
+	add_executable (VisualScriptCADCLI ${VisualScriptCADCLIFiles})
+	target_include_directories (
+		VisualScriptCADCLI PUBLIC
+		${GLMSourcesFolder}
+		${GeometrySourcesFolder}
+		${ModelerSourcesFolder}
+		${BoostOperationsSourcesFolder}
+		${CGALOperationsSourcesFolder}
+		${VisualScriptLogicSourcesFolder}
+		${VSE_DEVKIT_DIR}/include
+	)
+	target_link_libraries (VisualScriptCADCLI Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
+	SetCompilerOptions (VisualScriptCADCLI)
+endif ()
 
 # VisualScriptCAD
 
