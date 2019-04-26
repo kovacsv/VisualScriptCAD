@@ -17,8 +17,15 @@
 #include "ExpressionEditor.hpp"
 #include "PolygonEditor.hpp"
 
+#include <wx/filename.h>
+#include <wx/stdpaths.h>
 #include <locale>
 #include <codecvt>
+
+static const std::vector<std::pair<std::wstring, std::wstring>> exampleFiles = {
+	{ L"VisualScriptCAD Logo", L"vscad_logo.vsc" },
+	{ L"Box-Sphere Difference", L"box_sphere_diff.vsc" }
+};
 
 class ApplicationNodeUICallbackInterface : public NodeUICallbackInterface
 {
@@ -104,6 +111,13 @@ MenuBar::MenuBar () :
 
 	openRecentMenu = new wxMenu ();
 	fileMenu->AppendSubMenu (openRecentMenu, L"Open Recent");
+
+	wxMenu* openExampleMenu = new wxMenu ();
+	for (size_t i = 0; i < exampleFiles.size (); i++) {
+		const std::pair<std::wstring, std::wstring>& example = exampleFiles[i];
+		openExampleMenu->Append (CommandId::File_OpenExample_First + i, example.first);
+	}
+	fileMenu->AppendSubMenu (openExampleMenu, L"Open Example");
 
 	fileMenu->Append (CommandId::File_Save, "Save...");
 	fileMenu->Append (CommandId::File_SaveAs, "Save As...");
@@ -429,6 +443,16 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		if (ConfirmLosingUnsavedChanges ()) {
 			std::wstring recentFilePath = userSettings.recentFiles[commandId - CommandId::File_OpenRecent_First];
 			OpenFile (recentFilePath);
+		}
+	} else if (commandId >= CommandId::File_OpenExample_First && commandId < CommandId::File_OpenExample_First + exampleFiles.size ()) {
+		if (ConfirmLosingUnsavedChanges ()) {
+			wxFileName executableDir (wxStandardPaths::Get ().GetExecutablePath ());
+			executableDir.RemoveLastDir ();
+			wxFileName exampleFilePath (executableDir.GetPath ());
+			exampleFilePath.AppendDir (L"Examples");
+			exampleFilePath.AppendDir (exampleFiles[commandId - CommandId::File_OpenExample_First].second);
+			wxString exampleFilePathString = exampleFilePath.GetPath ();
+			OpenFile (exampleFilePathString.ToStdWstring ());
 		}
 	}
 

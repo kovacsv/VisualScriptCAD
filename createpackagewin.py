@@ -61,12 +61,15 @@ def Main (argv):
 		os.path.join ('Build', msBuildConfiguration, 'libgmp-10.dll'),
 		os.path.join ('Build', msBuildConfiguration, 'libmpfr-4.dll')
 	]
-	
+	requiredFolders = [
+		os.path.join ('Examples')
+	]
+
 	for file in requiredFiles:
 		if not os.path.exists (file):
 			PrintError ('File does not exists: ' + file)
 			return 1
-
+	
 	packagePath = os.path.abspath (os.path.join ('Build', 'Package'))
 	installerScriptPath = os.path.abspath (os.path.join ('Installer', 'VisualScriptCADInstaller.iss'))
 	subprocess.call ([innoSetupPath, installerScriptPath])
@@ -75,8 +78,11 @@ def Main (argv):
 	zip = zipfile.ZipFile (zipPath, 'w')
 	for file in requiredFiles:
 		zip.write (file, os.path.basename (file))
+	for folder in requiredFolders:
+		for file in os.listdir (folder):
+			zip.write (os.path.join (folder, file), os.path.join (os.path.basename (folder), file))
 	zip.close ()
-	
+
 	return 0
 	
 sys.exit (Main (sys.argv))
