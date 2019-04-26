@@ -9,14 +9,14 @@
 
 #include <fstream>
 
-class WindowsFileIO : public NUIE::ExternalFileIO
+class FileIO : public NUIE::ExternalFileIO
 {
 public:
 	virtual bool ReadBufferFromFile (const std::wstring& fileName, std::vector<char>& buffer) const override
 	{
 		std::ifstream file;
 		file.open (fileName, std::ios::binary);
-		if (DBGERROR (!file.is_open ())) {
+		if (!file.is_open ()) {
 			return false;
 		}
 
@@ -30,7 +30,7 @@ public:
 	{
 		std::ofstream file;
 		file.open (fileName, std::ios::binary);
-		if (DBGERROR (!file.is_open ())) {
+		if (!file.is_open ()) {
 			return false;
 		}
 
@@ -40,6 +40,39 @@ public:
 		return true;
 	}
 };
+
+class ModelWriter : public Modeler::ModelWriter
+{
+public:
+	ModelWriter (const std::wstring& folder) :
+		folder (folder)
+	{
+		
+	}
+
+	virtual void OpenFile (const std::wstring& fileName) override
+	{
+		if (file.is_open ()) {
+			return;
+		}
+		file.open (folder + L"\\" + fileName);
+	}
+
+	virtual void CloseFile () override
+	{
+		file.close ();
+	}
+
+	virtual void WriteLine (const std::wstring& text) override
+	{
+		file << text << std::endl;
+	}
+
+private:
+	std::wstring	folder;
+	std::wofstream	file;
+};
+
 
 OpenExportCommand::OpenExportCommand () :
 	CLI::Command (L"open_export_obj", 3)
@@ -56,14 +89,17 @@ bool OpenExportCommand::Do (const std::vector<std::wstring>& parameters) const
 	CLI::NodeUIEnvironment env (evalData);
 	NUIE::NodeEditor nodeEditor (env);
 
-	WindowsFileIO fileIO;
+	FileIO fileIO;
 	ApplicationHeaderIO headerIO;
 
 	if (!nodeEditor.Open (vscFileName, &fileIO, &headerIO)) {
 		return false;
 	}
 	
-	//Modeler::ExportModel (evalData->GetModel (), Modeler::FormatId::Obj, objFileName);
+	ModelWriter writer (objFileFolder);
+	if (!Modeler::ExportModel (evalData->GetModel (), Modeler::FormatId::Obj, objFileName, writer)) {
+		return false;
+	}
 
 	return true;
 }
