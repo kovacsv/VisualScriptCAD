@@ -552,7 +552,6 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 	if (success) {
 		applicationState.SetCurrentFileName (fileName);
 		userSettings.AddRecentFile (fileName);
-		editor->FitToWindow ();
 		modelControl->FitToWindow ();
 	} else {
 		wxMessageDialog messageDialog (this, L"Failed to open file.", L"Error!", wxICON_ERROR | wxOK);
