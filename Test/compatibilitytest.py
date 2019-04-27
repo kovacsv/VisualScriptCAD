@@ -2,13 +2,26 @@ import os
 import sys
 import shutil
 import subprocess
+from TestLib import ObjImporter
 
 def Error (message):
 	print ('ERROR: ' + message)
 
-def CheckFileSize (filePath, referenceSize):
-	fileSize = os.path.getsize (filePath)
-	if (abs (fileSize - referenceSize) > 10):
+def IsEqual (current, reference):
+	if abs (current - reference) > 0.00005:
+		return False
+	return True
+	
+def IsEqualPoint (current, reference):
+	for i in range (0, 3):
+		if not IsEqual (current[i], reference[i]):
+			return False
+	return True
+	
+def IsEqualBox (current, reference):
+	if not IsEqualPoint (current[0], reference[0]):
+		return False
+	if not IsEqualPoint (current[1], reference[1]):
 		return False
 	return True
 	
@@ -24,23 +37,25 @@ def Main (argv):
 	cliPath = os.path.abspath (os.path.join (currentDir, '..', 'Build', msBuildConfiguration, 'VisualScriptCADCLI.exe'))
 	examplesPath = os.path.abspath (os.path.join (currentDir, '..', 'Examples'))
 	resultPath = os.path.abspath (os.path.join (currentDir, '..', 'Build', msBuildConfiguration, 'TestResults'))
+
 	if os.path.exists (resultPath):
 		shutil.rmtree (resultPath)
 	os.makedirs (resultPath)
 	
 	examples = [
 		{
+			'name' : 'simple_box.vsc',
+			'boundingBox' : ([0.0, 0.0, 0.0], [3.0, 2.0, 1.0])
+		},
+		{
 			'name' : 'box_sphere_diff.vsc',
-			'mtlSize' : 70,
-			'objSize' : 63408
+			'boundingBox' : ([0.0, 0.0, 0.0], [1.0, 1.0, 1.0])
 		},
 		{
 			'name' : 'vscad_logo.vsc',
-			'mtlSize' : 105,
-			'objSize' : 602882
+			'boundingBox' : ([-0.5, -0.5, -0.5], [0.5, 0.5, 0.5])
 		}
 	]
-	
 	
 	for example in examples:
 		exampleName = example['name']
@@ -50,18 +65,15 @@ def Main (argv):
 		result = subprocess.call ([cliPath, 'open_export_obj', examplePath, resultPath, modelName])
 		mtlFilePath = os.path.join (resultPath, modelName + '.mtl')
 		objFilePath = os.path.join (resultPath, modelName + '.obj')
-		if not os.path.exists (mtlFilePath):
-			Error ('File does not exists: ' + mtlFilePath)
-			return 1			
-		if not os.path.exists (objFilePath):
-			Error ('File does not exists: ' + objFilePath)
-			return 1			
-		if not CheckFileSize (mtlFilePath, example['mtlSize']):
-			Error ('Invalid file size: ' + mtlFilePath)
-			return 1			
-		if not CheckFileSize (objFilePath, example['objSize']):
-			Error ('Invalid file size: ' + objFilePath)
-			return 1			
+		importer = ObjImporter.ObjImporter ()
+		model = importer.Import (mtlFilePath, objFilePath)
+		if model == None:
+			Error ('Failed to import model')
+			return 1
+		boundingBox = model.GetBoundingBox ()
+		if not IsEqualBox (boundingBox, example['boundingBox']):
+			Error ('Bounding box checking failed: ' + str (boundingBox))
+			return 1
 
 	shutil.rmtree (resultPath)
 	return 0

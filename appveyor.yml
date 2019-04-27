@@ -42,7 +42,7 @@ test_script:
   - ctest --verbose --build-config %configuration%
   - cd ..
   - cd Test
-  - python compatibilitytest.py %configuration%
+  - python CompatibilityTest.py %configuration%
   - cd ..
 
 artifacts:

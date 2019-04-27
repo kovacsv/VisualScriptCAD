@@ -23,8 +23,9 @@
 #include <codecvt>
 
 static const std::vector<std::pair<std::wstring, std::wstring>> exampleFiles = {
-	{ L"VisualScriptCAD Logo", L"vscad_logo.vsc" },
-	{ L"Box-Sphere Difference", L"box_sphere_diff.vsc" }
+	{ L"Simple Box", L"simple_box.vsc" },
+	{ L"Box-Sphere Difference", L"box_sphere_diff.vsc" },
+	{ L"VisualScriptCAD Logo", L"vscad_logo.vsc" }
 };
 
 class ApplicationNodeUICallbackInterface : public NodeUICallbackInterface
