@@ -26,4 +26,4 @@ class ObjImporter:
 			a = splitted[1].split ('/')[0]
 			b = splitted[2].split ('/')[0]
 			c = splitted[3].split ('/')[0]
-			model.AddTriangle (int (a), int (b), int (c))
+			model.AddTriangle (int (a) - 1, int (b) - 1, int (c) - 1)

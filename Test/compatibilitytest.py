@@ -8,7 +8,7 @@ def Error (message):
 	print ('ERROR: ' + message)
 
 def IsEqual (current, reference):
-	if abs (current - reference) > 0.00005:
+	if abs (current - reference) > 0.001:
 		return False
 	return True
 	
@@ -35,7 +35,7 @@ def Main (argv):
 
 	msBuildConfiguration = sys.argv[1]
 	cliPath = os.path.abspath (os.path.join (currentDir, '..', 'Build', msBuildConfiguration, 'VisualScriptCADCLI.exe'))
-	examplesPath = os.path.abspath (os.path.join (currentDir, '..', 'Examples'))
+	examplesPath = os.path.abspath (os.path.join (currentDir, '..', 'Build', msBuildConfiguration, 'Examples'))
 	resultPath = os.path.abspath (os.path.join (currentDir, '..', 'Build', msBuildConfiguration, 'TestResults'))
 
 	if os.path.exists (resultPath):
@@ -45,15 +45,18 @@ def Main (argv):
 	examples = [
 		{
 			'name' : 'simple_box.vsc',
-			'boundingBox' : ([0.0, 0.0, 0.0], [3.0, 2.0, 1.0])
+			'boundingBox' : ([0.0, 0.0, 0.0], [3.0, 2.0, 1.0]),
+			'surface' : 22.0
 		},
 		{
 			'name' : 'box_sphere_diff.vsc',
-			'boundingBox' : ([0.0, 0.0, 0.0], [1.0, 1.0, 1.0])
+			'boundingBox' : ([0.0, 0.0, 0.0], [1.0, 1.0, 1.0]),
+			'surface' : 5.501
 		},
 		{
 			'name' : 'vscad_logo.vsc',
-			'boundingBox' : ([-0.5, -0.5, -0.5], [0.5, 0.5, 0.5])
+			'boundingBox' : ([-0.5, -0.5, -0.5], [0.5, 0.5, 0.5]),
+			'surface' : 5.801
 		}
 	]
 	
@@ -73,6 +76,10 @@ def Main (argv):
 		boundingBox = model.GetBoundingBox ()
 		if not IsEqualBox (boundingBox, example['boundingBox']):
 			Error ('Bounding box checking failed: ' + str (boundingBox))
+			return 1
+		surface = model.GetSurface ()
+		if not IsEqual (surface, example['surface']):
+			Error ('Surface checking failed: ' + str (surface))
 			return 1
 
 	shutil.rmtree (resultPath)

@@ -1,5 +1,17 @@
 import os
+import math
 
+def GetTriangleArea (a, b, c):
+	s = (a + b + c) / 2.0;
+	areaSquare = s * (s - a) * (s - b) * (s - c);
+	if (areaSquare < 0.0):
+		return 0.0;
+	return math.sqrt (areaSquare);	
+
+def PointDistance (a, b):
+	distanceSquare = (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1]) + (a[2] - b[2]) * (a[2] - b[2])
+	return math.sqrt (distanceSquare)
+	
 class Model:
 	def __init__ (self):
 		self.vertices = []
@@ -24,4 +36,13 @@ class Model:
 		return (minVertex, maxVertex)
 	
 	def GetSurface (self):
-		return 0.0
+		surface = 0.0
+		for triangle in self.triangles:
+			v1 = self.vertices[triangle[0]]
+			v2 = self.vertices[triangle[1]]
+			v3 = self.vertices[triangle[2]]
+			a = PointDistance (v1, v2)
+			b = PointDistance (v2, v3)
+			c = PointDistance (v3, v1)
+			surface += GetTriangleArea (a, b, c)
+		return surface
