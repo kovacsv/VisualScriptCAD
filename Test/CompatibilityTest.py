@@ -49,6 +49,11 @@ def Main (argv):
 			'surface' : 22.0
 		},
 		{
+			'name' : 'lego_brick.vsc',
+			'boundingBox' : ([0.0, 0.0, 0.0], [1.6, 2.4, 1.12]),
+			'surface' : 26.684
+		},
+		{
 			'name' : 'box_sphere_diff.vsc',
 			'boundingBox' : ([0.0, 0.0, 0.0], [1.0, 1.0, 1.0]),
 			'surface' : 5.501
