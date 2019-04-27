@@ -168,6 +168,7 @@ ToolBar::ToolBar (wxWindow* parent) :
 	AddIconButton (CommandId::File_New, page, page_size, L"New");
 	AddIconButton (CommandId::File_Open, page_go, page_go_size, L"Open");
 	AddIconButton (CommandId::File_Save, page_save, page_save_size, L"Save");
+	AddIconButton (CommandId::Tools_Options, cog, cog_size, L"Options");
 
 	AddSeparator ();
 

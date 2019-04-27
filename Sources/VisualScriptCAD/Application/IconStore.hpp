@@ -4,11 +4,14 @@
 extern const long int page_size;
 extern const unsigned char page[635];
 
+extern const long int page_go_size;
+extern const unsigned char page_go[779];
+
 extern const long int page_save_size;
 extern const unsigned char page_save[774];
 
-extern const long int page_go_size;
-extern const unsigned char page_go[779];
+extern const long int cog_size;
+extern const unsigned char cog[512];
 
 extern const long int arrow_undo_size;
 extern const unsigned char arrow_undo[631];

@@ -15,8 +15,9 @@ def Main (argv):
 	
 	icons = [
 		[famfamIconsPath, 'page'],
-		[famfamIconsPath, 'page_save'],
 		[famfamIconsPath, 'page_go'],
+		[famfamIconsPath, 'page_save'],
+		[famfamIconsPath, 'cog'],
 		[famfamIconsPath, 'arrow_undo'],
 		[famfamIconsPath, 'arrow_redo'],
 		[famfamIconsPath, 'control_end_blue'],
