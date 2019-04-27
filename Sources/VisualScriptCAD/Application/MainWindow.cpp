@@ -447,9 +447,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		}
 	} else if (commandId >= CommandId::File_OpenExample_First && commandId < CommandId::File_OpenExample_First + exampleFiles.size ()) {
 		if (ConfirmLosingUnsavedChanges ()) {
-			wxFileName executableDir (wxStandardPaths::Get ().GetExecutablePath ());
-			executableDir.RemoveLastDir ();
-			wxFileName exampleFilePath (executableDir.GetPath ());
+			wxFileName exampleFilePath (wxStandardPaths::Get ().GetExecutablePath ());
 			exampleFilePath.AppendDir (L"Examples");
 			exampleFilePath.AppendDir (exampleFiles[commandId - CommandId::File_OpenExample_First].second);
 			wxString exampleFilePathString = exampleFilePath.GetPath ();
