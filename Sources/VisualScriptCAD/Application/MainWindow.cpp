@@ -130,6 +130,7 @@ MenuBar::MenuBar () :
 	Append (fileMenu, L"&File");
 
 	wxMenu* viewMenu = new wxMenu ();
+	viewMenu->Append (CommandId::View_Editor_AlignToWindow, "Align Editor to Window");
 	viewMenu->Append (CommandId::View_Editor_FitToWindow, "Fit Editor to Window");
 	viewMenu->Append (CommandId::View_Model_FitToWindow, "Fit Model to Window");
 	Append (viewMenu, L"&View");
@@ -405,6 +406,11 @@ void MainWindow::ProcessCommand (CommandId commandId)
 				splitViewMode = SplitViewMode::Split;
 			}
 			break;
+		case View_Editor_AlignToWindow:
+			{
+				editor->AlignToWindow ();
+			}
+			break;
 		case View_Editor_FitToWindow:
 			{
 				editor->FitToWindow ();
@@ -555,6 +561,7 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 	if (success) {
 		applicationState.SetCurrentFileName (fileName);
 		userSettings.AddRecentFile (fileName);
+		editor->AlignToWindow ();
 		modelControl->FitToWindow ();
 	} else {
 		wxMessageDialog messageDialog (this, L"Failed to open file.", L"Error!", wxICON_ERROR | wxOK);
