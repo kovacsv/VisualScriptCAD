@@ -192,7 +192,7 @@ public:
 	RenderScene ();
 
 	bool				Init ();
-	void				InitAxisLines (int size);
+	void				InitAxisLines (double gridSize, int gridCount);
 
 	void				Draw (int width, int height, const RenderSettings& settings) const;
 	void				DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const;
@@ -212,7 +212,7 @@ private:
 	int					lineShader;
 	int					triangleShader;
 	RenderModel			model;
-	RenderLineModel		lineModel;
+	RenderLineModel		axisModel;
 	RenderLight			light;
 	Modeler::Camera		camera;
 };

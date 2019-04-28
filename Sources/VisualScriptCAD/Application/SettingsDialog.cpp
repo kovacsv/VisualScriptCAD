@@ -1,7 +1,9 @@
 #include "SettingsDialog.hpp"
 
+#include <wx/spinctrl.h>
+
+static const wxSize TextControlSize (250, 25);
 static const wxSize ChoiceControlSize (250, 25);
-static const wxSize SliderControlSize (250, 35);
 
 SettingsDialogPanel::SettingsDialogPanel (const std::wstring& name, wxDialog* parent) :
 	name (name),
@@ -28,16 +30,18 @@ public:
 	{
 		ViewModeChoiceId = 1001,
 		AxisModeChoiceId = 1002,
-		AxisSizeSliderId = 1002
+		GridSizeSpinId = 1002,
+		GridCountSliderId = 1003
 	};
 
 	ModelViewPanel (wxDialog* parent) :
 		SettingsDialogPanel (L"Model View", parent),
-		gridSizer (new wxFlexGridSizer (3, 2, 5, 20)),
+		gridSizer (new wxFlexGridSizer (4, 2, 5, 20)),
 		boxSizer (new wxBoxSizer (wxVERTICAL)),
 		viewModeChoice (new wxChoice (panel, DialogIds::ViewModeChoiceId, wxDefaultPosition, ChoiceControlSize)),
 		axisModeChoice (new wxChoice (panel, DialogIds::AxisModeChoiceId, wxDefaultPosition, ChoiceControlSize)),
-		axisSizeSlider (new wxSlider (panel, DialogIds::AxisSizeSliderId, 10, 5, 50, wxDefaultPosition, SliderControlSize, wxSL_LABELS))
+		gridSizeSpin (new wxSpinCtrlDouble (panel, DialogIds::GridSizeSpinId, L"", wxDefaultPosition, TextControlSize, wxSP_ARROW_KEYS, 0.1, 100.0, 0.1, 0.1)),
+		gridCountSpin (new wxSpinCtrl (panel, DialogIds::GridSizeSpinId, L"", wxDefaultPosition, TextControlSize, wxSP_ARROW_KEYS, 1, 100, 1))
 	{
 		viewModeChoice->Append (L"Lines");
 		viewModeChoice->Append (L"Polygons");
@@ -49,8 +53,10 @@ public:
 		gridSizer->Add (viewModeChoice, 1, wxEXPAND);
 		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"Axis Mode"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
 		gridSizer->Add (axisModeChoice, 1, wxEXPAND);
-		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"Axis Size"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
-		gridSizer->Add (axisSizeSlider, 1, wxEXPAND);
+		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"Grid Size"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
+		gridSizer->Add (gridSizeSpin, 1, wxEXPAND);
+		gridSizer->Add (new wxStaticText (panel, wxID_ANY, L"Grid Count"), 1, wxEXPAND | wxALIGN_CENTER_VERTICAL);
+		gridSizer->Add (gridCountSpin, 1, wxEXPAND);
 
 		boxSizer->Add (gridSizer, 1, wxEXPAND | wxALL, 5);
 		panel->SetSizer (boxSizer);
@@ -70,7 +76,8 @@ public:
 			axisModeChoice->Select (1);
 		}
 
-		axisSizeSlider->SetValue (userSettings.renderSettings.axisSize);
+		gridSizeSpin->SetValue (userSettings.renderSettings.gridSize);
+		gridCountSpin->SetValue (userSettings.renderSettings.gridCount);
 	}
 
 	virtual void SaveToUserSettings (UserSettings& userSettings) const override
@@ -87,7 +94,8 @@ public:
 			userSettings.renderSettings.axisMode = AxisMode::Off;
 		}
 
-		userSettings.renderSettings.axisSize = axisSizeSlider->GetValue ();
+		userSettings.renderSettings.gridSize = gridSizeSpin->GetValue ();
+		userSettings.renderSettings.gridCount = gridCountSpin->GetValue ();
 	}
 
 private:
@@ -95,7 +103,8 @@ private:
 	wxBoxSizer*			boxSizer;
 	wxChoice*			viewModeChoice;
 	wxChoice*			axisModeChoice;
-	wxSlider*			axisSizeSlider;
+	wxSpinCtrlDouble*	gridSizeSpin;
+	wxSpinCtrl*			gridCountSpin;
 };
 
 wxPanel* SettingsDialogPanel::GetPanel ()

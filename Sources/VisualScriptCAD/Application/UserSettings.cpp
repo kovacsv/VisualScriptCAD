@@ -21,7 +21,8 @@ static std::string GetXmlFilePath ()
 
 static const char SettingsNodeName[] = "VisualScriptCADSettings";
 static const char RenderSettingsNodeName[] = "RenderSettings";
-static const char RenderAxisSizeNodeName[] = "AxisSize";
+static const char RenderGridSizeNodeName[] = "GridSize";
+static const char RenderGridCountNodeName[] = "GridCount";
 static const char ExportSettingsNodeName[] = "ExportSettings";
 static const char ImageSettingsNodeName[] = "ImageSettings";
 static const char ImageWidthNodeName[] = "ImageWidth";
@@ -51,15 +52,16 @@ static const XmlEnum<ExportSettings::FormatId> ExportFormatEnum ("ExportFormat",
 });
 
 RenderSettings::RenderSettings () :
-	RenderSettings (ViewMode::Polygons, AxisMode::On, 20)
+	RenderSettings (ViewMode::Polygons, AxisMode::On, 1.0, 20)
 {
 
 }
 
-RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode, int axisSize) :
+RenderSettings::RenderSettings (ViewMode viewMode, AxisMode axisMode, double gridSize, int gridCount) :
 	viewMode (viewMode),
 	axisMode (axisMode),
-	axisSize (axisSize)
+	gridSize (gridSize),
+	gridCount (gridCount)
 {
 
 }
@@ -123,7 +125,8 @@ void UserSettings::Load ()
 	if (renderSettingsNode != nullptr) {
 		ViewModeEnum.Read (renderSettingsNode, renderSettings.viewMode);
 		AxisModeEnum.Read (renderSettingsNode, renderSettings.axisMode);
-		ReadIntegerNode (renderSettingsNode, RenderAxisSizeNodeName, renderSettings.axisSize);
+		ReadDoubleNode (renderSettingsNode, RenderGridSizeNodeName, renderSettings.gridSize);
+		ReadIntegerNode (renderSettingsNode, RenderGridCountNodeName, renderSettings.gridCount);
 	}
 
 	const tinyxml2::XMLNode* exportSettingsNode = settingsNode->FirstChildElement (ExportSettingsNodeName);
@@ -163,7 +166,8 @@ void UserSettings::Save ()
 	tinyxml2::XMLNode* renderSettingsNode = doc.NewElement (RenderSettingsNodeName);
 	ViewModeEnum.Write (doc, renderSettingsNode, renderSettings.viewMode);
 	AxisModeEnum.Write (doc, renderSettingsNode, renderSettings.axisMode);
-	WriteIntegerNode (doc, renderSettingsNode, RenderAxisSizeNodeName, renderSettings.axisSize);
+	WriteDoubleNode (doc, renderSettingsNode, RenderGridSizeNodeName, renderSettings.gridSize);
+	WriteIntegerNode (doc, renderSettingsNode, RenderGridCountNodeName, renderSettings.gridCount);
 	settingsNode->InsertEndChild (renderSettingsNode);
 
 	tinyxml2::XMLNode* exportSettingsNode = doc.NewElement (ExportSettingsNodeName);

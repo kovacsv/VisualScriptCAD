@@ -22,11 +22,12 @@ class RenderSettings
 {
 public:
 	RenderSettings ();
-	RenderSettings (ViewMode viewMode, AxisMode axisMode, int axisSize);
+	RenderSettings (ViewMode viewMode, AxisMode axisMode, double gridSize, int gridCount);
 
 	ViewMode	viewMode;
 	AxisMode	axisMode;
-	int			axisSize;
+	double		gridSize;
+	int			gridCount;
 };
 
 class ImageSettings

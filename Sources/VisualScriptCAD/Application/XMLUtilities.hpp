@@ -19,6 +19,9 @@ void			WriteStringNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, c
 bool			ReadIntegerNode (const tinyxml2::XMLNode* parent, const char* nodeName, int& value);
 void			WriteIntegerNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, int value);
 
+bool			ReadDoubleNode (const tinyxml2::XMLNode* parent, const char* nodeName, double& value);
+void			WriteDoubleNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, double value);
+
 bool			ReadBooleanNode (const tinyxml2::XMLNode* parent, const char* nodeName, bool& value);
 void			WriteBooleanNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, bool value);
 

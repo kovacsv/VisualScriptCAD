@@ -64,6 +64,21 @@ void WriteIntegerNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, co
 	WriteStringNode (doc, parent, nodeName, std::to_wstring (value));
 }
 
+bool ReadDoubleNode (const tinyxml2::XMLNode* parent, const char* nodeName, double& value)
+{
+	std::wstring nodeValue;
+	if (!ReadStringNode (parent, nodeName, nodeValue)) {
+		return false;
+	}
+	value = std::stod (nodeValue);
+	return true;
+}
+
+void WriteDoubleNode (tinyxml2::XMLDocument& doc, tinyxml2::XMLNode* parent, const char* nodeName, double value)
+{
+	WriteStringNode (doc, parent, nodeName, std::to_wstring (value));
+}
+
 bool ReadBooleanNode (const tinyxml2::XMLNode* parent, const char* nodeName, bool& value)
 {
 	std::wstring nodeValue;

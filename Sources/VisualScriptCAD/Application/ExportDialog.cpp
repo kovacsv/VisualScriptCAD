@@ -225,7 +225,7 @@ void ExportDialog::OnButtonClick (wxCommandEvent& evt)
 		} else if (exportSettings.format == ExportSettings::FormatId::Png) {
 			if (exportSettings.image.IsValid ()) {
 				RenderPixels pixels (exportSettings.image.width * exportSettings.image.multisampling, exportSettings.image.height * exportSettings.image.multisampling);
-				RenderSettings renderSettings (ViewMode::Polygons, AxisMode::Off, 10);
+				RenderSettings renderSettings (ViewMode::Polygons, AxisMode::Off, 0.0, 0);
 				scene.DrawOffscreen (renderSettings, pixels);
 
 				wxImage image (pixels.GetWidth (), pixels.GetHeight ());

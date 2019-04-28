@@ -1,6 +1,7 @@
 #include "RenderScene.hpp"
 #include "ShaderProgram.hpp"
 #include "IncludeGLM.hpp"
+#include "Geometry.hpp"
 
 static const char* lineVertexShaderSource = R"(
 #version 330 core
@@ -485,7 +486,7 @@ RenderScene::RenderScene () :
 	lineShader (-1),
 	triangleShader (-1),
 	model (),
-	lineModel (),
+	axisModel (),
 	light (),
 	camera (DefaultCamera)
 {
@@ -508,7 +509,7 @@ bool RenderScene::Init ()
 		return false;
 	}
 
-	InitAxisLines (0);
+	InitAxisLines (0.0, 0);
 
 	glEnable (GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
@@ -516,28 +517,30 @@ bool RenderScene::Init ()
 	return true;
 }
 
-void RenderScene::InitAxisLines (int size)
+void RenderScene::InitAxisLines (double gridSize, int gridCount)
 {
-	lineModel.Clear ();
-	if (size == 0) {
+	axisModel.Clear ();
+	if (gridCount == 0 || !Geometry::IsGreater (gridSize, 0.0)) {
 		return;
 	}
 
+	double axisSize = gridSize * gridCount;
+
 	RenderLineGeometry mainAxisLines (RenderLineMaterial (glm::vec3 (0.5f, 0.5f, 0.5f)));
-	mainAxisLines.AddLine (glm::vec3 (-size, 0.0f, 0.0f), glm::vec3 (size, 0.0f, 0.0f));
-	mainAxisLines.AddLine (glm::vec3 (0.0f, -size, 0.0f), glm::vec3 (0.0f, size, 0.0f));
-	mainAxisLines.AddLine (glm::vec3 (0.0f, 0.0f, -size), glm::vec3 (0.0f, 0.0f, size));
-	lineModel.AddRenderLineGeometry (mainAxisLines);
+	mainAxisLines.AddLine (glm::vec3 (-axisSize, 0.0f, 0.0f), glm::vec3 (axisSize, 0.0f, 0.0f));
+	mainAxisLines.AddLine (glm::vec3 (0.0f, -axisSize, 0.0f), glm::vec3 (0.0f, axisSize, 0.0f));
+	mainAxisLines.AddLine (glm::vec3 (0.0f, 0.0f, -axisSize), glm::vec3 (0.0f, 0.0f, axisSize));
+	axisModel.AddRenderLineGeometry (mainAxisLines);
 
 	RenderLineGeometry secondaryAxisLines (RenderLineMaterial (glm::vec3 (0.8f, 0.8f, 0.8f)));
-	for (int i = -size; i <= size; i++) {
+	for (int i = -gridCount; i <= gridCount; i++) {
 		if (i == 0) {
 			continue;
 		}
-		secondaryAxisLines.AddLine (glm::vec3 (-size, i, 0.0f), glm::vec3 (size, i, 0.0f));
-		secondaryAxisLines.AddLine (glm::vec3 (i, -size, 0.0f), glm::vec3 (i, size, 0.0f));
+		secondaryAxisLines.AddLine (glm::vec3 (-axisSize, i * gridSize, 0.0f), glm::vec3 (axisSize, i * gridSize, 0.0f));
+		secondaryAxisLines.AddLine (glm::vec3 (i * gridSize, -axisSize, 0.0f), glm::vec3 (i * gridSize, axisSize, 0.0f));
 	}
-	lineModel.AddRenderLineGeometry (secondaryAxisLines);
+	axisModel.AddRenderLineGeometry (secondaryAxisLines);
 }
 
 void RenderScene::Draw (int width, int height, const RenderSettings& settings) const
@@ -685,23 +688,21 @@ void RenderScene::DrawModel (int width, int height, ViewMode drawMode) const
 
 void RenderScene::DrawLines (int width, int height, AxisMode axisMode) const
 {
-	if (axisMode == AxisMode::Off) {
-		return;
+	if (axisMode == AxisMode::On) {
+		glUseProgram (lineShader);
+
+		glm::mat4 viewMatrix = camera.GetViewMatrix ();
+		glm::mat4 projectionMatrix = camera.GetProjectionMatrix (width, height);
+
+		glUniformMatrix4fv (glGetUniformLocation (lineShader, "viewMatrix"), 1, GL_FALSE, glm::value_ptr (viewMatrix));
+		glUniformMatrix4fv (glGetUniformLocation (lineShader, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr (projectionMatrix));
+		glUniformMatrix4fv (glGetUniformLocation (lineShader, "modelMatrix"), 1, GL_FALSE, glm::value_ptr (glm::mat4 (1.0f)));
+
+		axisModel.EnumerateRenderLineGeometries ([&] (const RenderLineGeometry& lineGeometry) {
+			const RenderLineMaterial& material = lineGeometry.GetMaterial ();
+			glUniform3fv (glGetUniformLocation (lineShader, "materialColor"), 1, &material.color[0]);
+			lineGeometry.SetupBuffers ();
+			lineGeometry.DrawBuffers ();
+		});
 	}
-
-	glUseProgram (lineShader);
-
-	glm::mat4 viewMatrix = camera.GetViewMatrix ();
-	glm::mat4 projectionMatrix = camera.GetProjectionMatrix (width, height);
-
-	glUniformMatrix4fv (glGetUniformLocation (lineShader, "viewMatrix"), 1, GL_FALSE, glm::value_ptr (viewMatrix));
-	glUniformMatrix4fv (glGetUniformLocation (lineShader, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr (projectionMatrix));
-	glUniformMatrix4fv (glGetUniformLocation (lineShader, "modelMatrix"), 1, GL_FALSE, glm::value_ptr (glm::mat4 (1.0f)));
-
-	lineModel.EnumerateRenderLineGeometries ([&] (const RenderLineGeometry& lineGeometry) {
-		const RenderLineMaterial& material = lineGeometry.GetMaterial ();
-		glUniform3fv (glGetUniformLocation (lineShader, "materialColor"), 1, &material.color[0]);
-		lineGeometry.SetupBuffers ();
-		lineGeometry.DrawBuffers ();
-	});
 }

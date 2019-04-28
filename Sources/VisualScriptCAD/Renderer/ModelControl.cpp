@@ -133,7 +133,7 @@ const RenderSettings& ModelControl::GetRenderSettings () const
 void ModelControl::SetRenderSettings (const RenderSettings& newSettings)
 {
 	renderSceneSettings = newSettings;
-	renderScene.InitAxisLines (renderSceneSettings.axisSize);
+	renderScene.InitAxisLines (renderSceneSettings.gridSize, renderSceneSettings.gridCount);
 	Refresh ();
 }
 
