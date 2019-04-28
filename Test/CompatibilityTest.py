@@ -49,6 +49,11 @@ def Main (argv):
 			'surface' : 22.0
 		},
 		{
+			'name' : 'all_shapes.vsc',
+			'boundingBox' : ([-0.5, -0.5, -0.577], [12.577, 5.0, 1.0]),
+			'surface' : 72.756
+		},
+		{
 			'name' : 'lego_brick.vsc',
 			'boundingBox' : ([0.0, 0.0, 0.0], [1.6, 2.4, 1.12]),
 			'surface' : 26.684
@@ -57,6 +62,11 @@ def Main (argv):
 			'name' : 'box_sphere_diff.vsc',
 			'boundingBox' : ([0.0, 0.0, 0.0], [1.0, 1.0, 1.0]),
 			'surface' : 5.501
+		},
+		{
+			'name' : 'sphere_torus_diff.vsc',
+			'boundingBox' : ([-0.798, -1.3, -0.8], [2.3, 1.3, 0.8]),
+			'surface' : 22.170
 		},
 		{
 			'name' : 'vscad_logo.vsc',
