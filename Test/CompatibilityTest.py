@@ -59,6 +59,11 @@ def Main (argv):
 			'surface' : 26.684
 		},
 		{
+			'name' : 'plate_with_holes.vsc',
+			'boundingBox' : ([0.0, 0.0, 0.0], [2.0, 1.0, 0.1]),
+			'surface' : 4.602
+		},
+		{
 			'name' : 'box_sphere_diff.vsc',
 			'boundingBox' : ([0.0, 0.0, 0.0], [1.0, 1.0, 1.0]),
 			'surface' : 5.501
