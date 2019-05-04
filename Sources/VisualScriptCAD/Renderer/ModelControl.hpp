@@ -43,7 +43,6 @@ private:
 	RenderSettings			renderSceneSettings;
 	RenderScene				renderScene;
 
-	// TODO: separate class
 	wxPoint					lastMousePosition;
 	int						lastMouseButton;
 	bool					isMouseDown;
