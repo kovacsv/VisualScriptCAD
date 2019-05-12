@@ -41,12 +41,12 @@ extern const long int arrow_in_size;
 extern const unsigned char arrow_in[600];
 
 extern const long int appicon16_size;
-extern const unsigned char appicon16[925];
+extern const unsigned char appicon16[643];
 
 extern const long int appicon32_size;
-extern const unsigned char appicon32[2390];
+extern const unsigned char appicon32[1268];
 
 extern const long int appicon48_size;
-extern const unsigned char appicon48[4100];
+extern const unsigned char appicon48[1946];
 
 #endif    
