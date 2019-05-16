@@ -29,6 +29,7 @@ static const std::vector<std::pair<std::wstring, std::wstring>> exampleFiles = {
 	{ L"Plate with Holes", L"plate_with_holes.vsc" },
 	{ L"Box-Sphere Difference", L"box_sphere_diff.vsc" },
 	{ L"Sphere-Torus Difference", L"sphere_torus_diff.vsc" },
+	{ L"VisualScriptCAD Logo", L"vscad_logo.vsc" },
 	{ L"CSG Operations", L"csg_operations.vsc" }
 };
 

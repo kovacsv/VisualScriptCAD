@@ -74,6 +74,11 @@ def Main (argv):
 			'surface' : 22.170
 		},
 		{
+			'name' : 'vscad_logo.vsc',
+			'boundingBox' : ([-0.57735, -0.57735, -0.57735], [0.57735, 0.57735, 0.57735]),
+			'surface' : 3.97567684187
+		},		
+		{
 			'name' : 'csg_operations.vsc',
 			'boundingBox' : ([-0.5, -0.5, -0.5], [0.5, 0.5, 0.5]),
 			'surface' : 5.801
