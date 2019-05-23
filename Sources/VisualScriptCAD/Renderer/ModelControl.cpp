@@ -70,6 +70,12 @@ void ModelControl::FitToWindow ()
 	Refresh ();
 }
 
+void ModelControl::ResetView ()
+{
+	renderScene.ResetView ();
+	Refresh ();
+}
+
 void ModelControl::OnPaint (wxPaintEvent&)
 {
 	wxPaintDC dc (this);

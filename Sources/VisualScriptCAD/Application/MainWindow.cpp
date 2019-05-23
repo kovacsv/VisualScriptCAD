@@ -134,7 +134,9 @@ MenuBar::MenuBar () :
 	wxMenu* viewMenu = new wxMenu ();
 	viewMenu->Append (CommandId::View_Editor_AlignToWindow, "Align Editor to Window");
 	viewMenu->Append (CommandId::View_Editor_FitToWindow, "Fit Editor to Window");
+	viewMenu->AppendSeparator ();
 	viewMenu->Append (CommandId::View_Model_FitToWindow, "Fit Model to Window");
+	viewMenu->Append (CommandId::View_Model_ResetView, "Reset Model View");
 	Append (viewMenu, L"&View");
 
 	wxMenu* toolsMenu = new wxMenu ();
@@ -421,6 +423,11 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		case View_Model_FitToWindow:
 			{
 				modelControl->FitToWindow ();
+			}
+			break;
+		case View_Model_ResetView:
+			{
+				modelControl->ResetView ();
 			}
 			break;
 		case Model_Info:

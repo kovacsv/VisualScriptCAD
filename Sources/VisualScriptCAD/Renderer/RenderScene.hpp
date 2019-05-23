@@ -202,6 +202,7 @@ public:
 	void				OnMouseWheel (int rotation);
 
 	void				FitToWindow (int width, int height);
+	void				ResetView ();
 
 	void				Clear ();
 

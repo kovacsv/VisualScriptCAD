@@ -637,6 +637,11 @@ void RenderScene::FitToWindow (int width, int height)
 	camera.ZoomToSphere (center, radius, width, height);
 }
 
+void RenderScene::ResetView ()
+{
+	camera = DefaultCamera;
+}
+
 void RenderScene::Clear ()
 {
 	model.Clear ();

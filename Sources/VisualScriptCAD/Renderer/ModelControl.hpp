@@ -21,6 +21,7 @@ public:
 	void							Clear ();
 
 	void							FitToWindow ();
+	void							ResetView ();
 
 	void							OnPaint (wxPaintEvent& evt);
 	void							OnResize (wxSizeEvent& evt);
