@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_TRIANGLEUTILS_HPP
 #define GEOMETRY_TRIANGLEUTILS_HPP
 
+#include "Ray.hpp"
 #include "Plane.hpp"
 #include "Triangle.hpp"
 
@@ -26,6 +27,19 @@ public:
 	std::vector<Triangle> planeTriangles;
 };
 
+class RayIntersection
+{
+public:
+	RayIntersection ();
+	RayIntersection (const glm::dvec3& position, double distance);
+
+	bool		found;
+	glm::dvec3	position;
+	double		distance;
+};
+
+extern const RayIntersection NoIntersection;
+
 glm::dvec3						CalculateTriangleNormal (const Triangle& triangle);
 glm::dvec3						CalculateTriangleNormal (const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3);
 Plane							GetTrianglePlane (const Triangle& triangle);
@@ -36,6 +50,8 @@ glm::dvec3						BarycentricInterpolation (const glm::dvec3& v1, const glm::dvec3
 
 Orientation						GetTriangleOrientation2D (const glm::dvec2& v1, const glm::dvec2& v2, const glm::dvec2& v3);
 Orientation						GetPolygonOrientation2D (const std::vector<glm::dvec2>& points);
+
+RayIntersection					GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3);
 
 }
 

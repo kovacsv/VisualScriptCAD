@@ -18,6 +18,10 @@ bool IsEqual (double a, double b);
 bool IsLower (double a, double b);
 bool IsGreater (double a, double b);
 
+bool IsPositive (double a);
+bool IsNegative (double a);
+bool IsZero (double a);
+
 }
 
 #endif

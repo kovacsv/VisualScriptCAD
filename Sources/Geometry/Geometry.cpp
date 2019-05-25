@@ -41,4 +41,19 @@ bool IsGreater (double a, double b)
 	return a - b > EPS;
 }
 
+bool IsPositive (double a)
+{
+	return a > EPS;
+}
+
+bool IsNegative (double a)
+{
+	return a < EPS;
+}
+
+bool IsZero (float a)
+{
+	return fabs (a) < FEPS;
+}
+
 }
