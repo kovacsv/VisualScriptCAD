@@ -139,7 +139,7 @@ TEST (RayTriangleIntersectionTest)
 	glm::dvec3 v2 (1.0, 0.0, 0.0);
 	glm::dvec3 v3 (1.0, 1.0, 0.0);
 
-	auto CheckIntersection = [&] (const glm::dvec3& from, const glm::dvec3& to)
+	auto HasIntersection = [&] (const glm::dvec3& from, const glm::dvec3& to)
 	{
 		Ray ray (from, to - from);
 		RayIntersection intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
@@ -161,27 +161,26 @@ TEST (RayTriangleIntersectionTest)
 	}
 
 	{
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0, 0, 0)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (1, 0, 0)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (1, 1, 0)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0, 0, -1)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.2, 0.2, 0)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.5, 0.5, 0)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.6, 0.4, 0)) == true);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.0, 1.0, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.6, 0.7, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (-1, 0, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0, 0, 2)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (1, 1, 1)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0, 0, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (1, 0, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (1, 1, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0, 0, -1)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0.2, 0.2, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0.5, 0.5, 0)) == false);
-		ASSERT (CheckIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0.6, 0.4, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0, 0, 0)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (1, 0, 0)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (1, 1, 0)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0, 0, -1)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.2, 0.2, 0)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.5, 0.5, 0)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.6, 0.4, 0)) == true);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.0, 1.0, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0.6, 0.7, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (-1, 0, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (0, 0, 2)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, 1), glm::dvec3 (1, 1, 1)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0, 0, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (1, 0, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (1, 1, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0, 0, -1)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0.2, 0.2, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0.5, 0.5, 0)) == false);
+		ASSERT (HasIntersection (glm::dvec3 (0, 0, -1), glm::dvec3 (0.6, 0.4, 0)) == false);
 	}
 }
-
 
 }
