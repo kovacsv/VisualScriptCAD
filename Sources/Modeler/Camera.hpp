@@ -32,7 +32,7 @@ private:
 	glm::vec3	eye;
 	glm::vec3	center;
 	glm::vec3	up;
-	float		fieldOfView;
+	float		fieldOfViewY;
 	float		nearPlane;
 	float		farPlane;
 };

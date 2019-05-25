@@ -15,7 +15,7 @@ Camera::Camera (const glm::vec3& eye,
 	eye (eye),
 	center (center),
 	up (up),
-	fieldOfView (fieldOfView),
+	fieldOfViewY (fieldOfView),
 	nearPlane (nearPlane),
 	farPlane (farPlane)
 {
@@ -44,7 +44,7 @@ glm::mat4 Camera::GetViewMatrix () const
 
 glm::mat4 Camera::GetProjectionMatrix (int width, int height) const
 {
-	return glm::perspective (glm::radians (fieldOfView), (float) width / (float) height, nearPlane, farPlane);
+	return glm::perspective (glm::radians (fieldOfViewY), (float) width / (float) height, nearPlane, farPlane);
 }
 
 static glm::vec3 Rotate (const glm::vec3& vec, const glm::vec3& center, float angle, const glm::vec3& normal)
@@ -111,10 +111,11 @@ void Camera::ZoomToSphere (const glm::vec3& sphereCenter, float sphereRadius, in
 	eye = eye - offetToOrigin;
 	
 	float calcFieldOfView = 0.0;
-	if (width >= height) {
-		calcFieldOfView = fieldOfView / 2.0f;
+	float widthHeightRatio = (float) width / (float) height;
+	if (widthHeightRatio >= 1.0f) {
+		calcFieldOfView = fieldOfViewY / 2.0f;
 	} else {
-		calcFieldOfView = fieldOfView / 2.0f * width / height;
+		calcFieldOfView = fieldOfViewY / 2.0f * widthHeightRatio;
 	}
 	
 	float distance = sphereRadius / glm::sin (glm::radians (calcFieldOfView));
