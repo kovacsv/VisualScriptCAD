@@ -62,40 +62,42 @@ TEST (RayTriangleIntersectionTest)
 
 TEST (GetScreenRayTest)
 {
+	double screenWidth = 200.0;
+	double screenHeight = 100.0;
 	double fovY = 45.0;
-	double fovX = glm::degrees (2.0 * atan (tan (glm::radians (fovY) * 0.5) * (200.0 / 100.0)));
+	double fovX = glm::degrees (2.0 * atan (tan (glm::radians (fovY) * 0.5) * (screenWidth / screenHeight)));
 	Camera camera (glm::dvec3 (1.0, 0.0, 0.0), glm::dvec3 (0.0, 0.0, 0.0), glm::dvec3 (0.0, 0.0, 1.0), fovY, 0.1, 10000.0);
-	glm::ivec2 screenSize (200, 100);
+	glm::ivec2 screenSize (screenWidth, screenHeight);
 	
 	{
-		Ray ray = GetScreenRay (camera, screenSize, glm::ivec2 (100, 50));
+		Ray ray = GetScreenRay (camera, screenSize, glm::dvec2 (100.0, 50.0));
 		ASSERT (IsEqualVec (ray.GetOrigin (), camera.GetEye ()));
 		ASSERT (IsEqualVec (ray.GetDirection (), glm::dvec3 (-1.0, 0.0, 0.0)));
 	}
 
 	{
-		Ray ray = GetScreenRay (camera, screenSize, glm::ivec2 (100, 0));
+		Ray ray = GetScreenRay (camera, screenSize, glm::dvec2 (100.0, 0.0));
 		ASSERT (IsEqualVec (ray.GetOrigin (), camera.GetEye ()));
 		glm::dvec3 expectedRay = glm::normalize (glm::rotate (glm::dvec3 (-1.0, 0.0, 0.0), glm::radians (fovY / 2.0), glm::dvec3 (0.0, 1.0, 0.0)));
 		ASSERT (IsEqualVec (ray.GetDirection (), expectedRay));
 	}
 
 	{
-		Ray ray = GetScreenRay (camera, screenSize, glm::ivec2 (100, 100));
+		Ray ray = GetScreenRay (camera, screenSize, glm::dvec2 (100.0, 100.0));
 		ASSERT (IsEqualVec (ray.GetOrigin (), camera.GetEye ()));
 		glm::dvec3 expectedRay = glm::normalize (glm::rotate (glm::dvec3 (-1.0, 0.0, 0.0), -glm::radians (fovY / 2.0), glm::dvec3 (0.0, 1.0, 0.0)));
 		ASSERT (IsEqualVec (ray.GetDirection (), expectedRay));
 	}
 
 	{
-		Ray ray = GetScreenRay (camera, screenSize, glm::ivec2 (0, 50));
+		Ray ray = GetScreenRay (camera, screenSize, glm::dvec2 (0.0, 50.0));
 		ASSERT (IsEqualVec (ray.GetOrigin (), camera.GetEye ()));
 		glm::dvec3 expectedRay = glm::normalize (glm::rotate (glm::dvec3 (-1.0, 0.0, 0.0), glm::radians (fovX / 2.0), glm::dvec3 (0.0, 0.0, 1.0)));
 		ASSERT (IsEqualVec (ray.GetDirection (), expectedRay));
 	}
 
 	{
-		Ray ray = GetScreenRay (camera, screenSize, glm::ivec2 (200, 50));
+		Ray ray = GetScreenRay (camera, screenSize, glm::dvec2 (200.0, 50.0));
 		ASSERT (IsEqualVec (ray.GetOrigin (), camera.GetEye ()));
 		glm::dvec3 expectedRay = glm::normalize (glm::rotate (glm::dvec3 (-1.0, 0.0, 0.0), -glm::radians (fovX / 2.0), glm::dvec3 (0.0, 0.0, 1.0)));
 		ASSERT (IsEqualVec (ray.GetDirection (), expectedRay));

@@ -42,9 +42,9 @@ glm::mat4 Camera::GetViewMatrix () const
 	return glm::lookAt (eye, center, up);
 }
 
-glm::mat4 Camera::GetProjectionMatrix (int width, int height) const
+glm::mat4 Camera::GetProjectionMatrix (double width, double height) const
 {
-	return glm::perspective (glm::radians (fieldOfViewY), (double) width / (double) height, nearPlane, farPlane);
+	return glm::perspective (glm::radians (fieldOfViewY), width / height, nearPlane, farPlane);
 }
 
 static glm::dvec3 Rotate (const glm::dvec3& vec, const glm::dvec3& center, double angle, const glm::dvec3& normal)

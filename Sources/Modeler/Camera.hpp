@@ -21,7 +21,7 @@ public:
 	const glm::dvec3&	GetUp () const;
 
 	glm::mat4			GetViewMatrix () const;
-	glm::mat4			GetProjectionMatrix (int width, int height) const;
+	glm::mat4			GetProjectionMatrix (double width, double height) const;
 
 	void				Orbit (double angleX, double angleY);
 	void				Pan (double diffX, double diffY);

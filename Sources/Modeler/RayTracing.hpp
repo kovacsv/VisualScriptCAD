@@ -8,7 +8,7 @@
 namespace Modeler
 {
 
-Geometry::Ray GetScreenRay (const Camera& camera, const glm::ivec2& screenSize, const glm::ivec2& screenPos);
+Geometry::Ray GetScreenRay (const Camera& camera, const glm::dvec2& screenSize, const glm::dvec2& screenPos);
 
 }
 

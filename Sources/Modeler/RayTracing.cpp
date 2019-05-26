@@ -3,7 +3,7 @@
 namespace Modeler
 {
 
-Geometry::Ray GetScreenRay (const Camera& camera, const glm::ivec2& screenSize, const glm::ivec2& screenPos)
+Geometry::Ray GetScreenRay (const Camera& camera, const glm::dvec2& screenSize, const glm::dvec2& screenPos)
 {
 	double screenX = screenPos.x / (screenSize.x * 0.5) - 1.0;
 	double screenY = screenPos.y / (screenSize.y * 0.5) - 1.0;
