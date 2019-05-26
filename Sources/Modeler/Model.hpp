@@ -52,8 +52,8 @@ public:
 	Model&					operator= (const Model& rhs) = delete;
 	Model&					operator= (Model&& rhs) = delete;
 
-	const MeshGeometry&		GetMeshGeometry (MeshGeometryId geometryId) const;
-	const MeshMaterials&	GetMeshMaterials (MeshMaterialsId materialsId) const;
+	const MeshGeometry&		GetMeshGeometry (const MeshRef& meshRef) const;
+	const MeshMaterials&	GetMeshMaterials (const MeshRef& meshRef) const;
 
 	const MeshRef&			GetMesh (MeshId meshId) const;
 	void					EnumerateMeshes (const std::function<void (MeshId, const MeshRef&)>& processor) const;

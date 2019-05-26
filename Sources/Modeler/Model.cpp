@@ -37,14 +37,14 @@ Model::Model () :
 	Clear ();
 }
 
-const MeshGeometry& Model::GetMeshGeometry (MeshGeometryId geometryId) const
+const MeshGeometry& Model::GetMeshGeometry (const MeshRef& meshRef) const
 {
-	return geometries.GetData (geometryId);
+	return geometries.GetData (meshRef.GetGeometryId ());
 }
 
-const MeshMaterials& Model::GetMeshMaterials (MeshMaterialsId materialsId) const
+const MeshMaterials& Model::GetMeshMaterials (const MeshRef& meshRef) const
 {
-	return materials.GetData (materialsId);
+	return materials.GetData (meshRef.GetMaterialsId ());
 }
 
 const MeshRef& Model::GetMesh (MeshId meshId) const

@@ -59,8 +59,8 @@ void RenderModelConverter::Clear ()
 
 void RenderModelConverter::ConvertMeshRefToRenderMesh (const Modeler::Model& model, const Modeler::MeshRef& meshRef, RenderMesh& renderMesh)
 {
-	const Modeler::MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
-	const Modeler::MeshMaterials& materials = model.GetMeshMaterials (meshRef.GetMaterialsId ());
+	const Modeler::MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
+	const Modeler::MeshMaterials& materials = model.GetMeshMaterials (meshRef);
 
 	std::unordered_map<Modeler::MaterialId, size_t> materialToRenderGeometry;
 	EnumerateTrianglesByMaterial (geometry, materials, [&] (Modeler::MaterialId materialId, const std::vector<unsigned int>& triangles) {

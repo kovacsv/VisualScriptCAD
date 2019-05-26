@@ -59,7 +59,7 @@ private:
 static void GetMaterialMap (const Model& model, MaterialMap& materialMap)
 {
 	model.EnumerateMeshes ([&] (MeshId meshId, const MeshRef& mesh) {
-		const MeshMaterials& materials = model.GetMeshMaterials (mesh.GetMaterialsId ());
+		const MeshMaterials& materials = model.GetMeshMaterials (mesh);
 		materials.EnumerateMaterials ([&] (MaterialId materialId, const Material& material) {
 			materialMap.AddMaterial (material, meshId, materialId);
 		});
@@ -85,8 +85,8 @@ void ExportModelToObj (const Model& model, const std::wstring& name, ModelWriter
 	unsigned int normalOffset = 1;
 	unsigned int meshIndex = 1;
 	model.EnumerateMeshes ([&] (MeshId meshId, const MeshRef& meshRef) {
-		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
-		const MeshMaterials& materials = model.GetMeshMaterials (meshRef.GetMaterialsId ());
+		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
+		const MeshMaterials& materials = model.GetMeshMaterials (meshRef);
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
 		writer.WriteLine (L"g Mesh" + std::to_wstring (meshIndex++));
 		geometry.EnumerateVertices (transformation, [&] (const glm::dvec3& vertex) {
@@ -118,7 +118,7 @@ void ExportModelToStl (const Model& model, const std::wstring& name, ModelWriter
 	writer.OpenFile (name + L".stl");
 	writer.WriteLine (L"solid " + name);
 	model.EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
-		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
+		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
 		geometry.EnumerateTriangles ([&] (const MeshTriangle& triangle) {
 			glm::dvec3 v1 = geometry.GetVertex (triangle.v1, transformation);
@@ -143,7 +143,7 @@ void ExportModelToOff (const Model& model, const std::wstring& name, ModelWriter
 	unsigned int vertexCount = 0;
 	unsigned int triangleCount = 0;
 	model.EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
-		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
+		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
 		vertexCount += geometry.VertexCount ();
 		triangleCount += geometry.TriangleCount ();
 	});
@@ -152,7 +152,7 @@ void ExportModelToOff (const Model& model, const std::wstring& name, ModelWriter
 	writer.WriteLine (L"OFF");
 	writer.WriteLine (L"%d %d %d", vertexCount, triangleCount, 0);
 	model.EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
-		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
+		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
 		geometry.EnumerateVertices (transformation, [&] (const glm::dvec3& vertex) {
 			writer.WriteLine (L"%g %g %g", vertex.x, vertex.y, vertex.z);
@@ -161,7 +161,7 @@ void ExportModelToOff (const Model& model, const std::wstring& name, ModelWriter
 
 	unsigned int vertexOffset = 0;
 	model.EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
-		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef.GetGeometryId ());
+		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
 		geometry.EnumerateTriangles ([&] (const MeshTriangle& triangle) {
 			writer.WriteLine (
 				L"3 %d %d %d",
