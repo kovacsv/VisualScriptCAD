@@ -1,5 +1,5 @@
-#ifndef GEOMETRY_RAYTRACING_HPP
-#define GEOMETRY_RAYTRACING_HPP
+#ifndef GEOMETRY_RAYINTERSECTION_HPP
+#define GEOMETRY_RAYINTERSECTION_HPP
 
 #include "IncludeGLM.hpp"
 #include "Ray.hpp"

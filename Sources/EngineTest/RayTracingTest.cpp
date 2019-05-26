@@ -1,7 +1,7 @@
 #include "SimpleTest.hpp"
 #include "Geometry.hpp"
 #include "TestUtils.hpp"
-#include "RayTracing.hpp"
+#include "RayIntersection.hpp"
 
 using namespace Geometry;
 

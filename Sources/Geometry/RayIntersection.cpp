@@ -1,4 +1,4 @@
-#include "RayTracing.hpp"
+#include "RayIntersection.hpp"
 #include "Geometry.hpp"
 
 namespace Geometry
