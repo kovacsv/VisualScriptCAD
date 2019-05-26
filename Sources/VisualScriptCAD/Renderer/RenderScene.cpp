@@ -93,7 +93,7 @@ void main()
 }
 )";
 
-static const Modeler::Camera DefaultCamera (glm::vec3 (-2.0, -3.0, 1.5), glm::vec3 (0.0, 0.0, 0.0), glm::vec3 (0.0, 0.0, 1.0), 45.0f, 0.1f, 10000.0f);
+static const Modeler::Camera DefaultCamera (glm::dvec3 (-2.0, -3.0, 1.5), glm::dvec3 (0.0, 0.0, 0.0), glm::dvec3 (0.0, 0.0, 1.0), 45.0, 0.1, 10000.0);
 
 static void EnumerateAllTransformedVertices (const RenderModel& renderModel, const std::function<void (const glm::vec3&)>& processor)
 {

@@ -9,32 +9,32 @@ namespace Modeler
 class Camera
 {
 public:
-	Camera (const glm::vec3& eye,
-			const glm::vec3& center,
-			const glm::vec3& up,
-			float fieldOfView,
-			float nearPlane,
-			float farPlane);
+	Camera (const glm::dvec3& eye,
+			const glm::dvec3& center,
+			const glm::dvec3& up,
+			double fieldOfView,
+			double nearPlane,
+			double farPlane);
 
-	const glm::vec3&	GetEye () const;
-	const glm::vec3&	GetCenter () const;
-	const glm::vec3&	GetUp () const;
+	const glm::dvec3&	GetEye () const;
+	const glm::dvec3&	GetCenter () const;
+	const glm::dvec3&	GetUp () const;
 
 	glm::mat4			GetViewMatrix () const;
 	glm::mat4			GetProjectionMatrix (int width, int height) const;
 
-	void				Orbit (float angleX, float angleY);
-	void				Pan (float diffX, float diffY);
-	void				Zoom (float ratio);
-	void				ZoomToSphere (const glm::vec3& sphereCenter, float sphereRadius, int width, int height);
+	void				Orbit (double angleX, double angleY);
+	void				Pan (double diffX, double diffY);
+	void				Zoom (double ratio);
+	void				ZoomToSphere (const glm::dvec3& sphereCenter, double sphereRadius, int width, int height);
 
 private:
-	glm::vec3	eye;
-	glm::vec3	center;
-	glm::vec3	up;
-	float		fieldOfViewY;
-	float		nearPlane;
-	float		farPlane;
+	glm::dvec3	eye;
+	glm::dvec3	center;
+	glm::dvec3	up;
+	double		fieldOfViewY;
+	double		nearPlane;
+	double		farPlane;
 };
 
 }
