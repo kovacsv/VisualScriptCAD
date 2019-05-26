@@ -1,4 +1,5 @@
 #include "TestUtils.hpp"
+#include "Geometry.hpp"
 
 ModelWriterForTest::ModelWriterForTest () :
 	result ()
@@ -18,6 +19,11 @@ void ModelWriterForTest::CloseFile ()
 void ModelWriterForTest::WriteLine (const std::wstring& text)
 {
 	result += text + L"\n";
+}
+
+bool IsEqualVec (const glm::dvec3& a, const glm::dvec3& b)
+{
+	return Geometry::IsEqual (a.x, b.x) && Geometry::IsEqual (a.y, b.y) && Geometry::IsEqual (a.z, b.z);
 }
 
 bool CheckString (const std::wstring& expected, const std::wstring& result)

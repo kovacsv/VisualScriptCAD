@@ -16,6 +16,7 @@ public:
 	std::wstring	result;
 };
 
+bool IsEqualVec (const glm::dvec3& a, const glm::dvec3& b);
 bool CheckString (const std::wstring& expected, const std::wstring& result);
 
 #endif
