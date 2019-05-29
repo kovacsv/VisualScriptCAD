@@ -5,22 +5,32 @@ namespace Geometry
 {
 
 RayIntersection::RayIntersection () :
-	found (false),
 	position (glm::dvec3 (0.0)),
 	distance (0.0)
 {
 }
 
 RayIntersection::RayIntersection (const glm::dvec3& position, double distance) :
-	found (true),
 	position (position),
 	distance (distance)
 {
 }
 
-const RayIntersection NoIntersection;
+RayIntersectionResult::RayIntersectionResult () :
+	found (false),
+	intersection ()
+{
+}
 
-RayIntersection GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3)
+RayIntersectionResult::RayIntersectionResult (const RayIntersection& intersection) :
+	found (true),
+	intersection (intersection)
+{
+}
+
+const RayIntersectionResult NoIntersection;
+
+RayIntersectionResult GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3)
 {
 	const glm::dvec3& rayOrigin = ray.GetOrigin ();
 	const glm::dvec3& rayDirection = glm::normalize (ray.GetDirection ());
@@ -53,7 +63,7 @@ RayIntersection GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1
 	}
 
 	glm::dvec3 directionVector = rayDirection * distance;
-	return RayIntersection (rayOrigin + directionVector, distance);
+	return RayIntersectionResult (RayIntersection (rayOrigin + directionVector, distance));
 }
 
 }

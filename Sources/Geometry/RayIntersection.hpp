@@ -13,14 +13,23 @@ public:
 	RayIntersection ();
 	RayIntersection (const glm::dvec3& position, double distance);
 
-	bool		found;
 	glm::dvec3	position;
 	double		distance;
 };
 
-extern const RayIntersection NoIntersection;
+class RayIntersectionResult
+{
+public:
+	RayIntersectionResult ();
+	RayIntersectionResult (const RayIntersection& intersection);
 
-RayIntersection		GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3);
+	bool				found;
+	RayIntersection		intersection;
+};
+
+extern const RayIntersectionResult NoIntersection;
+
+RayIntersectionResult	GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3);
 
 }
 

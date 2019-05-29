@@ -3,6 +3,8 @@
 #include "TestUtils.hpp"
 #include "RayIntersection.hpp"
 #include "RayTracing.hpp"
+#include "Model.hpp"
+#include "MeshGenerators.hpp"
 
 using namespace Geometry;
 using namespace Modeler;
@@ -19,22 +21,22 @@ TEST (RayTriangleIntersectionTest)
 	auto HasIntersection = [&] (const glm::dvec3& from, const glm::dvec3& to)
 	{
 		Ray ray (from, to - from);
-		RayIntersection intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
+		RayIntersectionResult intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
 		return intersection.found;
 	};
 
 	{
 		Ray ray (glm::dvec3 (0.2, 0.2, 1.0), glm::dvec3 (0.0, 0.0, 1.0));
-		RayIntersection intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
+		RayIntersectionResult intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
 		ASSERT (!intersection.found);
 	}
 
 	{
 		Ray ray (glm::dvec3 (0.2, 0.2, 1.0), glm::dvec3 (0.0, 0.0, -1.0));
-		RayIntersection intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
+		RayIntersectionResult intersection = GetRayTriangleIntersection (ray, v1, v2, v3);
 		ASSERT (intersection.found);
-		ASSERT (IsEqualVec (intersection.position, glm::dvec3 (0.2, 0.2, 0.0)));
-		ASSERT (IsEqual (intersection.distance, 1.0));
+		ASSERT (IsEqualVec (intersection.intersection.position, glm::dvec3 (0.2, 0.2, 0.0)));
+		ASSERT (IsEqual (intersection.intersection.distance, 1.0));
 	}
 
 	{
@@ -101,6 +103,80 @@ TEST (GetScreenRayTest)
 		ASSERT (IsEqualVec (ray.GetOrigin (), camera.GetEye ()));
 		glm::dvec3 expectedRay = glm::normalize (glm::rotate (glm::dvec3 (-1.0, 0.0, 0.0), -glm::radians (fovX / 2.0), glm::dvec3 (0.0, 0.0, 1.0)));
 		ASSERT (IsEqualVec (ray.GetDirection (), expectedRay));
+	}
+}
+
+TEST (RayModelIntersectionTest)
+{
+	{
+		Model model;
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0));
+		std::vector<RayModelIntersection> intersections = GetRayModelRayIntersections (model, Ray (glm::dvec3 (-2.0, 0.2, 0.2), glm::dvec3 (0.0, 0.0, 1.0)));
+		ASSERT (intersections.empty ());
+	}
+
+	{
+		Model model;
+		std::vector<RayModelIntersection> intersections = GetRayModelRayIntersections (model, Ray (glm::dvec3 (-2.0, 0.2, 0.2), glm::dvec3 (1.0, 0.0, 0.0)));
+		ASSERT (intersections.empty ());
+	}
+
+	{
+		Model model;
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0));
+		std::vector<RayModelIntersection> intersections = GetRayModelRayIntersections (model, Ray (glm::dvec3 (-2.0, 0.2, 0.2), glm::dvec3 (1.0, 0.0, 0.0)));
+		ASSERT (intersections.size () == 1);
+		ASSERT (intersections[0].meshId == 0);
+		ASSERT (intersections[0].triangleIndex == 10);
+		ASSERT (IsEqual (intersections[0].intersection.distance, 2.0));
+		ASSERT (IsEqualVec (intersections[0].intersection.position, glm::dvec3 (0.0, 0.2, 0.2)));
+	}
+
+	{
+		Model model;
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0));
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::translate (glm::dmat4 (1.0), glm::dvec3 (2.0, 0.0, 0.0)), 1.0, 1.0, 1.0));
+		std::vector<RayModelIntersection> intersections = GetRayModelRayIntersections (model, Ray (glm::dvec3 (-2.0, 0.2, 0.2), glm::dvec3 (1.0, 0.0, 0.0)));
+		ASSERT (intersections.size () == 2);
+		ASSERT (intersections[0].meshId == 0);
+		ASSERT (intersections[0].triangleIndex == 10);
+		ASSERT (IsEqual (intersections[0].intersection.distance, 2.0));
+		ASSERT (IsEqualVec (intersections[0].intersection.position, glm::dvec3 (0.0, 0.2, 0.2)));
+		ASSERT (intersections[1].meshId == 1);
+		ASSERT (intersections[1].triangleIndex == 10);
+		ASSERT (IsEqual (intersections[1].intersection.distance, 4.0));
+		ASSERT (IsEqualVec (intersections[1].intersection.position, glm::dvec3 (2.0, 0.2, 0.2)));
+	}
+
+	{
+		Model model;
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::translate (glm::dmat4 (1.0), glm::dvec3 (2.0, 0.0, 0.0)), 1.0, 1.0, 1.0));
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0));
+		std::vector<RayModelIntersection> intersections = GetRayModelRayIntersections (model, Ray (glm::dvec3 (-2.0, 0.2, 0.2), glm::dvec3 (1.0, 0.0, 0.0)));
+		ASSERT (intersections.size () == 2);
+		ASSERT (intersections[0].meshId == 1);
+		ASSERT (intersections[0].triangleIndex == 10);
+		ASSERT (IsEqual (intersections[0].intersection.distance, 2.0));
+		ASSERT (IsEqualVec (intersections[0].intersection.position, glm::dvec3 (0.0, 0.2, 0.2)));
+		ASSERT (intersections[1].meshId == 0);
+		ASSERT (intersections[1].triangleIndex == 10);
+		ASSERT (IsEqual (intersections[1].intersection.distance, 4.0));
+		ASSERT (IsEqualVec (intersections[1].intersection.position, glm::dvec3 (2.0, 0.2, 0.2)));
+	}
+
+	{
+		Model model;
+		model.AddMesh (GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0));
+		std::vector<RayModelIntersection> intersections = GetRayModelRayIntersections (model, Ray (glm::dvec3 (-2.0, 0.5, 0.5), glm::dvec3 (1.0, 0.0, 0.0)));
+		ASSERT (intersections.size () == 2);
+		ASSERT (intersections[0].meshId == 0);
+		ASSERT (intersections[0].triangleIndex == 10);
+		ASSERT (IsEqual (intersections[0].intersection.distance, 2.0));
+		ASSERT (IsEqualVec (intersections[0].intersection.position, glm::dvec3 (0.0, 0.5, 0.5)));
+		ASSERT (intersections[1].meshId == 0);
+		ASSERT (intersections[1].triangleIndex == 11);
+		ASSERT (IsEqual (intersections[1].intersection.distance, 2.0));
+		ASSERT (IsEqualVec (intersections[1].intersection.position, glm::dvec3 (0.0, 0.5, 0.5)));
 	}
 }
 
