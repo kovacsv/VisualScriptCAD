@@ -622,17 +622,16 @@ void RenderScene::FitToWindow (int width, int height)
 		return;
 	}
 	
-	float radius = 0.0;
-	glm::vec3 center = boundingBox.GetCenter ();
+	Geometry::BoundingSphere boundingSphere (boundingBox.GetCenter ());
 	EnumerateAllTransformedVertices (model, [&] (const glm::vec3& vertex) {
-		radius = glm::max (radius, glm::distance (center, vertex));
+		boundingSphere.AddPoint (vertex);
 	});
 	
-	if (radius == 0.0) {
+	if (!boundingSphere.IsValid ()) {
 		return;
 	}
 	
-	camera.ZoomToSphere (center, radius, width, height);
+	camera.ZoomToSphere (boundingSphere.GetCenter (), boundingSphere.GetRadius (), width, height);
 }
 
 void RenderScene::ResetView ()

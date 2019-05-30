@@ -25,6 +25,24 @@ private:
 	glm::dvec3	max;
 };
 
+class BoundingSphere
+{
+public:
+	BoundingSphere (const glm::dvec3& center);
+	BoundingSphere (const glm::dvec3& center, double radius);
+
+	bool				IsValid () const;
+	void				AddPoint (const glm::dvec3& point);
+
+	const glm::dvec3&	GetCenter () const;
+	double				GetRadius () const;
+
+private:
+	bool		isValid;
+	glm::dvec3	center;
+	double		radius;
+};
+
 }
 
 #endif

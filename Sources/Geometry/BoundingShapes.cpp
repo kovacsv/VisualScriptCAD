@@ -47,4 +47,39 @@ glm::dvec3 BoundingBox::GetCenter () const
 	return (min + max) / 2.0;
 }
 
+BoundingSphere::BoundingSphere (const glm::dvec3& center) :
+	isValid (false),
+	center (center),
+	radius (0.0)
+{
+}
+
+BoundingSphere::BoundingSphere (const glm::dvec3& center, double radius) :
+	isValid (true),
+	center (center),
+	radius (radius)
+{
+}
+
+bool BoundingSphere::IsValid () const
+{
+	return isValid;
+}
+
+void BoundingSphere::AddPoint (const glm::dvec3& point)
+{
+	isValid = true;
+	radius = glm::max (radius, glm::distance (center, point));
+}
+
+const glm::dvec3& BoundingSphere::GetCenter () const
+{
+	return center;
+}
+
+double BoundingSphere::GetRadius () const
+{
+	return radius;
+}
+
 }
