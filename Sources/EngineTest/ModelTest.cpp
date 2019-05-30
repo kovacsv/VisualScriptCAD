@@ -78,12 +78,12 @@ TEST (MaterialTest)
 	}
 }
 
-
 TEST (BoundingShapeTest)
 {
 	Model model;
 	model.AddMesh (GenerateBox (DefaultMaterial, glm::translate (glm::dmat4 (1.0), glm::dvec3 (2.0, 0.0, 0.0)), 1.0, 1.0, 1.0));
 	model.AddMesh (GenerateBox (DefaultMaterial, glm::dmat4 (1.0), 1.0, 1.0, 1.0));
+
 	BoundingBox boundingBox = model.GetBoundingBox ();
 	BoundingSphere boundingSphere = model.GetBoundingSphere ();
 
