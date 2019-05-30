@@ -1,7 +1,7 @@
 #include "RenderScene.hpp"
 #include "ShaderProgram.hpp"
 #include "IncludeGLM.hpp"
-#include "BoundingBox.hpp"
+#include "BoundingShapes.hpp"
 #include "Geometry.hpp"
 
 static const char* lineVertexShaderSource = R"(

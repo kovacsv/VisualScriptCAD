@@ -1,4 +1,4 @@
-#include "BoundingBox.hpp"
+#include "BoundingShapes.hpp"
 #include "Geometry.hpp"
 
 namespace Geometry
