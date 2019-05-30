@@ -5,6 +5,7 @@
 #include "IncludeGLM.hpp"
 #include "Mesh.hpp"
 #include "SharedData.hpp"
+#include "BoundingShapes.hpp"
 
 #include <vector>
 #include <unordered_map>
@@ -49,20 +50,22 @@ public:
 	Model (const Model& rhs) = delete;
 	Model (Model&& rhs) = delete;
 	
-	Model&					operator= (const Model& rhs) = delete;
-	Model&					operator= (Model&& rhs) = delete;
+	Model&						operator= (const Model& rhs) = delete;
+	Model&						operator= (Model&& rhs) = delete;
 
-	const MeshGeometry&		GetMeshGeometry (const MeshRef& meshRef) const;
-	const MeshMaterials&	GetMeshMaterials (const MeshRef& meshRef) const;
+	const MeshGeometry&			GetMeshGeometry (const MeshRef& meshRef) const;
+	const MeshMaterials&		GetMeshMaterials (const MeshRef& meshRef) const;
 
-	const MeshRef&			GetMesh (MeshId meshId) const;
-	void					EnumerateMeshes (const std::function<void (MeshId, const MeshRef&)>& processor) const;
+	const MeshRef&				GetMesh (MeshId meshId) const;
+	void						EnumerateMeshes (const std::function<void (MeshId, const MeshRef&)>& processor) const;
 
-	MeshId					AddMesh (const Mesh& mesh);
-	void					RemoveMesh (MeshId meshId);
-	void					Clear ();
+	MeshId						AddMesh (const Mesh& mesh);
+	void						RemoveMesh (MeshId meshId);
+	void						Clear ();
 
-	ModelInfo				GetModelInfo () const;
+	ModelInfo					GetInfo () const;
+	Geometry::BoundingBox		GetBoundingBox () const;
+	Geometry::BoundingSphere	GetBoundingSphere () const;
 
 private:
 	SharedData<MeshGeometryId, MeshGeometry>	geometries;

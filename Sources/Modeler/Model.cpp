@@ -8,6 +8,17 @@
 namespace Modeler
 {
 
+static void EnumateTransformedVertices (const Model& model, const std::function<void (const glm::dvec3&)>& processor)
+{
+	model.EnumerateMeshes ([&](MeshId, const MeshRef& meshRef) {
+		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
+		const glm::dmat4& transformation = meshRef.GetTransformation ();
+		geometry.EnumerateVertices (transformation, [&](const glm::dvec3& vertex) {
+			processor (vertex);
+		});
+	});
+}
+
 MeshRef::MeshRef (MeshGeometryId geometryId, MeshMaterialsId& materialsId, const glm::dmat4& transformation) :
 	geometryId (geometryId),
 	materialsId (materialsId),
@@ -93,7 +104,7 @@ void Model::Clear ()
 	nextMaterialId = 0;
 }
 
-ModelInfo Model::GetModelInfo () const
+ModelInfo Model::GetInfo () const
 {
 	ModelInfo modelInfo;
 	modelInfo.meshGeometryCount = (unsigned int) geometries.DataCount ();
@@ -108,6 +119,25 @@ ModelInfo Model::GetModelInfo () const
 		modelInfo.triangleCount += geometry.TriangleCount ();
 	}
 	return modelInfo;
+}
+
+Geometry::BoundingBox Model::GetBoundingBox () const
+{
+	Geometry::BoundingBox boundingBox;
+	EnumateTransformedVertices (*this, [&] (const glm::dvec3& vertex) {
+		boundingBox.AddPoint (vertex);
+	});
+	return boundingBox;
+}
+
+Geometry::BoundingSphere Model::GetBoundingSphere () const
+{
+	Geometry::BoundingBox boundingBox = GetBoundingBox ();
+	Geometry::BoundingSphere boundingSphere (boundingBox.GetCenter ());
+	EnumateTransformedVertices (*this, [&] (const glm::dvec3& vertex) {
+		boundingSphere.AddPoint (vertex);
+	});
+	return boundingSphere;
 }
 
 }

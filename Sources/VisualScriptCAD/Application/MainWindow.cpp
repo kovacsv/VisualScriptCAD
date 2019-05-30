@@ -433,7 +433,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		case Model_Info:
 			{
 				const Modeler::Model& model = evaluationData->GetModel ();
-				Modeler::ModelInfo modelInfo = model.GetModelInfo ();
+				Modeler::ModelInfo modelInfo = model.GetInfo ();
 				std::wstring modelInfoText = L"";
 				modelInfoText += L"Mesh geometry count: " + std::to_wstring (modelInfo.meshGeometryCount) + L"\n";
 				modelInfoText += L"Mesh count: " + std::to_wstring (modelInfo.meshCount) + L"\n";
