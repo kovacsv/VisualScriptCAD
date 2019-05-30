@@ -1,6 +1,7 @@
 #include "RenderScene.hpp"
 #include "ShaderProgram.hpp"
 #include "IncludeGLM.hpp"
+#include "BoundingBox.hpp"
 #include "Geometry.hpp"
 
 static const char* lineVertexShaderSource = R"(
@@ -609,23 +610,20 @@ void RenderScene::OnMouseWheel (int rotation)
 void RenderScene::FitToWindow (int width, int height)
 {
 	static const float maxFloat = std::numeric_limits<float>::max ();
-	
-	bool hasVertex = false;
-	
+
+	Geometry::BoundingBox boundingBox;
 	glm::vec3 boxMin (maxFloat, maxFloat, maxFloat);
 	glm::vec3 boxMax (-maxFloat, -maxFloat, -maxFloat);
 	EnumerateAllTransformedVertices (model, [&] (const glm::vec3& vertex) {
-		hasVertex = true;
-		boxMin = glm::min (vertex, boxMin);
-		boxMax = glm::max (vertex, boxMax);
+		boundingBox.AddPoint (vertex);
 	});
 	
-	if (!hasVertex) {
+	if (!boundingBox.IsValid ()) {
 		return;
 	}
 	
 	float radius = 0.0;
-	glm::vec3 center = (boxMin + boxMax) / 2.0f;
+	glm::vec3 center = boundingBox.GetCenter ();
 	EnumerateAllTransformedVertices (model, [&] (const glm::vec3& vertex) {
 		radius = glm::max (radius, glm::distance (center, vertex));
 	});
