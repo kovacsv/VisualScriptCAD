@@ -422,7 +422,8 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case View_Model_FitToWindow:
 			{
-				modelControl->FitToWindow ();
+				const Modeler::Model& model = evaluationData->GetModel ();
+				modelControl->FitToWindow (model);
 			}
 			break;
 		case View_Model_ResetView:
@@ -571,7 +572,8 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 		applicationState.SetCurrentFileName (fileName);
 		userSettings.AddRecentFile (fileName);
 		editor->AlignToWindow ();
-		modelControl->FitToWindow ();
+		const Modeler::Model& model = evaluationData->GetModel ();
+		modelControl->FitToWindow (model);
 	} else {
 		wxMessageDialog messageDialog (this, L"Failed to open file.", L"Error!", wxICON_ERROR | wxOK);
 		messageDialog.ShowModal ();

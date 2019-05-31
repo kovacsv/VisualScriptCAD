@@ -123,6 +123,7 @@ ModelInfo Model::GetInfo () const
 
 Geometry::BoundingBox Model::GetBoundingBox () const
 {
+	// TODO: cache bounding boxes of geometries
 	Geometry::BoundingBox boundingBox;
 	EnumateTransformedVertices (*this, [&] (const glm::dvec3& vertex) {
 		boundingBox.AddPoint (vertex);

@@ -96,22 +96,6 @@ void main()
 
 static const Modeler::Camera DefaultCamera (glm::dvec3 (-2.0, -3.0, 1.5), glm::dvec3 (0.0, 0.0, 0.0), glm::dvec3 (0.0, 0.0, 1.0), 45.0, 0.1, 10000.0);
 
-static void EnumerateAllTransformedVertices (const RenderModel& renderModel, const std::function<void (const glm::vec3&)>& processor)
-{
-	renderModel.EnumerateRenderMeshes ([&] (const RenderMesh& renderMesh) {
-		renderMesh.EnumerateInstances ([&] (const RenderMeshInstance& instance) {
-			const glm::mat4& transformation = instance.GetTransformation ();
-			renderMesh.EnumerateRenderGeometries ([&] (const RenderGeometry& renderGeometry) {
-				renderGeometry.EnumerateVertices ([&] (const glm::vec3& vertex) {
-					glm::vec4 vertex4 (vertex, 1.0);
-					glm::vec4 transformed4 = transformation * vertex4;
-					processor (glm::vec3 (transformed4.x, transformed4.y, transformed4.z));
-				});
-			});
-		});
-	});
-}
-
 RenderLineMaterial::RenderLineMaterial (const glm::vec3& color) :
 	color (color)
 {
@@ -607,30 +591,11 @@ void RenderScene::OnMouseWheel (int rotation)
 	camera.Zoom (ratio);
 }
 
-void RenderScene::FitToWindow (int width, int height)
+void RenderScene::FitToWindow (int width, int height, const Geometry::BoundingSphere& boundingSphere)
 {
-	static const float maxFloat = std::numeric_limits<float>::max ();
-
-	Geometry::BoundingBox boundingBox;
-	glm::vec3 boxMin (maxFloat, maxFloat, maxFloat);
-	glm::vec3 boxMax (-maxFloat, -maxFloat, -maxFloat);
-	EnumerateAllTransformedVertices (model, [&] (const glm::vec3& vertex) {
-		boundingBox.AddPoint (vertex);
-	});
-	
-	if (!boundingBox.IsValid ()) {
-		return;
-	}
-	
-	Geometry::BoundingSphere boundingSphere (boundingBox.GetCenter ());
-	EnumerateAllTransformedVertices (model, [&] (const glm::vec3& vertex) {
-		boundingSphere.AddPoint (vertex);
-	});
-	
 	if (!boundingSphere.IsValid ()) {
 		return;
 	}
-	
 	camera.ZoomToSphere (boundingSphere.GetCenter (), boundingSphere.GetRadius (), width, height);
 }
 

@@ -201,7 +201,7 @@ public:
 	void				OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
 	void				OnMouseWheel (int rotation);
 
-	void				FitToWindow (int width, int height);
+	void				FitToWindow (int width, int height, const Geometry::BoundingSphere& boundingSphere);
 	void				ResetView ();
 
 	void				Clear ();

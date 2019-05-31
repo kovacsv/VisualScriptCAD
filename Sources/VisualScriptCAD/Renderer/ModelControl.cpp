@@ -62,11 +62,12 @@ void ModelControl::Clear ()
 	Refresh ();
 }
 
-void ModelControl::FitToWindow ()
+void ModelControl::FitToWindow (const Modeler::Model& model)
 {
 	WXAS::BusyCursorGuard busyCursor;
 	const wxSize clientSize = GetClientSize ();
-	renderScene.FitToWindow (clientSize.x, clientSize.y);
+	Geometry::BoundingSphere boundingSphere = model.GetBoundingSphere ();
+	renderScene.FitToWindow (clientSize.x, clientSize.y, boundingSphere);
 	Refresh ();
 }
 

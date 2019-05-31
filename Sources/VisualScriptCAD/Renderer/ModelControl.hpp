@@ -20,7 +20,7 @@ public:
 	void							RemoveMesh (Modeler::MeshId meshId);
 	void							Clear ();
 
-	void							FitToWindow ();
+	void							FitToWindow (const Modeler::Model& model);
 	void							ResetView ();
 
 	void							OnPaint (wxPaintEvent& evt);
