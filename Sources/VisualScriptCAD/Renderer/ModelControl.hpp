@@ -13,14 +13,14 @@
 class ModelControl : public wxGLCanvas
 {
 public:
-	ModelControl (wxWindow *parent);
+	ModelControl (wxWindow *parent, const Modeler::Model& model);
 	virtual ~ModelControl ();
 
-	void							AddMesh (const Modeler::Model& model, Modeler::MeshId meshId);
+	void							AddMesh (Modeler::MeshId meshId);
 	void							RemoveMesh (Modeler::MeshId meshId);
 	void							Clear ();
 
-	void							FitToWindow (const Modeler::Model& model);
+	void							FitToWindow ();
 	void							ResetView ();
 
 	void							OnPaint (wxPaintEvent& evt);
@@ -39,11 +39,14 @@ public:
 private:
 	bool InitContext ();
 
+	const Modeler::Model&	model;
+
 	wxGLContext*			glContext;
 	RenderModelConverter	renderModelConverter;
 	RenderSettings			renderSceneSettings;
 	RenderScene				renderScene;
 
+	wxPoint					mouseDownPosition;
 	wxPoint					lastMousePosition;
 	int						lastMouseButton;
 	bool					isMouseDown;

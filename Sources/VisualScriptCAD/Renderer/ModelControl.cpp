@@ -1,6 +1,7 @@
 #include "ModelControl.hpp"
 #include "ShaderProgram.hpp"
 #include "RenderModelConverter.hpp"
+#include "RayTracing.hpp"
 #include "WXAS_ControlUtilities.hpp"
 
 static const int canvasAttributes[] = {
@@ -17,12 +18,14 @@ static const int canvasAttributes[] = {
 	0
 };
 
-ModelControl::ModelControl (wxWindow *parent) :
+ModelControl::ModelControl (wxWindow *parent, const Modeler::Model& model) :
 	wxGLCanvas (parent, wxID_ANY, canvasAttributes, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
+	model (model),
 	glContext (nullptr),
 	renderModelConverter (),
 	renderSceneSettings (),
 	renderScene (),
+	mouseDownPosition (0, 0),
 	lastMousePosition (0, 0),
 	lastMouseButton (-1),
 	isMouseDown (false)
@@ -43,7 +46,7 @@ ModelControl::~ModelControl ()
 	}
 }
 
-void ModelControl::AddMesh (const Modeler::Model& model, Modeler::MeshId meshId)
+void ModelControl::AddMesh (Modeler::MeshId meshId)
 {
 	renderModelConverter.AddMeshToRenderModel (model, meshId, renderScene.GetModel ());
 	Refresh ();
@@ -62,10 +65,10 @@ void ModelControl::Clear ()
 	Refresh ();
 }
 
-void ModelControl::FitToWindow (const Modeler::Model& model)
+void ModelControl::FitToWindow ()
 {
 	WXAS::BusyCursorGuard busyCursor;
-	const wxSize clientSize = GetClientSize ();
+	wxSize clientSize = GetClientSize ();
 	Geometry::BoundingSphere boundingSphere = model.GetBoundingSphere ();
 	renderScene.FitToWindow (clientSize.x, clientSize.y, boundingSphere);
 	Refresh ();
@@ -81,7 +84,7 @@ void ModelControl::OnPaint (wxPaintEvent&)
 {
 	wxPaintDC dc (this);
 
-	const wxSize clientSize = GetClientSize ();
+	wxSize clientSize = GetClientSize ();
 	renderScene.Draw (clientSize.x, clientSize.y, renderSceneSettings);
 
 	SwapBuffers ();
@@ -94,6 +97,7 @@ void ModelControl::OnMouseDown (wxMouseEvent& evt)
 	}
 
 	CaptureMouse ();
+	mouseDownPosition = evt.GetPosition ();
 	lastMousePosition = evt.GetPosition ();
 	lastMouseButton = evt.GetButton ();
 	isMouseDown = true;
@@ -115,10 +119,16 @@ void ModelControl::OnMouseMove (wxMouseEvent& evt)
 	}
 }
 
-void ModelControl::OnMouseUp (wxMouseEvent&)
+void ModelControl::OnMouseUp (wxMouseEvent& evt)
 {
 	if (!isMouseDown) {
 		return;
+	}
+
+	wxPoint mousePosition = evt.GetPosition ();
+	bool isMouseClick = (evt.GetButton () == 1 && mousePosition == mouseDownPosition);
+	if (isMouseClick) {
+		// TODO: handle mouse click
 	}
 
 	ReleaseMouse ();

@@ -571,6 +571,11 @@ void RenderScene::DrawOffscreen (const RenderSettings& settings, RenderPixels& p
 	glBindFramebuffer (GL_FRAMEBUFFER, 0);
 }
 
+const Modeler::Camera& RenderScene::GetCamera () const
+{
+	return camera;
+}
+
 RenderModel& RenderScene::GetModel ()
 {
 	return model;

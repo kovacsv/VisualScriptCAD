@@ -191,31 +191,32 @@ public:
 
 	RenderScene ();
 
-	bool				Init ();
-	void				InitAxisLines (double gridSize, int gridCount);
+	bool					Init ();
+	void					InitAxisLines (double gridSize, int gridCount);
 
-	void				Draw (int width, int height, const RenderSettings& settings) const;
-	void				DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const;
-	RenderModel&		GetModel ();
+	void					Draw (int width, int height, const RenderSettings& settings) const;
+	void					DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const;
+	const Modeler::Camera&	GetCamera () const;
+	RenderModel&			GetModel ();
 
-	void				OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
-	void				OnMouseWheel (int rotation);
+	void					OnMouseMove (MouseButton mouseButton, int diffX, int diffY);
+	void					OnMouseWheel (int rotation);
 
-	void				FitToWindow (int width, int height, const Geometry::BoundingSphere& boundingSphere);
-	void				ResetView ();
+	void					FitToWindow (int width, int height, const Geometry::BoundingSphere& boundingSphere);
+	void					ResetView ();
 
-	void				Clear ();
+	void					Clear ();
 
 private:
-	void				DrawModel (int width, int height, ViewMode drawMode) const;
-	void				DrawLines (int width, int height, AxisMode axisMode) const;
+	void					DrawModel (int width, int height, ViewMode drawMode) const;
+	void					DrawLines (int width, int height, AxisMode axisMode) const;
 
-	int					lineShader;
-	int					triangleShader;
-	RenderModel			model;
-	RenderLineModel		axisModel;
-	RenderLight			light;
-	Modeler::Camera		camera;
+	int						lineShader;
+	int						triangleShader;
+	RenderModel				model;
+	RenderLineModel			axisModel;
+	RenderLight				light;
+	Modeler::Camera			camera;
 };
 
 #endif

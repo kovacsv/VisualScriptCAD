@@ -77,7 +77,7 @@ void ModelControlSynchronizer::Synchronize ()
 		modelControl->RemoveMesh (meshId);
 	}
 	for (Modeler::MeshId meshId : evalData->GetAddedMeshes ()) {
-		modelControl->AddMesh (evalData->GetModel (), meshId);
+		modelControl->AddMesh (meshId);
 	}
 	evalData->ClearAddedDeletedMeshes ();
 }
@@ -241,7 +241,7 @@ MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	menuBar (new MenuBar ()),
 	toolBar (new ToolBar (this)),
 	editorAndModelSplitter (new wxSplitterWindow (this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_THIN_SASH | wxSP_LIVE_UPDATE)),
-	modelControl (new ModelControl (editorAndModelSplitter)),
+	modelControl (new ModelControl (editorAndModelSplitter, evaluationData->GetModel ())),
 	modelControlSynchronizer (evaluationData, modelControl),
 	nodeEditorControl (new NodeEditorControl (editorAndModelSplitter, evaluationData, modelControlSynchronizer)),
 	applicationState (),
@@ -422,8 +422,7 @@ void MainWindow::ProcessCommand (CommandId commandId)
 			break;
 		case View_Model_FitToWindow:
 			{
-				const Modeler::Model& model = evaluationData->GetModel ();
-				modelControl->FitToWindow (model);
+				modelControl->FitToWindow ();
 			}
 			break;
 		case View_Model_ResetView:
@@ -572,8 +571,7 @@ void MainWindow::OpenFile (const std::wstring& fileName)
 		applicationState.SetCurrentFileName (fileName);
 		userSettings.AddRecentFile (fileName);
 		editor->AlignToWindow ();
-		const Modeler::Model& model = evaluationData->GetModel ();
-		modelControl->FitToWindow (model);
+		modelControl->FitToWindow ();
 	} else {
 		wxMessageDialog messageDialog (this, L"Failed to open file.", L"Error!", wxICON_ERROR | wxOK);
 		messageDialog.ShowModal ();
