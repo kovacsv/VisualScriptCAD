@@ -77,6 +77,7 @@ unsigned int MeshGeometry::AddVertex (double x, double y, double z)
 
 unsigned int MeshGeometry::AddVertex (const glm::dvec3& vertex)
 {
+	bounds.AddPoint (vertex);
 	vertices.push_back (vertex);
 	return (unsigned int) vertices.size () - 1;
 }
@@ -170,6 +171,11 @@ void MeshGeometry::EnumerateTriangles (const std::function<void (const MeshTrian
 	for (const MeshTriangle& triangle : triangles) {
 		processor (triangle);
 	}
+}
+
+const Geometry::BoundingBox& MeshGeometry::GetBoundingBox () const
+{
+	return bounds;
 }
 
 Checksum MeshGeometry::CalcCheckSum () const

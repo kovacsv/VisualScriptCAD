@@ -123,10 +123,15 @@ ModelInfo Model::GetInfo () const
 
 Geometry::BoundingBox Model::GetBoundingBox () const
 {
-	// TODO: cache bounding boxes of geometries
 	Geometry::BoundingBox boundingBox;
-	EnumateTransformedVertices (*this, [&] (const glm::dvec3& vertex) {
-		boundingBox.AddPoint (vertex);
+	EnumerateMeshes ([&] (MeshId, const MeshRef& meshRef) {
+		const MeshGeometry& geometry = GetMeshGeometry (meshRef);
+		const Geometry::BoundingBox& geometryBoundingBox = geometry.GetBoundingBox ();
+		const glm::dmat4& transformation = meshRef.GetTransformation ();
+		Geometry::BoundingBox transformedBoundingBox = geometryBoundingBox.Transform (transformation);
+		transformedBoundingBox.EnumerateBoundingPoints ([&] (const glm::dvec3& point) {
+			boundingBox.AddPoint (point);
+		});
 	});
 	return boundingBox;
 }

@@ -2,6 +2,7 @@
 #define GEOMETRY_BOUNDINGSHAPES_HPP
 
 #include "IncludeGLM.hpp"
+#include <functional>
 
 namespace Geometry
 {
@@ -18,6 +19,9 @@ public:
 	const glm::dvec3&	GetMin () const;
 	const glm::dvec3&	GetMax () const;
 	glm::dvec3			GetCenter () const;
+
+	void				EnumerateBoundingPoints (const std::function<void (const glm::dvec3&)>& processor) const;
+	BoundingBox			Transform (const glm::dmat4& transformation) const;
 
 private:
 	bool		isValid;

@@ -78,6 +78,17 @@ TEST (MaterialTest)
 	}
 }
 
+TEST (EmptyBoundingShapeTest)
+{
+	Model model;
+
+	BoundingBox boundingBox = model.GetBoundingBox ();
+	BoundingSphere boundingSphere = model.GetBoundingSphere ();
+
+	ASSERT (!boundingBox.IsValid ());
+	ASSERT (!boundingSphere.IsValid ());
+}
+
 TEST (BoundingShapeTest)
 {
 	Model model;

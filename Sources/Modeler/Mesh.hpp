@@ -3,6 +3,7 @@
 
 #include "Checksum.hpp"
 #include "IncludeGLM.hpp"
+#include "BoundingShapes.hpp"
 
 #include <vector>
 #include <unordered_set>
@@ -54,42 +55,44 @@ public:
 	MeshGeometry (const MeshGeometry& rhs) = default;
 	MeshGeometry (MeshGeometry&& rhs) = default;
 
-	MeshGeometry&			operator= (const MeshGeometry& rhs) = default;
-	MeshGeometry&			operator= (MeshGeometry&& rhs) = default;
+	MeshGeometry&					operator= (const MeshGeometry& rhs) = default;
+	MeshGeometry&					operator= (MeshGeometry&& rhs) = default;
 
-	unsigned int			AddVertex (double x, double y, double z);
-	unsigned int			AddVertex (const glm::dvec3& vertex);
+	unsigned int					AddVertex (double x, double y, double z);
+	unsigned int					AddVertex (const glm::dvec3& vertex);
 
-	unsigned int			AddNormal (double x, double y, double z);
-	unsigned int			AddNormal (const glm::dvec3& vertex);
+	unsigned int					AddNormal (double x, double y, double z);
+	unsigned int					AddNormal (const glm::dvec3& vertex);
 
-	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3);
-	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int normal);
-	unsigned int			AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int n1, unsigned int n2, unsigned int n3);
+	unsigned int					AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3);
+	unsigned int					AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int normal);
+	unsigned int					AddTriangle (unsigned int v1, unsigned int v2, unsigned int v3, unsigned int n1, unsigned int n2, unsigned int n3);
 
-	unsigned int			VertexCount () const;
-	unsigned int			NormalCount () const;
-	unsigned int			TriangleCount () const;
+	unsigned int					VertexCount () const;
+	unsigned int					NormalCount () const;
+	unsigned int					TriangleCount () const;
 
-	const glm::dvec3&		GetVertex (unsigned int index) const;
-	glm::dvec3				GetVertex (unsigned int index, const glm::dmat4& transformation) const;
+	const glm::dvec3&				GetVertex (unsigned int index) const;
+	glm::dvec3						GetVertex (unsigned int index, const glm::dmat4& transformation) const;
 
-	const glm::dvec3&		GetNormal (unsigned int index) const;
-	glm::dvec3				GetNormal (unsigned int index, const glm::dmat4& transformation) const;
+	const glm::dvec3&				GetNormal (unsigned int index) const;
+	glm::dvec3						GetNormal (unsigned int index, const glm::dmat4& transformation) const;
 
-	const MeshTriangle&		GetTriangle (unsigned int index) const;
+	const MeshTriangle&				GetTriangle (unsigned int index) const;
 
-	void					EnumerateVertices (const glm::dmat4& transformation, const std::function<void (const glm::dvec3&)>& processor) const;
-	void					EnumerateNormals (const glm::dmat4& transformation, const std::function<void (const glm::dvec3&)>& processor) const;
-	void					EnumerateTriangles (const std::function<void (const MeshTriangle&)>& processor) const;
+	void							EnumerateVertices (const glm::dmat4& transformation, const std::function<void (const glm::dvec3&)>& processor) const;
+	void							EnumerateNormals (const glm::dmat4& transformation, const std::function<void (const glm::dvec3&)>& processor) const;
+	void							EnumerateTriangles (const std::function<void (const MeshTriangle&)>& processor) const;
 
-	Checksum				CalcCheckSum () const;
-	void					Clear ();
+	const Geometry::BoundingBox&	GetBoundingBox () const;
+	Checksum						CalcCheckSum () const;
+	void							Clear ();
 
 private:
-	std::vector<glm::dvec3>		vertices;
-	std::vector<glm::dvec3>		normals;
-	std::vector<MeshTriangle>	triangles;
+	std::vector<glm::dvec3>			vertices;
+	std::vector<glm::dvec3>			normals;
+	std::vector<MeshTriangle>		triangles;
+	Geometry::BoundingBox			bounds;
 };
 
 class MeshMaterials
