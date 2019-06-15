@@ -3,6 +3,7 @@
 
 #include "IncludeGLM.hpp"
 #include "Ray.hpp"
+#include "BoundingShapes.hpp"
 
 namespace Geometry
 {
@@ -30,6 +31,7 @@ public:
 extern const RayIntersectionResult NoIntersection;
 
 RayIntersectionResult	GetRayTriangleIntersection (const Ray& ray, const glm::dvec3& v1, const glm::dvec3& v2, const glm::dvec3& v3);
+bool					HasRayBoundingBoxIntersection (const Ray& ray, const BoundingBox& boundingBox);
 
 }
 

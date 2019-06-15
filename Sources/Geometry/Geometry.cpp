@@ -51,7 +51,7 @@ bool IsNegative (double a)
 	return a < EPS;
 }
 
-bool IsZero (float a)
+bool IsZero (double a)
 {
 	return fabs (a) < FEPS;
 }

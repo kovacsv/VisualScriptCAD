@@ -106,6 +106,36 @@ TEST (GetScreenRayTest)
 	}
 }
 
+TEST (RayBoundingBoxTest)
+{
+	BoundingBox box ({ 1.0, 0.0, 0.0 }, { 2.0, 1.0, 1.0 });
+
+	// different direction
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { 0.0, 1.0, 0.0 }), box));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { 0.0, -1.0, 0.0 }), box));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { 0.0, 0.0, 1.0 }), box));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { 1.0, 0.0, -1.0 }), box));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { -1.0, 0.0, 0.0 }), box));
+	
+	// origin inside box
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 1.5, 0.5, 0.5 }, { 1.0, 0.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 1.5, 0.5, 0.5 }, { -1.0, 0.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 1.5, 0.5, 0.5 }, { 0.0, 1.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 1.5, 0.5, 0.5 }, { 0.0, -1.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 1.5, 0.5, 0.5 }, { 0.0, 0.0, 1.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 1.5, 0.5, 0.5 }, { 0.0, 0.0, -1.0 }), box));
+
+	// intersection on edge
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 3.0, 1.0, 0.0 }, { -1.0, 0.0, 0.0 }), box));
+
+	// intersection
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { 1.0, 0.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 3.0, 0.5, 0.5 }, { -1.0, 0.0, 0.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 0.9, 0.5, 0.5 }, { 1.0, 1.0, 1.0 }), box));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 2.1, 0.5, 0.5 }, { -1.0, -1.0, -1.0 }), box));
+}
+
 TEST (RayModelIntersectionTest)
 {
 	{
