@@ -4,6 +4,9 @@
 namespace Geometry
 {
 
+const BoundingBox InvalidBoundingBox;
+const BoundingSphere InvalidBoundingSphere (glm::dvec3 (0.0));
+
 BoundingBox::BoundingBox () :
 	isValid (false),
 	min (INF),

@@ -47,6 +47,9 @@ private:
 	double		radius;
 };
 
+extern const BoundingBox InvalidBoundingBox;
+extern const BoundingSphere InvalidBoundingSphere;
+
 }
 
 #endif

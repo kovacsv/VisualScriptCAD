@@ -8,17 +8,6 @@
 namespace Modeler
 {
 
-static void EnumateTransformedVertices (const Model& model, const std::function<void (const glm::dvec3&)>& processor)
-{
-	model.EnumerateMeshes ([&](MeshId, const MeshRef& meshRef) {
-		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
-		const glm::dmat4& transformation = meshRef.GetTransformation ();
-		geometry.EnumerateVertices (transformation, [&](const glm::dvec3& vertex) {
-			processor (vertex);
-		});
-	});
-}
-
 MeshRef::MeshRef (MeshGeometryId geometryId, MeshMaterialsId& materialsId, const glm::dmat4& transformation) :
 	geometryId (geometryId),
 	materialsId (materialsId),
@@ -139,11 +128,13 @@ Geometry::BoundingBox Model::GetBoundingBox () const
 Geometry::BoundingSphere Model::GetBoundingSphere () const
 {
 	Geometry::BoundingBox boundingBox = GetBoundingBox ();
-	Geometry::BoundingSphere boundingSphere (boundingBox.GetCenter ());
-	EnumateTransformedVertices (*this, [&] (const glm::dvec3& vertex) {
-		boundingSphere.AddPoint (vertex);
-	});
-	return boundingSphere;
+	if (!boundingBox.IsValid ()) {
+		return Geometry::InvalidBoundingSphere;
+	}
+
+	glm::dvec3 center = boundingBox.GetCenter ();
+	double radius = glm::distance (center, boundingBox.GetMax ());
+	return Geometry::BoundingSphere (center, radius);
 }
 
 }
