@@ -134,6 +134,17 @@ TEST (RayBoundingBoxTest)
 	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 3.0, 0.5, 0.5 }, { -1.0, 0.0, 0.0 }), box));
 	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 0.9, 0.5, 0.5 }, { 1.0, 1.0, 1.0 }), box));
 	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 2.1, 0.5, 0.5 }, { -1.0, -1.0, -1.0 }), box));
+
+	// intersection on transformed box
+	BoundingBox box2 = box.Transform (glm::translate (glm::dmat4 (1.0), glm::dvec3 (0.0, 0.0, 5.0)));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 0.5 }, { 1.0, 0.0, 0.0 }), box2));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 3.0, 0.5, 0.5 }, { -1.0, 0.0, 0.0 }), box2));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 0.9, 0.5, 0.5 }, { 1.0, 1.0, 1.0 }), box2));
+	ASSERT (!HasRayBoundingBoxIntersection (Ray ({ 2.1, 0.5, 0.5 }, { -1.0, -1.0, -1.0 }), box2));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 0.0, 0.5, 5.5 }, { 1.0, 0.0, 0.0 }), box2));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 3.0, 0.5, 5.5 }, { -1.0, 0.0, 0.0 }), box2));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 0.9, 0.5, 5.5 }, { 1.0, 1.0, 1.0 }), box2));
+	ASSERT (HasRayBoundingBoxIntersection (Ray ({ 2.1, 0.5, 5.5 }, { -1.0, -1.0, -1.0 }), box2));
 }
 
 TEST (RayModelIntersectionTest)
