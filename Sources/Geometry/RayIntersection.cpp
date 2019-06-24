@@ -85,7 +85,7 @@ RayIntersectionResult GetRayBoundingBoxIntersection (const Geometry::Ray& ray, c
 	glm::dvec3 origin = ray.GetOrigin ();
 	glm::dvec3 dir = glm::normalize (ray.GetDirection ());
 
-	std::array<Quadrant, 3> quadrant = { Quadrant::Middle, Quadrant::Middle, Quadrant::Middle };
+	std::array<Quadrant, 3> quadrant = { Quadrant::Left, Quadrant::Left, Quadrant::Left };
 	std::array<double, 3> candidatePlane = { 0.0, 0.0, 0.0 };
 
 	bool inside = true;
