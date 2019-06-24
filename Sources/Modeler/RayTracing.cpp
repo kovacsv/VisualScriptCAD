@@ -33,7 +33,14 @@ std::vector<RayModelIntersection> GetRayModelRayIntersections (const Model& mode
 	std::vector<RayModelIntersection> intersections;
 	model.EnumerateMeshes ([&] (MeshId meshId, const MeshRef& meshRef) {
 		const MeshGeometry& geometry = model.GetMeshGeometry (meshRef);
+		const Geometry::BoundingBox& boundingBox = geometry.GetBoundingBox ();
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
+		Geometry::BoundingBox transformedBoundingBox = boundingBox.Transform (transformation);
+
+		if (!Geometry::HasRayBoundingBoxIntersection (ray, transformedBoundingBox)) {
+			return;
+		}
+
 		for (unsigned int triangleIndex = 0; triangleIndex < geometry.TriangleCount (); triangleIndex++) {
 			const MeshTriangle& triangle = geometry.GetTriangle (triangleIndex);
 			glm::dvec3 v1 = geometry.GetVertex (triangle.v1, transformation);
