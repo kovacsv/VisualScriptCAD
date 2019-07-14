@@ -121,18 +121,21 @@ void ModelControl::OnMouseMove (wxMouseEvent& evt)
 
 void ModelControl::OnMouseUp (wxMouseEvent& evt)
 {
+	static const bool IntersectionsOnMouseClick = false;
+
 	if (!isMouseDown) {
 		return;
 	}
 
 	wxPoint mousePosition = evt.GetPosition ();
 	bool isMouseClick = (evt.GetButton () == 1 && mousePosition == mouseDownPosition);
-	if (isMouseClick) {
-		// TODO: implement, screen ray should be go through the center of the pixel
-		// wxSize clientSize = GetClientSize ();
-		// Geometry::Ray ray = Modeler::GetScreenRay (renderScene.GetCamera (), glm::dvec2 (clientSize.x, clientSize.y), glm::dvec2 (mousePosition.x, mousePosition.y));
-		// std::vector<Modeler::RayModelIntersection> intersections = Modeler::GetRayModelRayIntersections (model, ray);
-		// (void) intersections;
+	if (isMouseClick && IntersectionsOnMouseClick) {
+		wxSize clientSize = GetClientSize ();
+		glm::dvec2 screenSize (clientSize.x, clientSize.y);
+		glm::dvec2 screenPos (mousePosition.x + 0.5, mousePosition.y + 0.5);
+		Geometry::Ray ray = Modeler::GetScreenRay (renderScene.GetCamera (), screenSize, screenPos);
+		std::vector<Modeler::RayModelIntersection> intersections = Modeler::GetRayModelRayIntersections (model, ray);
+		(void) intersections;
 	}
 
 	ReleaseMouse ();

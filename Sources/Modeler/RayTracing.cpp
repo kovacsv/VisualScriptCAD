@@ -36,7 +36,6 @@ std::vector<RayModelIntersection> GetRayModelRayIntersections (const Model& mode
 		const Geometry::BoundingBox& boundingBox = geometry.GetBoundingBox ();
 		const glm::dmat4& transformation = meshRef.GetTransformation ();
 		Geometry::BoundingBox transformedBoundingBox = boundingBox.Transform (transformation);
-
 		if (!Geometry::HasRayBoundingBoxIntersection (ray, transformedBoundingBox)) {
 			return;
 		}
