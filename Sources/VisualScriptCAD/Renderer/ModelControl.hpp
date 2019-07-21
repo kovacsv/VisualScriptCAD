@@ -37,7 +37,8 @@ public:
 	const RenderScene&				GetRenderScene () const;
 
 private:
-	bool InitContext ();
+	bool							InitContext ();
+	void							SelectNodeOfMesh (const wxPoint& mousePosition);
 
 	const Modeler::Model&	model;
 

@@ -1,7 +1,9 @@
 #include "ModelControl.hpp"
+#include "ModelEvaluationData.hpp"
 #include "ShaderProgram.hpp"
 #include "RenderModelConverter.hpp"
 #include "RayTracing.hpp"
+#include "NE_NodeCollection.hpp"
 #include "WXAS_ControlUtilities.hpp"
 
 static const int canvasAttributes[] = {
@@ -121,21 +123,16 @@ void ModelControl::OnMouseMove (wxMouseEvent& evt)
 
 void ModelControl::OnMouseUp (wxMouseEvent& evt)
 {
-	static const bool IntersectionsOnMouseClick = false;
-
 	if (!isMouseDown) {
 		return;
 	}
 
 	wxPoint mousePosition = evt.GetPosition ();
+	
 	bool isMouseClick = (evt.GetButton () == 1 && mousePosition == mouseDownPosition);
-	if (isMouseClick && IntersectionsOnMouseClick) {
-		wxSize clientSize = GetClientSize ();
-		glm::dvec2 screenSize (clientSize.x, clientSize.y);
-		glm::dvec2 screenPos (mousePosition.x + 0.5, mousePosition.y + 0.5);
-		Geometry::Ray ray = Modeler::GetScreenRay (renderScene.GetCamera (), screenSize, screenPos);
-		std::vector<Modeler::RayModelIntersection> intersections = Modeler::GetRayModelRayIntersections (model, ray);
-		(void) intersections;
+	bool isControlPressed = wxGetKeyState (wxKeyCode::WXK_CONTROL);
+	if (isMouseClick && isControlPressed) {
+		SelectNodeOfMesh (mousePosition);
 	}
 
 	ReleaseMouse ();
@@ -178,6 +175,31 @@ bool ModelControl::InitContext ()
 	glContext->SetCurrent (*this);
 
 	return true;
+}
+
+void ModelControl::SelectNodeOfMesh (const wxPoint& mousePosition)
+{
+	wxSize clientSize = GetClientSize ();
+	glm::dvec2 screenSize (clientSize.x, clientSize.y);
+	glm::dvec2 screenPos (mousePosition.x + 0.5, mousePosition.y + 0.5);
+	Geometry::Ray ray = Modeler::GetScreenRay (renderScene.GetCamera (), screenSize, screenPos);
+	
+	std::vector<Modeler::RayModelIntersection> intersections = Modeler::GetRayModelRayIntersections (model, ray);
+	if (intersections.empty ()) {
+		return;
+	}
+
+	const Modeler::RayModelIntersection& firstIntersection = intersections.front ();
+	const Modeler::MeshRef& meshRef = model.GetMesh (firstIntersection.meshId);
+	Modeler::UserDataConstPtr userData = meshRef.GetUserData ("nodeid");
+	if (userData == nullptr) {
+		throw std::logic_error ("no user data in mesh");
+	}
+
+	NE::NodeCollection nodesToSelect;
+	std::shared_ptr<const NodeIdUserData> nodeIdUserData = std::dynamic_pointer_cast<const NodeIdUserData> (userData);
+	nodesToSelect.Insert (nodeIdUserData->GetNodeId ());
+	(void) nodesToSelect;
 }
 
 wxBEGIN_EVENT_TABLE (ModelControl, wxGLCanvas)
