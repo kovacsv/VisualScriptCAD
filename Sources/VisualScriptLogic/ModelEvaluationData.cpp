@@ -1,5 +1,15 @@
 #include "ModelEvaluationData.hpp"
 
+NodeIdUserData::NodeIdUserData (const NE::NodeId& nodeId) :
+	nodeId (nodeId)
+{
+}
+
+const NE::NodeId& NodeIdUserData::GetNodeId () const
+{
+	return nodeId;
+}
+
 ModelEvaluationData::ModelEvaluationData () :
 	model (),
 	addedMeshes (),
@@ -16,9 +26,10 @@ const Modeler::Model& ModelEvaluationData::GetModel () const
 	return model;
 }
 
-Modeler::MeshId ModelEvaluationData::AddMesh (const Modeler::Mesh& mesh)
+Modeler::MeshId ModelEvaluationData::AddMesh (const Modeler::Mesh& mesh, const NE::NodeId& nodeId)
 {
 	Modeler::MeshId meshId = model.AddMesh (mesh);
+	model.SetMeshUserData (meshId, "nodeid", Modeler::UserDataConstPtr (new NodeIdUserData (nodeId)));
 	addedMeshes.insert (meshId);
 	return meshId;
 }

@@ -30,6 +30,16 @@ const glm::dmat4& MeshRef::GetTransformation () const
 	return transformation;
 }
 
+void MeshRef::SetUserData (const std::string& key, const UserDataConstPtr& data)
+{
+	userData.Set (key, data);
+}
+
+UserDataConstPtr MeshRef::GetUserData (const std::string & key) const
+{
+	return userData.Get (key);
+}
+
 Model::Model () :
 	nextMeshId (0),
 	nextMaterialId (0)
@@ -72,6 +82,12 @@ MeshId Model::AddMesh (const Mesh& mesh)
 	MeshId meshId = nextMeshId++;
 	meshRefs.insert ({ meshId, meshRef });
 	return meshId;
+}
+
+void Model::SetMeshUserData (MeshId meshId, const std::string& key, const UserDataConstPtr& data)
+{
+	MeshRef& meshRef = meshRefs.at (meshId);
+	meshRef.SetUserData (key, data);
 }
 
 void Model::RemoveMesh (MeshId meshId)

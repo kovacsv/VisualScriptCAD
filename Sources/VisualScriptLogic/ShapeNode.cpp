@@ -128,7 +128,7 @@ void ShapeNode::AddItem (NE::EvaluationEnv& env) const
 		const ShapeValue* shapeValue = NE::Value::Cast<ShapeValue> (innerValue.get ());
 		if (shapeValue != nullptr && shapeValue->GetValue () != nullptr) {
 			Modeler::ShapePtr shape = shapeValue->GetValue ();
-			Modeler::MeshId meshId = evalData->AddMesh (shape->GenerateMesh ());
+			Modeler::MeshId meshId = evalData->AddMesh (shape->GenerateMesh (), GetId ());
 			meshes.insert (meshId);
 		}
 	});

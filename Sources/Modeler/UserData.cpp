@@ -16,7 +16,7 @@ UserDataCollection::UserDataCollection () :
 {
 }
 
-void UserDataCollection::Set (const std::string& key, const std::shared_ptr<UserData>& data)
+void UserDataCollection::Set (const std::string& key, const UserDataConstPtr& data)
 {
 	if (userDataCollection.find (key) != userDataCollection.end ()) {
 		userDataCollection.erase (key);
@@ -24,7 +24,7 @@ void UserDataCollection::Set (const std::string& key, const std::shared_ptr<User
 	userDataCollection.insert ({ key, data });
 }
 
-std::shared_ptr<UserData> UserDataCollection::Get (const std::string& key) const
+UserDataConstPtr UserDataCollection::Get (const std::string& key) const
 {
 	auto found = userDataCollection.find (key);
 	if (found == userDataCollection.end ()) {

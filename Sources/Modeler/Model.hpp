@@ -4,6 +4,7 @@
 #include "Checksum.hpp"
 #include "IncludeGLM.hpp"
 #include "Mesh.hpp"
+#include "UserData.hpp"
 #include "SharedData.hpp"
 #include "BoundingShapes.hpp"
 
@@ -27,10 +28,14 @@ public:
 	MeshMaterialsId		GetMaterialsId () const;
 	const glm::dmat4&	GetTransformation () const;
 
+	void				SetUserData (const std::string& key, const UserDataConstPtr& data);
+	UserDataConstPtr	GetUserData (const std::string& key) const;
+
 private:
 	MeshGeometryId		geometryId;
 	MeshMaterialsId		materialsId;
 	glm::dmat4			transformation;
+	UserDataCollection	userData;
 };
 
 class ModelInfo
@@ -60,6 +65,7 @@ public:
 	void						EnumerateMeshes (const std::function<void (MeshId, const MeshRef&)>& processor) const;
 
 	MeshId						AddMesh (const Mesh& mesh);
+	void						SetMeshUserData (MeshId meshId, const std::string& key, const UserDataConstPtr& data);
 	void						RemoveMesh (MeshId meshId);
 	void						Clear ();
 

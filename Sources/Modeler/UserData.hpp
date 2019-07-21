@@ -15,23 +15,26 @@ public:
 	virtual ~UserData ();
 };
 
+using UserDataPtr = std::shared_ptr<UserData>;
+using UserDataConstPtr = std::shared_ptr<const UserData>;
+
 class UserDataCollection
 {
 public:
 	UserDataCollection ();
 
-	void						Set (const std::string& key, const std::shared_ptr<UserData>& data);
-	std::shared_ptr<UserData>	Get (const std::string& key) const;
+	void				Set (const std::string& key, const UserDataConstPtr& data);
+	UserDataConstPtr	Get (const std::string& key) const;
 
 	template <typename UserDataType>
-	std::shared_ptr<UserDataType> GetTyped (const std::string& key) const;
+	std::shared_ptr<const UserDataType> GetTyped (const std::string& key) const;
 
 private:
-	std::unordered_map<std::string, std::shared_ptr<UserData>> userDataCollection;
+	std::unordered_map<std::string, UserDataConstPtr> userDataCollection;
 };
 
 template <typename UserDataType>
-std::shared_ptr<UserDataType> UserDataCollection::GetTyped (const std::string& key) const
+std::shared_ptr<const UserDataType> UserDataCollection::GetTyped (const std::string& key) const
 {
 	return std::dynamic_pointer_cast<UserDataType> (Get (key));
 }
