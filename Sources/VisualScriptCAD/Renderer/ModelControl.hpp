@@ -6,14 +6,24 @@
 #include "RenderModelConverter.hpp"
 #include "Camera.hpp"
 
+#include "NE_NodeCollection.hpp"
+
 #include <glad/glad.h>
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 
+class SelectionUpdater
+{
+public:
+	virtual ~SelectionUpdater ();
+
+	virtual void UpdateSelection (const NE::NodeCollection& selectedNodes) = 0;
+};
+
 class ModelControl : public wxGLCanvas
 {
 public:
-	ModelControl (wxWindow *parent, const Modeler::Model& model);
+	ModelControl (wxWindow *parent, const Modeler::Model& model, SelectionUpdater& selectionUpdater);
 	virtual ~ModelControl ();
 
 	void							AddMesh (Modeler::MeshId meshId);
@@ -40,17 +50,18 @@ private:
 	bool							InitContext ();
 	void							SelectNodeOfMesh (const wxPoint& mousePosition);
 
-	const Modeler::Model&	model;
+	const Modeler::Model&			model;
+	SelectionUpdater&				selectionUpdater;
 
-	wxGLContext*			glContext;
-	RenderModelConverter	renderModelConverter;
-	RenderSettings			renderSceneSettings;
-	RenderScene				renderScene;
+	wxGLContext*					glContext;
+	RenderModelConverter			renderModelConverter;
+	RenderSettings					renderSceneSettings;
+	RenderScene						renderScene;
 
-	wxPoint					mouseDownPosition;
-	wxPoint					lastMousePosition;
-	int						lastMouseButton;
-	bool					isMouseDown;
+	wxPoint							mouseDownPosition;
+	wxPoint							lastMousePosition;
+	int								lastMouseButton;
+	bool							isMouseDown;
 
 	wxDECLARE_EVENT_TABLE ();
 };

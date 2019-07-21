@@ -5,10 +5,12 @@
 #include "NodeSelectorTree.hpp"
 #include "Model.hpp"
 
-class ModelSynchronizer
+class ModelUpdater
 {
 public:
-	virtual void Synchronize () = 0;
+	virtual ~ModelUpdater ();
+
+	virtual void UpdateModel () = 0;
 };
 
 class NodeEditorDropTarget : public wxTextDropTarget
@@ -25,7 +27,7 @@ private:
 class NodeEditorControl : public wxPanel
 {
 public:
-	NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE::EvaluationData>& evalData, ModelSynchronizer& synchronizer);
+	NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE::EvaluationData>& evalData, ModelUpdater& modelUpdater);
 
 	WXAS::NodeEditorControl*	GetEditor ();
 	void						Clear ();
@@ -38,7 +40,6 @@ private:
 	wxBoxSizer*					boxSizer;
 
 	NE::EvaluationEnv			evalEnv;
-	ModelSynchronizer&			synchronizer;
 };
 
 #endif

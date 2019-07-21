@@ -5,6 +5,11 @@
 
 #include "ModelEvaluationData.hpp"
 
+ModelUpdater::~ModelUpdater ()
+{
+
+}
+
 class NodeEditorUIEnvironment : public WXAS::NodeEditorUIEnvironment
 {
 public:
@@ -13,19 +18,19 @@ public:
 								std::shared_ptr<NUIE::SkinParams> skinParams,
 								std::shared_ptr<NUIE::EventHandlers> eventHandlers,
 								NE::EvaluationEnv& evaluationEnv,
-								ModelSynchronizer& synchronizer) :
+								ModelUpdater& modelUpdater) :
 		WXAS::NodeEditorUIEnvironment (nodeEditorControl, stringSettings, skinParams, eventHandlers, evaluationEnv),
-		synchronizer (synchronizer)
+		modelUpdater (modelUpdater)
 	{
 	}
 
 	virtual void OnValuesRecalculated () override
 	{
-		synchronizer.Synchronize ();
+		modelUpdater.UpdateModel ();
 	}
 
 private:
-	ModelSynchronizer& synchronizer;
+	ModelUpdater& modelUpdater;
 };
 
 NodeEditorDropTarget::NodeEditorDropTarget (WXAS::NodeEditorControl* nodeEditorControl) :
@@ -41,13 +46,12 @@ bool NodeEditorDropTarget::OnDropText (wxCoord x, wxCoord y, const wxString& dat
 	return true;
 }
 
-NodeEditorControl::NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE::EvaluationData>& evalData, ModelSynchronizer& synchronizer) :
+NodeEditorControl::NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE::EvaluationData>& evalData, ModelUpdater& modelUpdater) :
 	wxPanel (parent),
 	nodeEditorControl (new WXAS::NodeEditorControl (this)),
 	nodeSelectorTree (new NodeSelectorTree (this, wxSize (200, 0), nodeEditorControl)),
 	boxSizer (new wxBoxSizer (wxHORIZONTAL)),
-	evalEnv (evalData),
-	synchronizer (synchronizer)
+	evalEnv (evalData)
 {
 	std::shared_ptr<WXAS::NodeEditorUIEnvironment> uiEnvironment = std::shared_ptr<WXAS::NodeEditorUIEnvironment> (
 		new NodeEditorUIEnvironment (
@@ -55,7 +59,7 @@ NodeEditorControl::NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE
 			NE::StringSettingsPtr (new NE::BasicStringSettings (NE::GetDefaultStringSettings ())),
 			NUIE::SkinParamsPtr (new NUIE::BasicSkinParams (NUIE::GetDefaultSkinParams ())),
 			NUIE::EventHandlersPtr (new WXAS::NodeEditorEventHandlers (nodeEditorControl)),
-			evalEnv, synchronizer
+			evalEnv, modelUpdater
 		)
 	);
 

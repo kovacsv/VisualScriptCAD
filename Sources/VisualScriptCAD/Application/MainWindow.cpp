@@ -65,14 +65,35 @@ public:
 	}
 };
 
-ModelControlSynchronizer::ModelControlSynchronizer (std::shared_ptr<ModelEvaluationData>& evalData, ModelControl* modelControl) :
-	evalData (evalData),
-	modelControl (modelControl)
+EditorModelBridge::EditorModelBridge () :
+	evalData (),
+	nodeEditorControl (nullptr),
+	modelControl (nullptr)
 {
 }
 
-void ModelControlSynchronizer::Synchronize ()
+void EditorModelBridge::Init (const std::shared_ptr<ModelEvaluationData>& newEvalData, NodeEditorControl* newNodeEditorControl, ModelControl* newModelControl)
 {
+	evalData = newEvalData;
+	nodeEditorControl = newNodeEditorControl;
+	modelControl = newModelControl;
+}
+
+void EditorModelBridge::UpdateSelection (const NE::NodeCollection& selectedNodes)
+{
+	if (nodeEditorControl == nullptr) {
+		return;
+	}
+	WXAS::NodeEditorControl* nodeEditor = nodeEditorControl->GetEditor ();
+	nodeEditor->SetSelectedNodes (selectedNodes);
+}
+
+void EditorModelBridge::UpdateModel ()
+{
+	if (evalData == nullptr) {
+		return;
+	}
+
 	for (Modeler::MeshId meshId : evalData->GetDeletedMeshes ()) {
 		modelControl->RemoveMesh (meshId);
 	}
@@ -241,14 +262,16 @@ MainWindow::MainWindow (const std::wstring& defaultFileName) :
 	menuBar (new MenuBar ()),
 	toolBar (new ToolBar (this)),
 	editorAndModelSplitter (new wxSplitterWindow (this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_THIN_SASH | wxSP_LIVE_UPDATE)),
-	modelControl (new ModelControl (editorAndModelSplitter, evaluationData->GetModel ())),
-	modelControlSynchronizer (evaluationData, modelControl),
-	nodeEditorControl (new NodeEditorControl (editorAndModelSplitter, evaluationData, modelControlSynchronizer)),
+	editorModelBridge (),
+	modelControl (new ModelControl (editorAndModelSplitter, evaluationData->GetModel (), editorModelBridge)),
+	nodeEditorControl (new NodeEditorControl (editorAndModelSplitter, evaluationData, editorModelBridge)),
 	applicationState (),
 	splitViewMode (SplitViewMode::Split),
 	userSettings (),
 	sashPosition (700)
 {
+	editorModelBridge.Init (evaluationData, nodeEditorControl, modelControl);
+
 	wxIcon icon;
 	icon.CopyFromBitmap (wxBitmap::NewFromPNGData (appicon32, appicon32_size));
 	SetIcon (icon);

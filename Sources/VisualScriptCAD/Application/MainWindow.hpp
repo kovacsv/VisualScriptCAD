@@ -43,15 +43,21 @@ enum class SplitViewMode
 	Split
 };
 
-class ModelControlSynchronizer : public ModelSynchronizer
+class EditorModelBridge :	public SelectionUpdater,
+							public ModelUpdater
+							
 {
 public:
-	ModelControlSynchronizer (std::shared_ptr<ModelEvaluationData>& evalData, ModelControl* modelControl);
+	EditorModelBridge ();
 
-	virtual void Synchronize () override;
+	void			Init (const std::shared_ptr<ModelEvaluationData>& newEvalData, NodeEditorControl* newNodeEditorControl, ModelControl* newModelControl);
+
+	virtual void	UpdateSelection (const NE::NodeCollection& selectedNodes) override;
+	virtual void	UpdateModel () override;
 
 private:
-	std::shared_ptr<ModelEvaluationData>&	evalData;
+	std::shared_ptr<ModelEvaluationData>	evalData;
+	NodeEditorControl*						nodeEditorControl;
 	ModelControl*							modelControl;
 };
 
@@ -116,8 +122,8 @@ private:
 	MenuBar*								menuBar;
 	ToolBar*								toolBar;
 	wxSplitterWindow*						editorAndModelSplitter;
+	EditorModelBridge						editorModelBridge;
 	ModelControl*							modelControl;
-	ModelControlSynchronizer				modelControlSynchronizer;
 	NodeEditorControl*						nodeEditorControl;
 
 	ApplicationState						applicationState;

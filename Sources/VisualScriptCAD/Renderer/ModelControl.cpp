@@ -3,7 +3,6 @@
 #include "ShaderProgram.hpp"
 #include "RenderModelConverter.hpp"
 #include "RayTracing.hpp"
-#include "NE_NodeCollection.hpp"
 #include "WXAS_ControlUtilities.hpp"
 
 static const int canvasAttributes[] = {
@@ -20,9 +19,15 @@ static const int canvasAttributes[] = {
 	0
 };
 
-ModelControl::ModelControl (wxWindow *parent, const Modeler::Model& model) :
+SelectionUpdater::~SelectionUpdater ()
+{
+
+}
+
+ModelControl::ModelControl (wxWindow *parent, const Modeler::Model& model, SelectionUpdater& selectionUpdater) :
 	wxGLCanvas (parent, wxID_ANY, canvasAttributes, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE),
 	model (model),
+	selectionUpdater (selectionUpdater),
 	glContext (nullptr),
 	renderModelConverter (),
 	renderSceneSettings (),
@@ -199,7 +204,7 @@ void ModelControl::SelectNodeOfMesh (const wxPoint& mousePosition)
 	NE::NodeCollection nodesToSelect;
 	std::shared_ptr<const NodeIdUserData> nodeIdUserData = std::dynamic_pointer_cast<const NodeIdUserData> (userData);
 	nodesToSelect.Insert (nodeIdUserData->GetNodeId ());
-	(void) nodesToSelect;
+	selectionUpdater.UpdateSelection (nodesToSelect);
 }
 
 wxBEGIN_EVENT_TABLE (ModelControl, wxGLCanvas)
