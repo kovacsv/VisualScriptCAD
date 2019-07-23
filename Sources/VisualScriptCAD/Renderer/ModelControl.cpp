@@ -189,21 +189,19 @@ void ModelControl::SelectNodeOfMesh (const wxPoint& mousePosition)
 	glm::dvec2 screenPos (mousePosition.x + 0.5, mousePosition.y + 0.5);
 	Geometry::Ray ray = Modeler::GetScreenRay (renderScene.GetCamera (), screenSize, screenPos);
 	
-	std::vector<Modeler::RayModelIntersection> intersections = Modeler::GetRayModelRayIntersections (model, ray);
-	if (intersections.empty ()) {
-		return;
-	}
-
-	const Modeler::RayModelIntersection& firstIntersection = intersections.front ();
-	const Modeler::MeshRef& meshRef = model.GetMesh (firstIntersection.meshId);
-	Modeler::UserDataConstPtr userData = meshRef.GetUserData ("nodeid");
-	if (userData == nullptr) {
-		throw std::logic_error ("no user data in mesh");
-	}
-
 	NE::NodeCollection nodesToSelect;
-	std::shared_ptr<const NodeIdUserData> nodeIdUserData = std::dynamic_pointer_cast<const NodeIdUserData> (userData);
-	nodesToSelect.Insert (nodeIdUserData->GetNodeId ());
+	std::vector<Modeler::RayModelIntersection> intersections = Modeler::GetRayModelRayIntersections (model, ray);
+	if (!intersections.empty ()) {
+		const Modeler::RayModelIntersection& firstIntersection = intersections.front ();
+		const Modeler::MeshRef& meshRef = model.GetMesh (firstIntersection.meshId);
+		Modeler::UserDataConstPtr userData = meshRef.GetUserData ("nodeid");
+		if (userData == nullptr) {
+			throw std::logic_error ("no user data in mesh");
+		}
+		std::shared_ptr<const NodeIdUserData> nodeIdUserData = std::dynamic_pointer_cast<const NodeIdUserData> (userData);
+		nodesToSelect.Insert (nodeIdUserData->GetNodeId ());
+	}
+
 	selectionUpdater.UpdateSelection (nodesToSelect);
 }
 
