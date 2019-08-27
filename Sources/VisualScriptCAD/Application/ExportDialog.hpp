@@ -33,12 +33,12 @@ private:
 	ExportSettings			exportSettings;
 
 	wxBoxSizer*				boxSizer;
+	wxButton*				exportButton;
 	wxChoice*				formatChoice;
 	wxButton*				formatSettingsButton;
 	wxTextCtrl*				outputFolderText;
 	wxButton*				browseFolderButton;
 	wxTextCtrl*				outputNameText;
-	wxButton*				exportButton;
 
 	DECLARE_EVENT_TABLE ();
 };

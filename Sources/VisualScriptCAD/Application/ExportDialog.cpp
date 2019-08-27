@@ -137,12 +137,12 @@ ExportDialog::ExportDialog (wxWindow* parent, const Modeler::Model& model, const
 	scene (scene),
 	exportSettings (exportSettings),
 	boxSizer (new wxBoxSizer (wxVERTICAL)),
+	exportButton (new wxButton (this, DialogIds::ExportButtonId, L"Export")),
 	formatChoice (new wxChoice (this, DialogIds::FormatChoiceId, wxDefaultPosition, controlMinSize)),
 	formatSettingsButton (new wxButton (this, DialogIds::FormatSettingsButtonId, L"...", wxDefaultPosition, wxSize (40, -1))),
 	outputFolderText (new wxTextCtrl (this, DialogIds::OutputFolderId, wxEmptyString, wxDefaultPosition, controlMinSize)),
 	browseFolderButton (new wxButton (this, DialogIds::BrowseFolderButtonId, L"...", wxDefaultPosition, wxSize (40, -1))),
-	outputNameText (new wxTextCtrl (this, DialogIds::OutputNameId, wxEmptyString, wxDefaultPosition, controlMinSize)),
-	exportButton (new wxButton (this, DialogIds::ExportButtonId, L"Export"))
+	outputNameText (new wxTextCtrl (this, DialogIds::OutputNameId, wxEmptyString, wxDefaultPosition, controlMinSize))
 {
 	outputFolderText->SetValue (exportSettings.folder);
 	outputNameText->SetValue (exportSettings.name);
