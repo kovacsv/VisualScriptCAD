@@ -37,12 +37,12 @@ const glm::dvec3& Camera::GetUp () const
 	return up;
 }
 
-glm::mat4 Camera::GetViewMatrix () const
+glm::dmat4 Camera::GetViewMatrix () const
 {
 	return glm::lookAt (eye, center, up);
 }
 
-glm::mat4 Camera::GetProjectionMatrix (double width, double height) const
+glm::dmat4 Camera::GetProjectionMatrix (double width, double height) const
 {
 	return glm::perspective (glm::radians (fieldOfViewY), width / height, nearPlane, farPlane);
 }
