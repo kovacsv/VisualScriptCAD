@@ -163,7 +163,11 @@ bool IsValidCamera (const glm::dvec3& eye,
 		return false;
 	}
 
-	if (Geometry::IsZero (fieldOfViewY)) {
+	if (!Geometry::IsPositive (fieldOfViewY)) {
+		return false;
+	}
+
+	if (!Geometry::IsPositive (nearPlane) || !Geometry::IsPositive (farPlane)) {
 		return false;
 	}
 
