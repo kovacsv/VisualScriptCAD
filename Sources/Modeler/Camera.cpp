@@ -9,13 +9,13 @@ static const double MinZoomDistance = 1.0f;
 Camera::Camera (const glm::dvec3& eye,
 				const glm::dvec3& center,
 				const glm::dvec3& up,
-				double fieldOfView,
+				double fieldOfViewY,
 				double nearPlane,
 				double farPlane) :
 	eye (eye),
 	center (center),
 	up (up),
-	fieldOfViewY (fieldOfView),
+	fieldOfViewY (fieldOfViewY),
 	nearPlane (nearPlane),
 	farPlane (farPlane)
 {
@@ -35,6 +35,21 @@ const glm::dvec3& Camera::GetCenter () const
 const glm::dvec3& Camera::GetUp () const
 {
 	return up;
+}
+
+double Camera::GetFieldOfViewY () const
+{
+	return fieldOfViewY;
+}
+
+double Camera::GetNearPlane () const
+{
+	return nearPlane;
+}
+
+double Camera::GetFarPlane () const
+{
+	return farPlane;
 }
 
 glm::dmat4 Camera::GetViewMatrix () const
@@ -123,6 +138,40 @@ void Camera::ZoomToSphere (const glm::dvec3& sphereCenter, double sphereRadius, 
 	eye = center + centerToEyeDirection * distance;
 
 	// TODO: different center
+}
+
+bool IsValidCamera (const glm::dvec3& eye,
+					const glm::dvec3& center,
+					const glm::dvec3& up,
+					double fieldOfViewY,
+					double nearPlane,
+					double farPlane)
+{
+	if (Geometry::IsZero (glm::distance (eye, center))) {
+		return false;
+	}
+
+	if (Geometry::IsZero (glm::length (up))) {
+		return false;
+	}
+
+	if (Geometry::IsEqual (glm::dot (glm::normalize (center - eye), glm::normalize (up)), -1.0)) {
+		return false;
+	}
+
+	if (Geometry::IsEqual (glm::dot (glm::normalize (center - eye), glm::normalize (up)), 1.0)) {
+		return false;
+	}
+
+	if (Geometry::IsZero (fieldOfViewY)) {
+		return false;
+	}
+
+	if (!Geometry::IsLower (nearPlane, farPlane)) {
+		return false;
+	}
+
+	return true;
 }
 
 }

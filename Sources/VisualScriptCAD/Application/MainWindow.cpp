@@ -7,6 +7,7 @@
 #include "SettingsDialog.hpp"
 #include "InfoDialog.hpp"
 #include "ExportDialog.hpp"
+#include "CameraDialog.hpp"
 #include "IconStore.hpp"
 #include "Version.hpp"
 #include "VersionInfo.hpp"
@@ -158,6 +159,8 @@ MenuBar::MenuBar () :
 	viewMenu->AppendSeparator ();
 	viewMenu->Append (CommandId::View_Model_FitToWindow, "Fit Model to Window");
 	viewMenu->Append (CommandId::View_Model_ResetView, "Reset Model View");
+	viewMenu->AppendSeparator ();
+	viewMenu->Append (CommandId::View_Model_CameraSettings, "Camera Settings");
 	Append (viewMenu, L"&View");
 
 	wxMenu* toolsMenu = new wxMenu ();
@@ -451,6 +454,14 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		case View_Model_ResetView:
 			{
 				modelControl->ResetView ();
+			}
+			break;
+		case View_Model_CameraSettings:
+			{
+				CameraDialog cameraDialog (this, modelControl->GetCamera ());
+				if (cameraDialog.ShowModal () == wxID_OK) {
+					modelControl->SetCamera (cameraDialog.GetCamera ());
+				}
 			}
 			break;
 		case Model_Info:

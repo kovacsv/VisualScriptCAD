@@ -44,6 +44,9 @@ public:
 	const RenderSettings&		 	GetRenderSettings () const;
 	void							SetRenderSettings (const RenderSettings& newSettings);
 
+	const Modeler::Camera&			GetCamera () const;
+	void							SetCamera (const Modeler::Camera& newCamera);
+
 	const RenderScene&				GetRenderScene () const;
 
 private:

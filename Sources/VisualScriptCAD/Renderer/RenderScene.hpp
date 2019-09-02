@@ -197,6 +197,8 @@ public:
 	void					Draw (int width, int height, const RenderSettings& settings) const;
 	void					DrawOffscreen (const RenderSettings& settings, RenderPixels& pixels) const;
 	const Modeler::Camera&	GetCamera () const;
+	void					SetCamera (const Modeler::Camera& newCamera);
+
 	RenderModel&			GetModel ();
 
 	void					OnMouseMove (MouseButton mouseButton, int diffX, int diffY);

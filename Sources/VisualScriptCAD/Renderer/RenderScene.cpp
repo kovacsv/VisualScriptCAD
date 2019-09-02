@@ -576,6 +576,11 @@ const Modeler::Camera& RenderScene::GetCamera () const
 	return camera;
 }
 
+void RenderScene::SetCamera (const Modeler::Camera& newCamera)
+{
+	camera = newCamera;
+}
+
 RenderModel& RenderScene::GetModel ()
 {
 	return model;

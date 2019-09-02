@@ -163,6 +163,17 @@ void ModelControl::SetRenderSettings (const RenderSettings& newSettings)
 	Refresh ();
 }
 
+const Modeler::Camera& ModelControl::GetCamera () const
+{
+	return renderScene.GetCamera ();
+}
+
+void ModelControl::SetCamera (const Modeler::Camera& newCamera)
+{
+	renderScene.SetCamera (newCamera);
+	Refresh ();
+}
+
 const RenderScene& ModelControl::GetRenderScene () const
 {
 	return renderScene;
