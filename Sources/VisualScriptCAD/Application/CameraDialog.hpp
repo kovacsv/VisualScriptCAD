@@ -20,6 +20,7 @@ public:
 		UpXSpinId = 1007,
 		UpYSpinId = 1008,
 		UpZSpinId = 1009,
+		FovYSpinId = 1010,
 		SaveButtonId = 1100
 	};
 
@@ -43,6 +44,7 @@ private:
 	wxSpinCtrlDouble*	upXSpin;
 	wxSpinCtrlDouble*	upYSpin;
 	wxSpinCtrlDouble*	upZSpin;
+	wxSpinCtrlDouble*	fovYSpin;
 
 	DECLARE_EVENT_TABLE ();
 };

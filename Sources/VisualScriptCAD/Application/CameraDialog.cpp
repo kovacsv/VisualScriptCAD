@@ -20,7 +20,8 @@ CameraDialog::CameraDialog (wxWindow* parent, const Modeler::Camera& camera) :
 	centerZSpin (new wxSpinCtrlDouble (this, DialogIds::CenterZSpinId, L"", wxDefaultPosition, smallControlMinSize, wxSP_ARROW_KEYS, MinCameraValue, MaxCameraValue, 0.0, 0.1)),
 	upXSpin (new wxSpinCtrlDouble (this, DialogIds::UpXSpinId, L"", wxDefaultPosition, smallControlMinSize, wxSP_ARROW_KEYS, MinCameraValue, MaxCameraValue, 0.0, 0.1)),
 	upYSpin (new wxSpinCtrlDouble (this, DialogIds::UpYSpinId, L"", wxDefaultPosition, smallControlMinSize, wxSP_ARROW_KEYS, MinCameraValue, MaxCameraValue, 0.0, 0.1)),
-	upZSpin (new wxSpinCtrlDouble (this, DialogIds::UpZSpinId, L"", wxDefaultPosition, smallControlMinSize, wxSP_ARROW_KEYS, MinCameraValue, MaxCameraValue, 0.0, 0.1))
+	upZSpin (new wxSpinCtrlDouble (this, DialogIds::UpZSpinId, L"", wxDefaultPosition, smallControlMinSize, wxSP_ARROW_KEYS, MinCameraValue, MaxCameraValue, 0.0, 0.1)),
+	fovYSpin (new wxSpinCtrlDouble (this, DialogIds::FovYSpinId, L"", wxDefaultPosition, smallControlMinSize, wxSP_ARROW_KEYS, 0.1, 90.0, 0.0, 0.1))
 {
 	{
 		wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
@@ -55,6 +56,13 @@ CameraDialog::CameraDialog (wxWindow* parent, const Modeler::Camera& camera) :
 		boxSizer->Add (horizontalSizer, 0, wxEXPAND);
 	}
 
+	{
+		wxBoxSizer* horizontalSizer = new wxBoxSizer (wxHORIZONTAL);
+		horizontalSizer->Add (new wxStaticText (this, wxID_ANY, L"Field of View", wxDefaultPosition, nameMinSize), 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+		horizontalSizer->Add (fovYSpin, 1, wxEXPAND | wxALL, 5);
+		boxSizer->Add (horizontalSizer, 0, wxEXPAND);
+	}
+
 	eyeXSpin->SetValue (camera.GetEye ().x);
 	eyeYSpin->SetValue (camera.GetEye ().y);
 	eyeZSpin->SetValue (camera.GetEye ().z);
@@ -67,6 +75,8 @@ CameraDialog::CameraDialog (wxWindow* parent, const Modeler::Camera& camera) :
 	upYSpin->SetValue (camera.GetUp ().y);
 	upZSpin->SetValue (camera.GetUp ().z);
 
+	fovYSpin->SetValue (camera.GetFieldOfViewY ());
+
 	boxSizer->Add (saveButton, 0, wxEXPAND | wxDOWN | wxRIGHT | wxLEFT, 5);
 	SetSizerAndFit (boxSizer);
 	SetEscapeId (wxID_CANCEL);
@@ -77,7 +87,8 @@ Modeler::Camera CameraDialog::GetCamera () const
 	glm::dvec3 eye (eyeXSpin->GetValue (), eyeYSpin->GetValue (), eyeZSpin->GetValue ());
 	glm::dvec3 center (centerXSpin->GetValue (), centerYSpin->GetValue (), centerZSpin->GetValue ());
 	glm::dvec3 up (upXSpin->GetValue (), upYSpin->GetValue (), upZSpin->GetValue ());
-	Modeler::Camera camera (eye, center, glm::normalize (up), origCamera.GetFieldOfViewY (), origCamera.GetNearPlane (), origCamera.GetFarPlane ());
+	double fovY = fovYSpin->GetValue ();
+	Modeler::Camera camera (eye, center, glm::normalize (up), fovY, origCamera.GetNearPlane (), origCamera.GetFarPlane ());
 	return camera;
 }
 
@@ -87,7 +98,8 @@ void CameraDialog::OnButtonClick (wxCommandEvent& evt)
 		glm::dvec3 eye (eyeXSpin->GetValue (), eyeYSpin->GetValue (), eyeZSpin->GetValue ());
 		glm::dvec3 center (centerXSpin->GetValue (), centerYSpin->GetValue (), centerZSpin->GetValue ());
 		glm::dvec3 up (upXSpin->GetValue (), upYSpin->GetValue (), upZSpin->GetValue ());
-		if (Modeler::IsValidCamera (eye, center, up, origCamera.GetFieldOfViewY (), origCamera.GetNearPlane (), origCamera.GetFarPlane ())) {
+		double fovY = fovYSpin->GetValue ();
+		if (Modeler::IsValidCamera (eye, center, up, fovY, origCamera.GetNearPlane (), origCamera.GetFarPlane ())) {
 			EndModal (wxID_OK);
 		}
 	}
