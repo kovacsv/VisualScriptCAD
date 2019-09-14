@@ -26,6 +26,16 @@ bool IsGreater (float a, float b)
 	return a - b > FEPS;
 }
 
+bool IsLowerOrEqual (float a, float b)
+{
+	return IsLower (a, b) || IsEqual (a, b);
+}
+
+bool IsGreaterOrEqual (float a, float b)
+{
+	return IsGreater (a, b) || IsEqual (a, b);
+}
+
 bool IsEqual (double a, double b)
 {
 	return fabs (a - b) < EPS;
@@ -39,6 +49,16 @@ bool IsLower (double a, double b)
 bool IsGreater (double a, double b)
 {
 	return a - b > EPS;
+}
+
+bool IsLowerOrEqual (double a, double b)
+{
+	return IsLower (a, b) || IsEqual (a, b);
+}
+
+bool IsGreaterOrEqual (double a, double b)
+{
+	return IsGreater (a, b) || IsEqual (a, b);
 }
 
 bool IsPositive (double a)
