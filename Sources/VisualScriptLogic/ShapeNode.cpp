@@ -70,7 +70,7 @@ void ShapeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) cons
 	BI::BasicUINode::RegisterParameters (parameterList);
 }
 
-void ShapeNode::ProcessValue (const NE::ValueConstPtr& value, NE::EvaluationEnv& env) const
+void ShapeNode::ProcessCalculatedValue (const NE::ValueConstPtr& value, NE::EvaluationEnv& env) const
 {
 	std::shared_ptr<BI::EnableDisableFeature> enableDisable = GetEnableDisableFeature (this);
 	if (enableDisable->GetEnableState ()) {
