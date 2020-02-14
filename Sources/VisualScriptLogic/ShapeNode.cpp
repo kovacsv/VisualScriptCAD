@@ -73,7 +73,7 @@ void ShapeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) cons
 void ShapeNode::ProcessCalculatedValue (const NE::ValueConstPtr& value, NE::EvaluationEnv& env) const
 {
 	std::shared_ptr<BI::EnableDisableFeature> enableDisable = GetEnableDisableFeature (this);
-	if (enableDisable->GetEnableState ()) {
+	if (enableDisable->GetEnableState () == BI::EnableDisableFeature::State::Enabled) {
 		OnCalculated (value, env);
 	}
 }
@@ -99,7 +99,7 @@ void ShapeNode::OnFeatureChange (const NUIE::FeatureId& featureId, NE::Evaluatio
 {
 	if (featureId == BI::EnableDisableFeatureId) {
 		std::shared_ptr<BI::EnableDisableFeature> enableDisable = GetEnableDisableFeature (this);
-		if (enableDisable->GetEnableState ()) {
+		if (enableDisable->GetEnableState () == BI::EnableDisableFeature::State::Enabled) {
 			OnEnabled (env);
 		} else {
 			OnDisabled (env);
