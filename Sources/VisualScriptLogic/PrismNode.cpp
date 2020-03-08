@@ -28,9 +28,9 @@ public:
 
 	virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
 	{
-		NE::InputSlotPtr inputSlot = uiNode->GetInputSlot (NE::SlotId ("basepoints"));
+		NE::SlotId polygonSlotId ("basepoints");
 		std::vector<glm::dvec2> polygon;
-		NE::ValueConstPtr defaultPolygon = NE::FlattenValue (inputSlot->GetDefaultValue ());
+		NE::ValueConstPtr defaultPolygon = NE::FlattenValue (uiNode->GetInputSlotDefaultValue (polygonSlotId));
 		if (NE::IsComplexType<Point2DValue> (defaultPolygon)) {
 			NE::FlatEnumerate (defaultPolygon, [&] (const NE::ValueConstPtr& value) {
 				polygon.push_back (Point2DValue::Get (value));
@@ -43,7 +43,7 @@ public:
 			for (const glm::dvec2& point : polygon) { 
 				basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (point)));
 			}
-			inputSlot->SetDefaultValue (basePointsDefaultValue);
+			uiNode->SetInputSlotDefaultValue (polygonSlotId, basePointsDefaultValue);
 			uiManager.InvalidateNodeValue (uiNode);
 			uiManager.InvalidateNodeDrawing (uiNode);
 		}
