@@ -77,7 +77,7 @@ void ExpressionNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegi
 			return NE::Node::IsTypeConst<ExpressionNode> (uiNode);
 		}
 
-		virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
+		virtual void Do (NUIE::UINodeInvalidator& invalidator, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
 		{
 			std::shared_ptr<ExpressionNode> expNode = std::dynamic_pointer_cast<ExpressionNode> (uiNode);
 			std::wstring expression = expNode->GetExpression ();
@@ -85,8 +85,7 @@ void ExpressionNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegi
 			NodeUICallbackInterfacePtr uiInterface = GetNodeUICallbackInterface ();
 			if (uiInterface != nullptr && uiInterface->EditExpression (expression)) {
 				expNode->SetExpression (expression);
-				uiManager.InvalidateNodeValue (expNode);
-				uiManager.InvalidateNodeDrawing (expNode);
+				invalidator.InvalidateValueAndDrawing ();
 			}
 		}
 

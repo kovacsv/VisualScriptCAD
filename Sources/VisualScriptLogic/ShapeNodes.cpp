@@ -608,11 +608,10 @@ NE::Stream::Status TorusNode::Write (NE::OutputStream& outputStream) const
 	return outputStream.GetStatus ();
 }
 
-static void SetPlatonicNodeType (Modeler::PlatonicSolidType type, NUIE::NodeUIManager& uiManager, std::shared_ptr<PlatonicNode>& platonicNode)
+static void SetPlatonicNodeType (Modeler::PlatonicSolidType type, NUIE::UINodeInvalidator& invalidator, std::shared_ptr<PlatonicNode>& platonicNode)
 {
 	platonicNode->SetType (type);
-	uiManager.InvalidateNodeValue (platonicNode);
-	uiManager.InvalidateNodeDrawing (platonicNode);
+	invalidator.InvalidateValueAndDrawing ();
 }
 
 PlatonicNode::PlatonicNode () :
@@ -686,10 +685,10 @@ void PlatonicNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegist
 			return NE::Node::IsTypeConst<PlatonicNode> (uiNode);
 		}
 
-		virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment&, NUIE::UINodePtr& uiNode) override
+		virtual void Do (NUIE::UINodeInvalidator& invalidator, NUIE::NodeUIEnvironment&, NUIE::UINodePtr& uiNode) override
 		{
 			std::shared_ptr<PlatonicNode> platonicNode = std::dynamic_pointer_cast<PlatonicNode> (uiNode);
-			SetPlatonicNodeType (type, uiManager, platonicNode);
+			SetPlatonicNodeType (type, invalidator, platonicNode);
 		}
 
 	private:
@@ -725,12 +724,12 @@ void PlatonicNode::RegisterParameters (NUIE::NodeParameterList& parameterList) c
 			return NE::ValuePtr (new NE::IntValue (typeInt));
 		}
 
-		virtual bool SetValueInternal (NUIE::NodeUIManager& uiManager, NE::EvaluationEnv&, NUIE::UINodePtr& uiNode, const NE::ValueConstPtr& value) override
+		virtual bool SetValueInternal (NUIE::UINodeInvalidator& invalidator, NE::EvaluationEnv&, NUIE::UINodePtr& uiNode, const NE::ValueConstPtr& value) override
 		{
 			std::shared_ptr<PlatonicNode> platonicNode = std::dynamic_pointer_cast<PlatonicNode> (uiNode);
 			int typeInt = NE::IntValue::Get (value);
 			Modeler::PlatonicSolidType type = (Modeler::PlatonicSolidType) typeInt;
-			SetPlatonicNodeType (type, uiManager, platonicNode);
+			SetPlatonicNodeType (type, invalidator, platonicNode);
 			return true;
 		}
 	};

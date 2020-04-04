@@ -30,6 +30,11 @@ NUIE::DrawingContext& NodeUIEnvironment::GetDrawingContext ()
 	static NUIE::NullDrawingContext nullDrawingContext;
 	return nullDrawingContext;
 }
+
+double NodeUIEnvironment::GetWindowScale ()
+{
+	return 1.0;
+}
 	
 NE::EvaluationEnv& NodeUIEnvironment::GetEvaluationEnv ()
 {

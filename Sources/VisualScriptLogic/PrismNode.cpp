@@ -26,7 +26,7 @@ public:
 		return NE::Node::IsTypeConst<PrismNodeType> (uiNode);
 	}
 
-	virtual void Do (NUIE::NodeUIManager& uiManager, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
+	virtual void Do (NUIE::UINodeInvalidator& invalidator, NUIE::NodeUIEnvironment& /*uiEnvironment*/, NUIE::UINodePtr& uiNode) override
 	{
 		NE::SlotId polygonSlotId ("basepoints");
 		std::vector<glm::dvec2> polygon;
@@ -44,8 +44,7 @@ public:
 				basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (point)));
 			}
 			uiNode->SetInputSlotDefaultValue (polygonSlotId, basePointsDefaultValue);
-			uiManager.InvalidateNodeValue (uiNode);
-			uiManager.InvalidateNodeDrawing (uiNode);
+			invalidator.InvalidateValueAndDrawing ();
 		}
 	}
 
