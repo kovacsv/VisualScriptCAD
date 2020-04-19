@@ -5,6 +5,45 @@
 
 #include "ModelEvaluationData.hpp"
 
+const NUIE::BasicSkinParams& GetSkinParams ()
+{
+	static const NUIE::BasicSkinParams defaultSkinParams (
+		/*backgroundColor*/ NUIE::Color (255, 255, 255),
+		/*connectionLinePen*/ NUIE::Pen (NUIE::Color (0, 0, 0), 1.0),
+		/*nodePadding*/ 5.0,
+		/*nodeBorderPen*/ NUIE::Pen (NUIE::Color (0, 0, 0), 1.0),
+		/*nodeHeaderTextFont*/ NUIE::Font (L"Arial", 16.0),
+		/*nodeHeaderTextColor*/ NUIE::Color (255, 255, 255),
+		/*nodeHeaderErrorTextColor*/ NUIE::Color (255, 255, 255),
+		/*nodeHeaderBackgroundColor*/ NUIE::Color (120, 120, 120),
+		/*nodeHeaderErrorBackgroundColor*/ NUIE::Color (225, 0, 0),
+		/*nodeContentTextFont*/ NUIE::Font (L"Arial", 16.0),
+		/*nodeContentTextColor*/ NUIE::Color (0, 0, 0),
+		/*nodeContentBackgroundColor*/ NUIE::Color (225, 225, 225),
+		/*slotTextColor*/ NUIE::Color (0, 0, 0),
+		/*slotTextBackgroundColor*/ NUIE::Color (240, 240, 240),
+		/*needToDrawSlotCircles*/ false,
+		/*slotCircleSize*/ NUIE::Size (8.0, 8.0),
+		/*selectionBlendColor*/ NUIE::BlendColor (NUIE::Color (240, 240, 240), 0.5),
+		/*disabledBlendColor*/ NUIE::BlendColor (NUIE::Color (0, 138, 184), 0.2),
+		/*selectionRectPen*/ NUIE::Pen (NUIE::Color (0, 138, 184), 1.0),
+		/*nodeSelectionRectPen*/ NUIE::Pen (NUIE::Color (0, 138, 184), 5.0),
+		/*buttonBorderPen*/ NUIE::Pen (NUIE::Color (50, 75, 100), 1.0),
+		/*buttonBackgroundColor*/ NUIE::Color (150, 175, 200),
+		/*textPanelTextColor*/ NUIE::Color (0, 0, 0),
+		/*textPanelBackgroundColor*/ NUIE::Color (255, 255, 100),
+		/*groupNameFont*/ NUIE::Font (L"Arial", 18.0),
+		/*groupNameColor*/ NUIE::Color (0, 0, 0),
+		/*groupBackgroundColors*/ NUIE::NamedColorSet ({
+			{ L"Blue", NUIE::Color (160, 200, 240) },
+			{ L"Green", NUIE::Color (160, 239, 160) },
+			{ L"Red", NUIE::Color (239, 189, 160) }
+		}),
+		/*groupPadding*/ 10.0
+	);
+	return defaultSkinParams;
+}
+
 ModelUpdater::~ModelUpdater ()
 {
 
@@ -57,7 +96,7 @@ NodeEditorControl::NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE
 		new NodeEditorUIEnvironment (
 			nodeEditorControl,
 			NE::StringSettingsPtr (new NE::BasicStringSettings (NE::GetDefaultStringSettings ())),
-			NUIE::SkinParamsPtr (new NUIE::BasicSkinParams (NUIE::GetDefaultSkinParams ())),
+			NUIE::SkinParamsPtr (new NUIE::BasicSkinParams (GetSkinParams ())),
 			NUIE::EventHandlersPtr (new WXAS::NodeEditorEventHandlers (nodeEditorControl)),
 			evalEnv, modelUpdater
 		)
