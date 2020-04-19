@@ -13,7 +13,6 @@ ExpressionEditorDialog::ExpressionEditorDialog (wxWindow* parent, const std::wst
 	SetSizerAndFit (boxSizer);
 
 	SetEscapeId (wxID_CANCEL);
-	// CenterOnParent ();
 }
 
 void ExpressionEditorDialog::OnButtonClick (wxCommandEvent& evt)
