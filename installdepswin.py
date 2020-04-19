@@ -61,20 +61,20 @@ def InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration):
 		solutionPath = os.path.join (cgalFolderPath, 'build', 'CGAL.sln')
 		BuildSolution (msBuildPath, solutionPath, msBuildConfiguration)
 		
-def InstallVisualScriptEngine (targetFolder, msBuildPath, msBuildConfiguration):
-	vseName = 'VisualScriptEngine-master'
-	vseZipUrl = 'https://github.com/kovacsv/VisualScriptEngine/archive/master.zip'
+def InstallVisualScriptEngine (libName, targetFolder, msBuildPath, msBuildConfiguration):
+	vseName = libName + '-master'
+	vseZipUrl = 'https://github.com/kovacsv/' + libName + '/archive/master.zip'
 	vseZipPath = os.path.join (targetFolder, vseName + '.zip')
 	vseFolderPath = os.path.join (targetFolder, vseName)
 	if not os.path.exists (vseFolderPath):
 		DownloadFile (vseZipUrl, vseZipPath)
 		UnzipFile (vseZipPath, targetFolder)
 		CmakeProject (vseFolderPath, 'Build')
-		solutionPath = os.path.join (vseFolderPath, 'Build', 'VisualScriptEngine.sln')
+		solutionPath = os.path.join (vseFolderPath, 'Build', libName + '.sln')
 		installProjectPath = os.path.join (vseFolderPath, 'Build', 'INSTALL.vcxproj')
 		BuildSolution (msBuildPath, solutionPath, msBuildConfiguration)
 		BuildSolution (msBuildPath, installProjectPath, msBuildConfiguration)
-	
+
 def Main (argv):
 	if len (argv) != 4:
 		print 'usage: installdepswin.py <targetFolder> <msBuildPath> <msBuildConfiguration>'
@@ -92,7 +92,8 @@ def Main (argv):
 	
 	InstallwxWidgets (targetFolder, msBuildPath, msBuildConfiguration)
 	InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration)
-	InstallVisualScriptEngine (targetFolder, msBuildPath, msBuildConfiguration)
+	InstallVisualScriptEngine ('VisualScriptEngine', targetFolder, msBuildPath, msBuildConfiguration)
+	InstallVisualScriptEngine ('VisualScriptEngineWxWidgets', targetFolder, msBuildPath, msBuildConfiguration)
 	return 0
 	
 sys.exit (Main (sys.argv))

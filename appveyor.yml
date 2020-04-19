@@ -24,6 +24,7 @@ before_build:
   - set BOOST_INCLUDEDIR=C:\Libraries\boost_1_67_0
   - set CGAL_DIR=C:\Dependencies\CGAL-4.13
   - set VSE_DEVKIT_DIR=C:\Dependencies\VisualScriptEngine-master\Build\DevKit
+  - set VSEWX_DEVKIT_DIR=C:\Dependencies\VisualScriptEngineWxWidgets-master\Build\DevKit
   - python installdepswin.py C:\Dependencies msbuild %configuration%
   - mkdir Build
   - cd Build

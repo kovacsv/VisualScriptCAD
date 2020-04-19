@@ -26,6 +26,7 @@ set (CMAKE_SUPPRESS_REGENERATION 1)
 set (CMAKE_CONFIGURATION_TYPES Debug;Release)
 set (WXWIDGETS_DIR $ENV{WXWIDGETS_DIR} CACHE PATH "wxWidgets binary directory.")
 set (VSE_DEVKIT_DIR $ENV{VSE_DEVKIT_DIR} CACHE PATH "VisualScriptEngine binary directory.")
+set (VSEWX_DEVKIT_DIR $ENV{VSEWX_DEVKIT_DIR} CACHE PATH "VisualScriptEngineWxWidgets binary directory.")
 set (BOOST_INCLUDEDIR $ENV{BOOST_INCLUDEDIR} CACHE PATH "Boost directory.")
 set (CGAL_DIR $ENV{CGAL_DIR} CACHE PATH "CGAL directory.")
 
@@ -44,6 +45,7 @@ link_directories (${CGAL_DIR}/build/lib)
 link_directories (${CGAL_DIR}/auxiliary/gmp/lib)
 link_directories (${WXWIDGETS_DIR}/lib/vc_x64_lib)
 link_directories (${VSE_DEVKIT_DIR}/lib)
+link_directories (${VSEWX_DEVKIT_DIR}/lib)
 
 # Geometry
 
@@ -279,6 +281,7 @@ target_include_directories (
 	${WXWIDGETS_DIR}/include
 	${WXWIDGETS_DIR}/include/msvc
 	${VSE_DEVKIT_DIR}/include
+	${VSEWX_DEVKIT_DIR}/include
 )
 target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
