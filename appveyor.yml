@@ -42,9 +42,9 @@ test_script:
   - cd Build
   - ctest --verbose --build-config %configuration%
   - cd ..
- - cd Test
- - python CompatibilityTest.py %configuration%
- - cd ..
+  - cd Test
+  - python CompatibilityTest.py %configuration%
+  - cd ..
 
 artifacts:
   - path: Build\Package\*
