@@ -1,5 +1,4 @@
 #include "Basic3DNodes.hpp"
-#include "NE_StringUtils.hpp"
 #include "NE_SingleValues.hpp"
 #include "BI_BuiltInFeatures.hpp"
 #include "NUIE_NodeCommonParameters.hpp"

@@ -1,6 +1,6 @@
 #include "CLIEnvironment.hpp"
 
-#include "NE_StringSettings.hpp"
+#include "NE_StringConverter.hpp"
 #include "NUIE_SkinParams.hpp"
 #include "NUIE_DrawingContext.hpp"
 #include "NUIE_EventHandlers.hpp"
@@ -15,9 +15,9 @@ NodeUIEnvironment::NodeUIEnvironment (const NE::EvaluationDataPtr& evalData) :
 	
 }
 
-const NE::StringSettings& NodeUIEnvironment::GetStringSettings ()
+const NE::StringConverter& NodeUIEnvironment::GetStringConverter ()
 {
-	return NE::GetDefaultStringSettings ();
+	return NE::GetDefaultStringConverter ();
 }
 
 const NUIE::SkinParams& NodeUIEnvironment::GetSkinParams ()

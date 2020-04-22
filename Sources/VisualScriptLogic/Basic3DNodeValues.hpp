@@ -13,7 +13,7 @@ public:
 	Point2DValue (const glm::vec2& val);
 
 	virtual NE::ValuePtr		Clone () const override;
-	virtual std::wstring		ToString (const NE::StringSettings& stringSettings) const override;
+	virtual std::wstring		ToString (const NE::StringConverter& stringConverter) const override;
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };
@@ -26,7 +26,7 @@ public:
 	CoordinateValue ();
 	CoordinateValue (const glm::vec3& val);
 
-	virtual std::wstring		ToString (const NE::StringSettings& stringSettings) const override;
+	virtual std::wstring		ToString (const NE::StringConverter& stringConverter) const override;
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 
@@ -71,7 +71,7 @@ public:
 	TransformationValue (const glm::mat4& val);
 
 	virtual NE::ValuePtr		Clone () const override;
-	virtual std::wstring		ToString (const NE::StringSettings& stringSettings) const override;
+	virtual std::wstring		ToString (const NE::StringConverter& stringConverter) const override;
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };

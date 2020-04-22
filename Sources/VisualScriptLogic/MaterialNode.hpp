@@ -14,7 +14,7 @@ public:
 	MaterialValue (const Modeler::Material& val);
 
 	virtual NE::ValuePtr		Clone () const override;
-	virtual std::wstring		ToString (const NE::StringSettings& stringSettings) const override;
+	virtual std::wstring		ToString (const NE::StringConverter& stringConverter) const override;
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
 	virtual NE::Stream::Status	Write (NE::OutputStream& outputStream) const override;
 };

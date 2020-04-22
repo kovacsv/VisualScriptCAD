@@ -25,7 +25,7 @@ NE::ValuePtr ShapeValue::Clone () const
 	return NE::ValuePtr (new ShapeValue (val->Clone ()));
 }
 
-std::wstring ShapeValue::ToString (const NE::StringSettings&) const
+std::wstring ShapeValue::ToString (const NE::StringConverter&) const
 {
 	return val->ToString ();
 }

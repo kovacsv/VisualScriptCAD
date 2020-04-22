@@ -12,7 +12,7 @@ class NodeUIEnvironment : public NUIE::NodeUIEnvironment
 public:
 	NodeUIEnvironment (const NE::EvaluationDataPtr& evalData);
 
-	virtual const NE::StringSettings&	GetStringSettings () override;
+	virtual const NE::StringConverter&	GetStringConverter () override;
 	virtual const NUIE::SkinParams&		GetSkinParams () override;
 	virtual NUIE::DrawingContext&		GetDrawingContext () override;
 	virtual double						GetWindowScale () override;

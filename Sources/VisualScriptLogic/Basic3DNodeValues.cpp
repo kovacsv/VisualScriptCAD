@@ -1,5 +1,4 @@
 #include "Basic3DNodeValues.hpp"
-#include "NE_StringUtils.hpp"
 #include "GLMReadWrite.hpp"
 
 NE::SerializationInfo			CoordinateValue::serializationInfo (NE::ObjectVersion (1));
@@ -25,13 +24,13 @@ NE::ValuePtr Point2DValue::Clone () const
 	return NE::ValuePtr (new Point2DValue (val));
 }
 
-std::wstring Point2DValue::ToString (const NE::StringSettings& stringSettings) const
+std::wstring Point2DValue::ToString (const NE::StringConverter& stringConverter) const
 {
 	std::wstring result = L"";
 	result += L"Point (";
-	result += NE::DoubleToString (val.x, stringSettings);
+	result += stringConverter.NumberToString (val.x);
 	result += L", ";
-	result += NE::DoubleToString (val.y, stringSettings);
+	result += stringConverter.NumberToString (val.y);
 	result += L")";
 	return result;
 }
@@ -64,15 +63,15 @@ CoordinateValue::CoordinateValue (const glm::vec3& val) :
 
 }
 
-std::wstring CoordinateValue::ToString (const NE::StringSettings& stringSettings) const
+std::wstring CoordinateValue::ToString (const NE::StringConverter& stringConverter) const
 {
 	std::wstring result = L"";
 	result += GetNameString () + L" (";
-	result += NE::DoubleToString (val.x, stringSettings);
+	result += stringConverter.NumberToString (val.x);
 	result += L", ";
-	result += NE::DoubleToString (val.y, stringSettings);
+	result += stringConverter.NumberToString (val.y);
 	result += L", ";
-	result += NE::DoubleToString (val.z, stringSettings);
+	result += stringConverter.NumberToString (val.z);
 	result += L")";
 	return result;
 }
@@ -182,7 +181,7 @@ NE::ValuePtr TransformationValue::Clone () const
 	return NE::ValuePtr (new TransformationValue (val));
 }
 
-std::wstring TransformationValue::ToString (const NE::StringSettings&) const
+std::wstring TransformationValue::ToString (const NE::StringConverter&) const
 {
 	std::wstring result;
 	result += L"Transformation";

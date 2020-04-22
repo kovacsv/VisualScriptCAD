@@ -14,7 +14,7 @@ bool ApplicationHeaderIO::Read (NE::InputStream& inputStream) const
 	if (appName != VSCAD_APP_NAME) {
 		return false;
 	}
-	Version readVersion;
+	NUIE::Version readVersion;
 	readVersion.Read (inputStream);
 	if (readVersion > AppVersion) {
 		return false;

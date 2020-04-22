@@ -2,10 +2,9 @@
 #define BASIC3DNODES_HPP
 
 #include "NE_Stream.hpp"
-#include "NE_StringSettings.hpp"
+#include "NE_StringConverter.hpp"
 #include "NE_GenericValue.hpp"
 #include "NE_Stream.hpp"
-#include "NE_StringSettings.hpp"
 #include "NE_GenericValue.hpp"
 #include "BI_BasicUINode.hpp"
 #include "Basic3DNodeValues.hpp"
