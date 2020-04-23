@@ -28,9 +28,9 @@ std::wstring Point2DValue::ToString (const NE::StringConverter& stringConverter)
 {
 	std::wstring result = L"";
 	result += L"Point (";
-	result += stringConverter.NumberToString (val.x);
+	result += stringConverter.NumberToString (val.x, NE::StringConverter::Measure::Number);
 	result += L", ";
-	result += stringConverter.NumberToString (val.y);
+	result += stringConverter.NumberToString (val.y, NE::StringConverter::Measure::Number);
 	result += L")";
 	return result;
 }
@@ -67,11 +67,11 @@ std::wstring CoordinateValue::ToString (const NE::StringConverter& stringConvert
 {
 	std::wstring result = L"";
 	result += GetNameString () + L" (";
-	result += stringConverter.NumberToString (val.x);
+	result += stringConverter.NumberToString (val.x, NE::StringConverter::Measure::Number);
 	result += L", ";
-	result += stringConverter.NumberToString (val.y);
+	result += stringConverter.NumberToString (val.y, NE::StringConverter::Measure::Number);
 	result += L", ";
-	result += stringConverter.NumberToString (val.z);
+	result += stringConverter.NumberToString (val.z, NE::StringConverter::Measure::Number);
 	result += L")";
 	return result;
 }
