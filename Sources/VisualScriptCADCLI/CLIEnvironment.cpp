@@ -67,9 +67,4 @@ NUIE::EventHandlers& NodeUIEnvironment::GetEventHandlers ()
 	return nullEventHandlers;
 }
 
-double NodeUIEnvironment::GetMouseMoveMinOffset ()
-{
-	return 2.0;
-}
-
 }
