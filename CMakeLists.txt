@@ -286,7 +286,3 @@ target_include_directories (
 target_link_libraries (VisualScriptCAD Geometry Modeler BoostOperations CGALOperations VisualScriptLogic)
 target_compile_definitions (VisualScriptCAD PUBLIC _CRT_SECURE_NO_WARNINGS)
 SetCompilerOptions (VisualScriptCAD)
-get_filename_component (ExamplesFolderAbsolute Examples ABSOLUTE)
-add_custom_command (TARGET VisualScriptCAD POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${ExamplesFolderAbsolute} $<TARGET_FILE_DIR:VisualScriptCAD>/Examples
-)
