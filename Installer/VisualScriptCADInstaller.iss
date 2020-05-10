@@ -30,7 +30,6 @@ Source: "..\Build\Release\VisualScriptCAD.exe"; DestDir: "{app}"; Flags: ignorev
 Source: "..\Build\Release\CGAL-vc140-mt-4.13.dll"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "..\Build\Release\libgmp-10.dll"; DestDir: "{app}"; Flags: ignoreversion;
 Source: "..\Build\Release\libmpfr-4.dll"; DestDir: "{app}"; Flags: ignoreversion;
-Source: "..\Examples\*"; DestDir: "{app}\Examples"; Flags: ignoreversion;
 Source: "Redist\vc_redist.x64.exe"; DestDir: "{app}"; Flags: deleteafterinstall;
 
 [Icons]

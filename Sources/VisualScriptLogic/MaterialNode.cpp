@@ -58,12 +58,12 @@ NE::Stream::Status MaterialValue::Write (NE::OutputStream& outputStream) const
 }
 
 MaterialNode::MaterialNode () :
-	MaterialNode (L"", NUIE::Point ())
+	MaterialNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-MaterialNode::MaterialNode (const std::wstring& name, const NUIE::Point& position) :
+MaterialNode::MaterialNode (const NE::String& name, const NUIE::Point& position) :
 	BI::BasicUINode (name, position)
 {
 
@@ -72,10 +72,10 @@ MaterialNode::MaterialNode (const std::wstring& name, const NUIE::Point& positio
 void MaterialNode::Initialize ()
 {
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("red"), L"Red", NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("green"), L"Green", NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("blue"), L"Blue", NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("material"), L"Material")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("red"), NE::String (L"Red"), NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("green"), NE::String (L"Green"), NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("blue"), NE::String (L"Blue"), NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("material"), NE::String (L"Material"))));
 }
 
 NE::ValueConstPtr MaterialNode::Calculate (NE::EvaluationEnv& env) const

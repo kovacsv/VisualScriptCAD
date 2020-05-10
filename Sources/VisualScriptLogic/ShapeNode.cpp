@@ -49,12 +49,12 @@ NE::Stream::Status ShapeValue::Write (NE::OutputStream& outputStream) const
 }
 
 ShapeNode::ShapeNode () :
-	ShapeNode (L"", NUIE::Point ())
+	ShapeNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-ShapeNode::ShapeNode (const std::wstring& name, const NUIE::Point& position) :
+ShapeNode::ShapeNode (const NE::String& name, const NUIE::Point& position) :
 	BI::BasicUINode (name, position)
 {
 

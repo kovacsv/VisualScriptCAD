@@ -14,12 +14,12 @@ NE::DynamicSerializationInfo	LinePointsNode::serializationInfo (NE::ObjectId ("{
 NE::DynamicSerializationInfo	ArcPointsNode::serializationInfo (NE::ObjectId ("{968F0889-E537-4A0F-9D76-4E0378868AB2}"), NE::ObjectVersion (1), ArcPointsNode::CreateSerializableInstance);
 
 PointNodeBase::PointNodeBase () :
-	PointNodeBase (L"", NUIE::Point ())
+	PointNodeBase (NE::String (), NUIE::Point ())
 {
 
 }
 
-PointNodeBase::PointNodeBase (const std::wstring& name, const NUIE::Point& position) :
+PointNodeBase::PointNodeBase (const NE::String& name, const NUIE::Point& position) :
 	BI::BasicUINode (name, position)
 {
 
@@ -55,12 +55,12 @@ NE::Stream::Status PointNodeBase::Write (NE::OutputStream& outputStream) const
 }
 
 Point2DNode::Point2DNode () :
-	Point2DNode (L"", NUIE::Point ())
+	Point2DNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-Point2DNode::Point2DNode (const std::wstring& name, const NUIE::Point& position) :
+Point2DNode::Point2DNode (const NE::String& name, const NUIE::Point& position) :
 	PointNodeBase (name, position)
 {
 
@@ -69,9 +69,9 @@ Point2DNode::Point2DNode (const std::wstring& name, const NUIE::Point& position)
 void Point2DNode::Initialize ()
 {
 	PointNodeBase::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), L"X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), L"Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), NE::String (L"X"), NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), NE::String (L"Y"), NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), NE::String (L"Point"))));
 }
 
 NE::ValueConstPtr Point2DNode::Calculate (NE::EvaluationEnv& env) const
@@ -117,12 +117,12 @@ NE::Stream::Status Point2DNode::Write (NE::OutputStream& outputStream) const
 }
 
 CoordinateNode::CoordinateNode () :
-	CoordinateNode (L"", NUIE::Point ())
+	CoordinateNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-CoordinateNode::CoordinateNode (const std::wstring& name, const NUIE::Point& position) :
+CoordinateNode::CoordinateNode (const NE::String& name, const NUIE::Point& position) :
 	PointNodeBase (name, position)
 {
 
@@ -132,9 +132,9 @@ void CoordinateNode::Initialize ()
 {
 	PointNodeBase::Initialize ();
 	glm::vec3 defaultValue = GetDefaultValue ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), L"X", NE::ValuePtr (new NE::FloatValue (defaultValue.x)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), L"Y", NE::ValuePtr (new NE::FloatValue (defaultValue.y)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("z"), L"Z", NE::ValuePtr (new NE::FloatValue (defaultValue.z)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), NE::String (L"X"), NE::ValuePtr (new NE::FloatValue (defaultValue.x)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), NE::String (L"Y"), NE::ValuePtr (new NE::FloatValue (defaultValue.y)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("z"), NE::String (L"Z"), NE::ValuePtr (new NE::FloatValue (defaultValue.z)), NE::OutputSlotConnectionMode::Single)));
 }
 
 NE::ValueConstPtr CoordinateNode::Calculate (NE::EvaluationEnv& env) const
@@ -190,12 +190,12 @@ NE::Stream::Status CoordinateNode::Write (NE::OutputStream& outputStream) const
 }
 
 PointNode::PointNode () :
-	PointNode (L"", NUIE::Point ())
+	PointNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-PointNode::PointNode (const std::wstring& name, const NUIE::Point& position) :
+PointNode::PointNode (const NE::String& name, const NUIE::Point& position) :
 	CoordinateNode (name, position)
 {
 
@@ -204,7 +204,7 @@ PointNode::PointNode (const std::wstring& name, const NUIE::Point& position) :
 void PointNode::Initialize ()
 {
 	CoordinateNode::Initialize ();
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), NE::String (L"Point"))));
 }
 
 NE::Stream::Status PointNode::Read (NE::InputStream& inputStream)
@@ -232,12 +232,12 @@ NE::ValueConstPtr PointNode::GetValueFromVector (const glm::vec3 & vec) const
 }
 
 VectorNode::VectorNode () :
-	VectorNode (L"", NUIE::Point ())
+	VectorNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-VectorNode::VectorNode (const std::wstring& name, const NUIE::Point& position) :
+VectorNode::VectorNode (const NE::String& name, const NUIE::Point& position) :
 	CoordinateNode (name, position)
 {
 
@@ -246,7 +246,7 @@ VectorNode::VectorNode (const std::wstring& name, const NUIE::Point& position) :
 void VectorNode::Initialize ()
 {
 	CoordinateNode::Initialize ();
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("vector"), L"Vector")));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("vector"), NE::String (L"Vector"))));
 }
 
 NE::Stream::Status VectorNode::Read (NE::InputStream& inputStream)
@@ -277,12 +277,12 @@ NE::ValueConstPtr VectorNode::GetValueFromVector (const glm::vec3 & vec) const
 }
 
 LinePointsNode::LinePointsNode () :
-	LinePointsNode (L"", NUIE::Point ())
+	LinePointsNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-LinePointsNode::LinePointsNode (const std::wstring& name, const NUIE::Point& position) :
+LinePointsNode::LinePointsNode (const NE::String& name, const NUIE::Point& position) :
 	PointNodeBase (name, position)
 {
 
@@ -291,10 +291,10 @@ LinePointsNode::LinePointsNode (const std::wstring& name, const NUIE::Point& pos
 void LinePointsNode::Initialize ()
 {
 	PointNodeBase::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("beg"), L"Begin", NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("end"), L"End", NE::ValuePtr (new PointValue (glm::dvec3 (1.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (5)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("points"), L"Points")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("beg"), NE::String (L"Begin"), NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("end"), NE::String (L"End"), NE::ValuePtr (new PointValue (glm::dvec3 (1.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), NE::String (L"Segmentation"), NE::ValuePtr (new NE::IntValue (5)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("points"), NE::String (L"Points"))));
 }
 
 NE::ValueConstPtr LinePointsNode::Calculate (NE::EvaluationEnv& env) const
@@ -354,12 +354,12 @@ NE::Stream::Status LinePointsNode::Write (NE::OutputStream& outputStream) const
 }
 
 ArcPointsNode::ArcPointsNode () :
-	ArcPointsNode (L"", NUIE::Point ())
+	ArcPointsNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-ArcPointsNode::ArcPointsNode (const std::wstring& name, const NUIE::Point& position) :
+ArcPointsNode::ArcPointsNode (const NE::String& name, const NUIE::Point& position) :
 	PointNodeBase (name, position)
 {
 
@@ -368,10 +368,10 @@ ArcPointsNode::ArcPointsNode (const std::wstring& name, const NUIE::Point& posit
 void ArcPointsNode::Initialize ()
 {
 	PointNodeBase::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), L"Angle", NE::ValuePtr (new NE::FloatValue (360.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (5)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("points"), L"Points")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), NE::String (L"Angle"), NE::ValuePtr (new NE::FloatValue (360.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), NE::String (L"Segmentation"), NE::ValuePtr (new NE::IntValue (5)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("points"), NE::String (L"Points"))));
 }
 
 NE::ValueConstPtr ArcPointsNode::Calculate (NE::EvaluationEnv& env) const

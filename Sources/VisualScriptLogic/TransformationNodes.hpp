@@ -12,7 +12,7 @@ class TransformationMatrixNode : public BI::BasicUINode
 
 public:
 	TransformationMatrixNode ();
-	TransformationMatrixNode (const std::wstring& name, const NUIE::Point& position);
+	TransformationMatrixNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 
@@ -26,7 +26,7 @@ class TranslationMatrixNode : public TransformationMatrixNode
 
 public:
 	TranslationMatrixNode ();
-	TranslationMatrixNode (const std::wstring& name, const NUIE::Point& position);
+	TranslationMatrixNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -41,7 +41,7 @@ class TranslationMatrixXYZNode : public TransformationMatrixNode
 
 public:
 	TranslationMatrixXYZNode ();
-	TranslationMatrixXYZNode (const std::wstring& name, const NUIE::Point& position);
+	TranslationMatrixXYZNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -57,7 +57,7 @@ class RotationMatrixNode : public TransformationMatrixNode
 
 public:
 	RotationMatrixNode ();
-	RotationMatrixNode (const std::wstring& name, const NUIE::Point& position);
+	RotationMatrixNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -73,7 +73,7 @@ class ScaleMatrixNode : public TransformationMatrixNode
 
 public:
 	ScaleMatrixNode ();
-	ScaleMatrixNode (const std::wstring& name, const NUIE::Point& position);
+	ScaleMatrixNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -89,7 +89,7 @@ class MatrixCombinationNode : public TransformationMatrixNode
 
 public:
 	MatrixCombinationNode ();
-	MatrixCombinationNode (const std::wstring& name, const NUIE::Point& position);
+	MatrixCombinationNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

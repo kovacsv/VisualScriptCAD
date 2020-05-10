@@ -15,7 +15,7 @@ class PointNodeBase : public BI::BasicUINode
 
 public:
 	PointNodeBase ();
-	PointNodeBase (const std::wstring& name, const NUIE::Point& position);
+	PointNodeBase (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const override;
@@ -31,7 +31,7 @@ class Point2DNode : public PointNodeBase
 
 public:
 	Point2DNode ();
-	Point2DNode (const std::wstring& name, const NUIE::Point& position);
+	Point2DNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -47,7 +47,7 @@ class CoordinateNode : public PointNodeBase
 
 public:
 	CoordinateNode ();
-	CoordinateNode (const std::wstring& name, const NUIE::Point& position);
+	CoordinateNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -67,7 +67,7 @@ class PointNode : public CoordinateNode
 
 public:
 	PointNode ();
-	PointNode (const std::wstring& name, const NUIE::Point& position);
+	PointNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -83,7 +83,7 @@ class VectorNode : public CoordinateNode
 
 public:
 	VectorNode ();
-	VectorNode (const std::wstring& name, const NUIE::Point& position);
+	VectorNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::Stream::Status	Read (NE::InputStream& inputStream) override;
@@ -99,7 +99,7 @@ class LinePointsNode : public PointNodeBase
 
 public:
 	LinePointsNode ();
-	LinePointsNode (const std::wstring& name, const NUIE::Point& position);
+	LinePointsNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -115,7 +115,7 @@ class ArcPointsNode : public PointNodeBase
 
 public:
 	ArcPointsNode ();
-	ArcPointsNode (const std::wstring& name, const NUIE::Point& position);
+	ArcPointsNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

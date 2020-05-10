@@ -4,12 +4,12 @@
 NE::DynamicSerializationInfo	TransformPointNode::serializationInfo (NE::ObjectId ("{8AC8484D-C80C-450B-AF86-B5E915179CED}"), NE::ObjectVersion (1), TransformPointNode::CreateSerializableInstance);
 
 TransformPointNode::TransformPointNode () :
-	TransformPointNode (L"", NUIE::Point ())
+	TransformPointNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-TransformPointNode::TransformPointNode (const std::wstring& name, const NUIE::Point& position) :
+TransformPointNode::TransformPointNode (const NE::String& name, const NUIE::Point& position) :
 	TransformationMatrixNode (name, position)
 {
 
@@ -18,9 +18,9 @@ TransformPointNode::TransformPointNode (const std::wstring& name, const NUIE::Po
 void TransformPointNode::Initialize ()
 {
 	TransformationMatrixNode::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("point"), L"Point", NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), L"Point")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("point"), NE::String (L"Point"), NE::ValuePtr (new PointValue (glm::dvec3 (0.0, 0.0, 0.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("point"), NE::String (L"Point"))));
 }
 
 NE::ValueConstPtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const

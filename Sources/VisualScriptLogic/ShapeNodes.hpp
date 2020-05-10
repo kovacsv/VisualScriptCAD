@@ -12,7 +12,7 @@ class BoxNode : public ShapeNode
 
 public:
 	BoxNode ();
-	BoxNode (const std::wstring& name, const NUIE::Point& position);
+	BoxNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -28,7 +28,7 @@ class BoxShellNode : public ShapeNode
 
 public:
 	BoxShellNode ();
-	BoxShellNode (const std::wstring& name, const NUIE::Point& position);
+	BoxShellNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -44,7 +44,7 @@ class CylinderNode : public ShapeNode
 
 public:
 	CylinderNode ();
-	CylinderNode (const std::wstring& name, const NUIE::Point& position);
+	CylinderNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -60,7 +60,7 @@ class CylinderShellNode : public ShapeNode
 
 public:
 	CylinderShellNode ();
-	CylinderShellNode (const std::wstring& name, const NUIE::Point& position);
+	CylinderShellNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -76,7 +76,7 @@ class ConeNode : public ShapeNode
 
 public:
 	ConeNode ();
-	ConeNode (const std::wstring& name, const NUIE::Point& position);
+	ConeNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -92,7 +92,7 @@ class SphereNode : public ShapeNode
 
 public:
 	SphereNode ();
-	SphereNode (const std::wstring& name, const NUIE::Point& position);
+	SphereNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -108,7 +108,7 @@ class TorusNode : public ShapeNode
 
 public:
 	TorusNode ();
-	TorusNode (const std::wstring& name, const NUIE::Point& position);
+	TorusNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -124,7 +124,7 @@ class PlatonicNode : public ShapeNode
 
 public:
 	PlatonicNode ();
-	PlatonicNode (const std::wstring& name, const NUIE::Point& position);
+	PlatonicNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

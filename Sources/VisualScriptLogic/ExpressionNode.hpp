@@ -9,7 +9,7 @@ class ExpressionNode : public BI::BasicUINode
 
 public:
 	ExpressionNode ();
-	ExpressionNode (const std::wstring& name, const NUIE::Point& position);
+	ExpressionNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

@@ -9,7 +9,7 @@ class PrismNode : public ShapeNode
 
 public:
 	PrismNode ();
-	PrismNode (const std::wstring& name, const NUIE::Point& position);
+	PrismNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -26,7 +26,7 @@ class PrismShellNode : public ShapeNode
 
 public:
 	PrismShellNode ();
-	PrismShellNode (const std::wstring& name, const NUIE::Point& position);
+	PrismShellNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

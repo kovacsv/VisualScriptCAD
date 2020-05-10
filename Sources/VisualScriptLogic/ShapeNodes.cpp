@@ -26,12 +26,12 @@ static bool IsSmooth (int segmentation)
 }
 
 BoxNode::BoxNode () :
-	BoxNode (L"", NUIE::Point ())
+	BoxNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-BoxNode::BoxNode (const std::wstring& name, const NUIE::Point& position) :
+BoxNode::BoxNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -41,12 +41,12 @@ void BoxNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), L"Size A", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("b"), L"Size B", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("c"), L"Size C", NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), NE::String (L"Size A"), NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("b"), NE::String (L"Size B"), NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("c"), NE::String (L"Size C"), NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr BoxNode::Calculate (NE::EvaluationEnv& env) const
@@ -106,12 +106,12 @@ NE::Stream::Status BoxNode::Write (NE::OutputStream& outputStream) const
 }
 
 BoxShellNode::BoxShellNode () :
-	BoxShellNode (L"", NUIE::Point ())
+	BoxShellNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-BoxShellNode::BoxShellNode (const std::wstring& name, const NUIE::Point& position) :
+BoxShellNode::BoxShellNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -121,13 +121,13 @@ void BoxShellNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), L"Size A", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("b"), L"Size B", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("c"), L"Size C", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("thickness"), L"Thickness", NE::ValuePtr (new NE::FloatValue (0.1f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), NE::String (L"Size A"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("b"), NE::String (L"Size B"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("c"), NE::String (L"Size C"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("thickness"), NE::String (L"Thickness"), NE::ValuePtr (new NE::FloatValue (0.1f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr BoxShellNode::Calculate (NE::EvaluationEnv& env) const
@@ -190,12 +190,12 @@ NE::Stream::Status BoxShellNode::Write (NE::OutputStream& outputStream) const
 }
 
 CylinderNode::CylinderNode () :
-	CylinderNode (L"", NUIE::Point ())
+	CylinderNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-CylinderNode::CylinderNode (const std::wstring& name, const NUIE::Point& position) :
+CylinderNode::CylinderNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -205,12 +205,12 @@ void CylinderNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), L"Height", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), NE::String (L"Height"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), NE::String (L"Segmentation"), NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr CylinderNode::Calculate (NE::EvaluationEnv& env) const
@@ -272,12 +272,12 @@ NE::Stream::Status CylinderNode::Write (NE::OutputStream& outputStream) const
 }
 
 CylinderShellNode::CylinderShellNode () :
-	CylinderShellNode (L"", NUIE::Point ())
+	CylinderShellNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-CylinderShellNode::CylinderShellNode (const std::wstring& name, const NUIE::Point& position) :
+CylinderShellNode::CylinderShellNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -287,13 +287,13 @@ void CylinderShellNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), L"Height", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("thickness"), L"Thickness", NE::ValuePtr (new NE::FloatValue (0.1f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), NE::String (L"Height"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("thickness"), NE::String (L"Thickness"), NE::ValuePtr (new NE::FloatValue (0.1f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), NE::String (L"Segmentation"), NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr CylinderShellNode::Calculate (NE::EvaluationEnv& env) const
@@ -358,12 +358,12 @@ NE::Stream::Status CylinderShellNode::Write (NE::OutputStream& outputStream) con
 }
 
 ConeNode::ConeNode () :
-	ConeNode (L"", NUIE::Point ())
+	ConeNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-ConeNode::ConeNode (const std::wstring& name, const NUIE::Point& position) :
+ConeNode::ConeNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -373,13 +373,13 @@ void ConeNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("topradius"), L"Top Radius", NE::ValuePtr (new NE::FloatValue (0.3f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("bottomradius"), L"Bottom Radius", NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), L"Height", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("topradius"), NE::String (L"Top Radius"), NE::ValuePtr (new NE::FloatValue (0.3f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("bottomradius"), NE::String (L"Bottom Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("height"), NE::String (L"Height"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), NE::String (L"Segmentation"), NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr ConeNode::Calculate (NE::EvaluationEnv& env) const
@@ -444,12 +444,12 @@ NE::Stream::Status ConeNode::Write (NE::OutputStream& outputStream) const
 }
 
 SphereNode::SphereNode () :
-	SphereNode (L"", NUIE::Point ())
+	SphereNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-SphereNode::SphereNode (const std::wstring& name, const NUIE::Point& position) :
+SphereNode::SphereNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -459,11 +459,11 @@ void SphereNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), L"Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("segmentation"), NE::String (L"Segmentation"), NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr SphereNode::Calculate (NE::EvaluationEnv& env) const
@@ -522,12 +522,12 @@ NE::Stream::Status SphereNode::Write (NE::OutputStream& outputStream) const
 }
 
 TorusNode::TorusNode () :
-	TorusNode (L"", NUIE::Point ())
+	TorusNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-TorusNode::TorusNode (const std::wstring& name, const NUIE::Point& position) :
+TorusNode::TorusNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -537,13 +537,13 @@ void TorusNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("outerradius"), L"Outer Radius", NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("innerradius"), L"Inner Radius", NE::ValuePtr (new NE::FloatValue (0.3f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("outersegmentation"), L"Outer Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("innersegmentation"), L"Inner Segmentation", NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("outerradius"), NE::String (L"Outer Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("innerradius"), NE::String (L"Inner Radius"), NE::ValuePtr (new NE::FloatValue (0.3f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("outersegmentation"), NE::String (L"Outer Segmentation"), NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("innersegmentation"), NE::String (L"Inner Segmentation"), NE::ValuePtr (new NE::IntValue (25)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr TorusNode::Calculate (NE::EvaluationEnv& env) const
@@ -615,12 +615,12 @@ static void SetPlatonicNodeType (Modeler::PlatonicSolidType type, NUIE::UINodeIn
 }
 
 PlatonicNode::PlatonicNode () :
-	PlatonicNode (L"", NUIE::Point ())
+	PlatonicNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-PlatonicNode::PlatonicNode (const std::wstring& name, const NUIE::Point& position) :
+PlatonicNode::PlatonicNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position),
 	type (Modeler::PlatonicSolidType::Tetrahedron)
 {
@@ -631,10 +631,10 @@ void PlatonicNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), L"Material", NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), L"Radius", NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr PlatonicNode::Calculate (NE::EvaluationEnv& env) const

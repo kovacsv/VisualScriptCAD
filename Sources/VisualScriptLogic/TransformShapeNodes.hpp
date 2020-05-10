@@ -9,7 +9,7 @@ class TranslateShapeNode : public ShapeNode
 
 public:
 	TranslateShapeNode ();
-	TranslateShapeNode (const std::wstring& name, const NUIE::Point& position);
+	TranslateShapeNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -24,7 +24,7 @@ class TranslateShapeXYZNode : public ShapeNode
 
 public:
 	TranslateShapeXYZNode ();
-	TranslateShapeXYZNode (const std::wstring& name, const NUIE::Point& position);
+	TranslateShapeXYZNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
@@ -40,7 +40,7 @@ class RotateShapeNode : public ShapeNode
 
 public:
 	RotateShapeNode ();
-	RotateShapeNode (const std::wstring& name, const NUIE::Point& position);
+	RotateShapeNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const;
@@ -56,7 +56,7 @@ class TransformShapeNode : public ShapeNode
 
 public:
 	TransformShapeNode ();
-	TransformShapeNode (const std::wstring& name, const NUIE::Point& position);
+	TransformShapeNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

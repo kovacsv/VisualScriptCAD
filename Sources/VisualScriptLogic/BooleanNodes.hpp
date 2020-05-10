@@ -18,7 +18,7 @@ public:
 	};
 
 	BooleanNode ();
-	BooleanNode (const std::wstring& name, const NUIE::Point& position, Operation operation);
+	BooleanNode (const NE::String& name, const NUIE::Point& position, Operation operation);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;
@@ -36,7 +36,7 @@ class UnionNode : public ShapeNode
 
 public:
 	UnionNode ();
-	UnionNode (const std::wstring& name, const NUIE::Point& position);
+	UnionNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

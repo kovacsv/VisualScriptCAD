@@ -26,7 +26,7 @@ class ShapeNode : public BI::BasicUINode
 
 public:
 	ShapeNode ();
-	ShapeNode (const std::wstring& name, const NUIE::Point& position);
+	ShapeNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual void				RegisterParameters (NUIE::NodeParameterList& parameterList) const override;

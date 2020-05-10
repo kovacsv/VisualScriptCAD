@@ -11,12 +11,12 @@ NE::DynamicSerializationInfo	RotateShapeNode::serializationInfo (NE::ObjectId ("
 NE::DynamicSerializationInfo	TransformShapeNode::serializationInfo (NE::ObjectId ("{3BA3AD96-09FD-49D2-8299-2143A0A8ECFA}"), NE::ObjectVersion (1), TransformShapeNode::CreateSerializableInstance);
 
 TranslateShapeNode::TranslateShapeNode () :
-	TranslateShapeNode (L"", NUIE::Point ())
+	TranslateShapeNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-TranslateShapeNode::TranslateShapeNode (const std::wstring& name, const NUIE::Point& position) :
+TranslateShapeNode::TranslateShapeNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -26,9 +26,9 @@ void TranslateShapeNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), L"Shape", nullptr, NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offset"), L"Offset", NE::ValuePtr (new PointValue (glm::vec3 (0.0f))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), NE::String (L"Shape"), nullptr, NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offset"), NE::String (L"Offset"), NE::ValuePtr (new PointValue (glm::vec3 (0.0f))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr TranslateShapeNode::Calculate (NE::EvaluationEnv& env) const
@@ -67,12 +67,12 @@ NE::Stream::Status TranslateShapeNode::Write (NE::OutputStream& outputStream) co
 }
 
 TranslateShapeXYZNode::TranslateShapeXYZNode () :
-	TranslateShapeXYZNode (L"", NUIE::Point ())
+	TranslateShapeXYZNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-TranslateShapeXYZNode::TranslateShapeXYZNode (const std::wstring& name, const NUIE::Point& position) :
+TranslateShapeXYZNode::TranslateShapeXYZNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -82,11 +82,11 @@ void TranslateShapeXYZNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), L"Shape", nullptr, NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetx"), L"Offset X", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsety"), L"Offset Y", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetz"), L"Offset Z", NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), NE::String (L"Shape"), nullptr, NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetx"), NE::String (L"Offset X"), NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsety"), NE::String (L"Offset Y"), NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("offsetz"), NE::String (L"Offset Z"), NE::ValuePtr (new NE::FloatValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 void TranslateShapeXYZNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
@@ -139,12 +139,12 @@ NE::Stream::Status TranslateShapeXYZNode::Write (NE::OutputStream& outputStream)
 }
 
 RotateShapeNode::RotateShapeNode () :
-	RotateShapeNode (L"", NUIE::Point ())
+	RotateShapeNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-RotateShapeNode::RotateShapeNode (const std::wstring& name, const NUIE::Point& position) :
+RotateShapeNode::RotateShapeNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -154,11 +154,11 @@ void RotateShapeNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), L"Shape", nullptr, NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), L"Angle", NE::ValuePtr (new NE::FloatValue (0.0f)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("origin"), L"Origin", NE::ValuePtr (new PointValue (glm::vec3 (0.0f, 0.0f, 0.0f))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axis"), L"Axis", NE::ValuePtr (new PointValue (glm::vec3 (0.0f, 0.0f, 1.0f))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), NE::String (L"Shape"), nullptr, NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("angle"), NE::String (L"Angle"), NE::ValuePtr (new NE::FloatValue (0.0f)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("origin"), NE::String (L"Origin"), NE::ValuePtr (new PointValue (glm::vec3 (0.0f, 0.0f, 0.0f))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("axis"), NE::String (L"Axis"), NE::ValuePtr (new PointValue (glm::vec3 (0.0f, 0.0f, 1.0f))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 void RotateShapeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
@@ -216,12 +216,12 @@ NE::Stream::Status RotateShapeNode::Write (NE::OutputStream& outputStream) const
 }
 
 TransformShapeNode::TransformShapeNode () :
-	TransformShapeNode (L"", NUIE::Point ())
+	TransformShapeNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-TransformShapeNode::TransformShapeNode (const std::wstring& name, const NUIE::Point& position) :
+TransformShapeNode::TransformShapeNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -231,9 +231,9 @@ void TransformShapeNode::Initialize ()
 {
 	ShapeNode::Initialize ();
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), L"Shape", nullptr, NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::mat4 (1.0f))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shape"), NE::String (L"Shape"), nullptr, NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::mat4 (1.0f))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr TransformShapeNode::Calculate (NE::EvaluationEnv& env) const

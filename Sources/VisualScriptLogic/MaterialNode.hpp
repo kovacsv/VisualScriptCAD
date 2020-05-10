@@ -25,7 +25,7 @@ class MaterialNode : public BI::BasicUINode
 
 public:
 	MaterialNode ();
-	MaterialNode (const std::wstring& name, const NUIE::Point& position);
+	MaterialNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

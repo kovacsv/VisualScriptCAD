@@ -140,13 +140,6 @@ MenuBar::MenuBar () :
 	openRecentMenu = new wxMenu ();
 	fileMenu->AppendSubMenu (openRecentMenu, L"Open Recent");
 
-	wxMenu* openExampleMenu = new wxMenu ();
-	for (size_t i = 0; i < exampleFiles.size (); i++) {
-		const std::pair<std::wstring, std::wstring>& example = exampleFiles[i];
-		openExampleMenu->Append (CommandId::File_OpenExample_First + i, example.first);
-	}
-	fileMenu->AppendSubMenu (openExampleMenu, L"Open Example");
-
 	fileMenu->Append (CommandId::File_Save, "Save...");
 	fileMenu->Append (CommandId::File_SaveAs, "Save As...");
 	fileMenu->AppendSeparator ();
@@ -497,14 +490,6 @@ void MainWindow::ProcessCommand (CommandId commandId)
 		if (ConfirmLosingUnsavedChanges ()) {
 			std::wstring recentFilePath = userSettings.recentFiles[commandId - CommandId::File_OpenRecent_First];
 			OpenFile (recentFilePath);
-		}
-	} else if (commandId >= CommandId::File_OpenExample_First && commandId < CommandId::File_OpenExample_First + exampleFiles.size ()) {
-		if (ConfirmLosingUnsavedChanges ()) {
-			wxFileName exampleFilePath (wxStandardPaths::Get ().GetExecutablePath ());
-			exampleFilePath.AppendDir (L"Examples");
-			exampleFilePath.AppendDir (exampleFiles[commandId - CommandId::File_OpenExample_First].second);
-			wxString exampleFilePathString = exampleFilePath.GetPath ();
-			OpenFile (exampleFilePathString.ToStdWstring ());
 		}
 	}
 

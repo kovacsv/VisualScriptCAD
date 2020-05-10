@@ -33,8 +33,7 @@ enum CommandId
 	Tool_Mode_Automatic			= 21,
 	Tool_Mode_Manual			= 22,
 	Tool_Mode_Update			= 23,
-	File_OpenExample_First		= 100,
-	File_OpenRecent_First		= 200
+	File_OpenRecent_First		= 100
 };
 
 enum class SplitViewMode

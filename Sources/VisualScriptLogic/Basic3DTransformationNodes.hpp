@@ -9,7 +9,7 @@ class TransformPointNode : public TransformationMatrixNode
 
 public:
 	TransformPointNode ();
-	TransformPointNode (const std::wstring& name, const NUIE::Point& position);
+	TransformPointNode (const NE::String& name, const NUIE::Point& position);
 
 	virtual void				Initialize () override;
 	virtual NE::ValueConstPtr	Calculate (NE::EvaluationEnv& env) const override;

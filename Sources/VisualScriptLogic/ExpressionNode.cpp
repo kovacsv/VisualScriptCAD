@@ -10,12 +10,12 @@
 NE::DynamicSerializationInfo	ExpressionNode::serializationInfo (NE::ObjectId ("{63CF9382-20BE-48EA-B185-DE8A6A23DBF6}"), NE::ObjectVersion (1), ExpressionNode::CreateSerializableInstance);
 
 ExpressionNode::ExpressionNode () :
-	ExpressionNode (L"", NUIE::Point ())
+	ExpressionNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-ExpressionNode::ExpressionNode (const std::wstring& name, const NUIE::Point& position) :
+ExpressionNode::ExpressionNode (const NE::String& name, const NUIE::Point& position) :
 	BI::BasicUINode (name, position),
 	expression (L"x + y + z")
 {
@@ -25,10 +25,10 @@ ExpressionNode::ExpressionNode (const std::wstring& name, const NUIE::Point& pos
 void ExpressionNode::Initialize ()
 {
 	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), L"X", NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), L"Y", NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("z"), L"Z", NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("result"), L"Result")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), NE::String (L"X"), NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), NE::String (L"Y"), NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("z"), NE::String (L"Z"), NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("result"), NE::String (L"Result"))));
 }
 
 NE::ValueConstPtr ExpressionNode::Calculate (NE::EvaluationEnv& env) const

@@ -31,12 +31,12 @@ static Modeler::ShapePtr ShapeUnionFromValue (const NE::ValueConstPtr& shapesVal
 }
 
 BooleanNode::BooleanNode () :
-	BooleanNode (L"", NUIE::Point (), Operation::Difference)
+	BooleanNode (NE::String (), NUIE::Point (), Operation::Difference)
 {
 
 }
 
-BooleanNode::BooleanNode (const std::wstring& name, const NUIE::Point& position, Operation operation) :
+BooleanNode::BooleanNode (const NE::String& name, const NUIE::Point& position, Operation operation) :
 	ShapeNode (name, position),
 	operation (operation)
 {
@@ -46,10 +46,10 @@ BooleanNode::BooleanNode (const std::wstring& name, const NUIE::Point& position,
 void BooleanNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("ashapes"), L"Shapes A", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("bshapes"), L"Shapes B", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("ashapes"), NE::String (L"Shapes A"), NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("bshapes"), NE::String (L"Shapes B"), NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr BooleanNode::Calculate (NE::EvaluationEnv& env) const
@@ -108,12 +108,12 @@ NE::Stream::Status BooleanNode::Write (NE::OutputStream& outputStream) const
 }
 
 UnionNode::UnionNode () :
-	UnionNode (L"", NUIE::Point ())
+	UnionNode (NE::String (), NUIE::Point ())
 {
 
 }
 
-UnionNode::UnionNode (const std::wstring& name, const NUIE::Point& position) :
+UnionNode::UnionNode (const NE::String& name, const NUIE::Point& position) :
 	ShapeNode (name, position)
 {
 
@@ -122,9 +122,9 @@ UnionNode::UnionNode (const std::wstring& name, const NUIE::Point& position) :
 void UnionNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), L"Transformation", NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
-	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shapes"), L"Shapes", NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
-	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), L"Shape")));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
+	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("shapes"), NE::String (L"Shapes"), NE::ValuePtr (nullptr), NE::OutputSlotConnectionMode::Multiple)));
+	RegisterUIOutputSlot (NUIE::UIOutputSlotPtr (new NUIE::UIOutputSlot (NE::SlotId ("shape"), NE::String (L"Shape"))));
 }
 
 NE::ValueConstPtr UnionNode::Calculate (NE::EvaluationEnv& env) const

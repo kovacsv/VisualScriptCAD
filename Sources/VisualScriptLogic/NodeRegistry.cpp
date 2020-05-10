@@ -20,130 +20,130 @@ const NUIE::NodeRegistry& GetNodeRegistry ()
 {
 	if (!initialized) {
 		nodeRegistry.RegisterNode (L"Input Nodes", L"Boolean",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::BooleanNode (L"Boolean", position, true));}
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::BooleanNode (NE::String (L"Boolean"), position, true));}
 		);
 		nodeRegistry.RegisterNode (L"Input Nodes", L"Integer",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::IntegerUpDownNode (L"Integer", position, 0, 1));}
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::IntegerUpDownNode (NE::String (L"Integer"), position, 0, 1));}
 		);
 		nodeRegistry.RegisterNode (L"Input Nodes", L"Number",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleUpDownNode (L"Number", position, 0.0, 1.0)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleUpDownNode (NE::String (L"Number"), position, 0.0, 1.0)); }
 		);
 		nodeRegistry.RegisterNode (L"Input Nodes", L"Integer Increment",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::IntegerIncrementedNode (L"Int Icrement", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::IntegerIncrementedNode (NE::String (L"Int Icrement"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Input Nodes", L"Number Increment",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleIncrementedNode (L"Num Increment", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleIncrementedNode (NE::String (L"Num Increment"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Input Nodes", L"Number Distribute",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleDistributedNode (L"Num Distribute", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DoubleDistributedNode (NE::String (L"Num Distribute"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Input Nodes", L"List Builder",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::ListBuilderNode (L"List Builder", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::ListBuilderNode (NE::String (L"List Builder"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Arithmetic Nodes", L"Addition",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::AdditionNode (L"Addition", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::AdditionNode (NE::String (L"Addition"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Arithmetic Nodes", L"Subtraction",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::SubtractionNode (L"Subtraction", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::SubtractionNode (NE::String (L"Subtraction"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Arithmetic Nodes", L"Multiplication",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::MultiplicationNode (L"Multiplication", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::MultiplicationNode (NE::String (L"Multiplication"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Arithmetic Nodes", L"Division",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DivisionNode (L"Division", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::DivisionNode (NE::String (L"Division"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Arithmetic Nodes", L"Expression",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ExpressionNode (L"Expression", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ExpressionNode (NE::String (L"Expression"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Point Nodes", L"Point 2D",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new Point2DNode (L"Point 2D", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new Point2DNode (NE::String (L"Point 2D"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Point Nodes", L"Point",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointNode (L"Point", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PointNode (NE::String (L"Point"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Point Nodes", L"Vector",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new VectorNode (L"Vector", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new VectorNode (NE::String (L"Vector"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Point Nodes", L"Line Points",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new LinePointsNode (L"Line Points", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new LinePointsNode (NE::String (L"Line Points"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Point Nodes", L"Arc Points",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ArcPointsNode (L"Arc Points", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ArcPointsNode (NE::String (L"Arc Points"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Material",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MaterialNode (L"Material", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MaterialNode (NE::String (L"Material"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Box",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BoxNode (L"Box", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BoxNode (NE::String (L"Box"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Box Shell",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BoxShellNode (L"Box Shell", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BoxShellNode (NE::String (L"Box Shell"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Cylinder",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderNode (L"Cylinder", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderNode (NE::String (L"Cylinder"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Cylinder Shell",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderShellNode (L"Cylinder Shell", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new CylinderShellNode (NE::String (L"Cylinder Shell"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Cone",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ConeNode (L"Cone", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ConeNode (NE::String (L"Cone"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Sphere",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new SphereNode (L"Sphere", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new SphereNode (NE::String (L"Sphere"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Torus",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TorusNode (L"Torus", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TorusNode (NE::String (L"Torus"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Prism",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismNode (L"Prism", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismNode (NE::String (L"Prism"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Prism Shell",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismShellNode (L"Prism Shell", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PrismShellNode (NE::String (L"Prism Shell"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Shape Nodes", L"Platonic",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PlatonicNode (L"Platonic", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new PlatonicNode (NE::String (L"Platonic"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Matrix Nodes", L"Translation Matrix",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixNode (L"Translation Matrix", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixNode (NE::String (L"Translation Matrix"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Matrix Nodes", L"Translation Matrix XYZ",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixXYZNode (L"Translation Matrix XYZ", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslationMatrixXYZNode (NE::String (L"Translation Matrix XYZ"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Matrix Nodes", L"Rotation Matrix",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotationMatrixNode (L"Rotation Matrix", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotationMatrixNode (NE::String (L"Rotation Matrix"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Matrix Nodes", L"Scale Matrix",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ScaleMatrixNode (L"Scale Matrix", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new ScaleMatrixNode (NE::String (L"Scale Matrix"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Matrix Nodes", L"Matrix Combination",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MatrixCombinationNode (L"Matrix Combination", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new MatrixCombinationNode (NE::String (L"Matrix Combination"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Transformation Nodes", L"Transform Point",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (L"Transform Point", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformPointNode (NE::String (L"Transform Point"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Transformation Nodes", L"Translate Shape",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeNode (L"Translate Shape", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeNode (NE::String (L"Translate Shape"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Transformation Nodes", L"Translate Shape XYZ",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeXYZNode (L"Translate Shape XYZ", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TranslateShapeXYZNode (NE::String (L"Translate Shape XYZ"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Transformation Nodes", L"Rotate Shape",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotateShapeNode (L"Rotate Shape", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new RotateShapeNode (NE::String (L"Rotate Shape"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Transformation Nodes", L"Transform Shape",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformShapeNode (L"Transform Shape", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new TransformShapeNode (NE::String (L"Transform Shape"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Boolean Nodes", L"Difference",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Difference", position, BooleanNode::Operation::Difference)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (NE::String (L"Difference"), position, BooleanNode::Operation::Difference)); }
 		);
 		nodeRegistry.RegisterNode (L"Boolean Nodes", L"Intersection",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (L"Intersection", position, BooleanNode::Operation::Intersection)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BooleanNode (NE::String (L"Intersection"), position, BooleanNode::Operation::Intersection)); }
 		);
 		nodeRegistry.RegisterNode (L"Boolean Nodes", L"Union",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new UnionNode (L"Union", position)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new UnionNode (NE::String (L"Union"), position)); }
 		);
 		nodeRegistry.RegisterNode (L"Other Nodes", L"Viewer",
-			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::MultiLineViewerNode (L"Viewer", position, 5)); }
+			[] (const NUIE::Point& position) { return NUIE::UINodePtr (new BI::MultiLineViewerNode (NE::String (L"Viewer"), position, 5)); }
 		);
 		initialized = true;
 	}
