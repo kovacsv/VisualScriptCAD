@@ -40,7 +40,7 @@ BoxNode::BoxNode (const NE::String& name, const NUIE::Point& position) :
 void BoxNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), NE::String (L"Size A"), NE::ValuePtr (new NE::FloatValue (1.0)), NE::OutputSlotConnectionMode::Single)));
@@ -120,7 +120,7 @@ BoxShellNode::BoxShellNode (const NE::String& name, const NUIE::Point& position)
 void BoxShellNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("a"), NE::String (L"Size A"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));
@@ -204,7 +204,7 @@ CylinderNode::CylinderNode (const NE::String& name, const NUIE::Point& position)
 void CylinderNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
@@ -286,7 +286,7 @@ CylinderShellNode::CylinderShellNode (const NE::String& name, const NUIE::Point&
 void CylinderShellNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
@@ -372,7 +372,7 @@ ConeNode::ConeNode (const NE::String& name, const NUIE::Point& position) :
 void ConeNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("topradius"), NE::String (L"Top Radius"), NE::ValuePtr (new NE::FloatValue (0.3f)), NE::OutputSlotConnectionMode::Single)));
@@ -458,7 +458,7 @@ SphereNode::SphereNode (const NE::String& name, const NUIE::Point& position) :
 void SphereNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
@@ -536,7 +536,7 @@ TorusNode::TorusNode (const NE::String& name, const NUIE::Point& position) :
 void TorusNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("outerradius"), NE::String (L"Outer Radius"), NE::ValuePtr (new NE::FloatValue (0.5f)), NE::OutputSlotConnectionMode::Single)));
@@ -630,7 +630,7 @@ PlatonicNode::PlatonicNode (const NE::String& name, const NUIE::Point& position)
 void PlatonicNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("material"), NE::String (L"Material"), NE::ValuePtr (new MaterialValue (Modeler::DefaultMaterial)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("transformation"), NE::String (L"Transformation"), NE::ValuePtr (new TransformationValue (glm::dmat4 (1.0))), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("radius"), NE::String (L"Radius"), NE::ValuePtr (new NE::FloatValue (1.0f)), NE::OutputSlotConnectionMode::Single)));

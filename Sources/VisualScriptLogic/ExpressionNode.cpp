@@ -24,7 +24,7 @@ ExpressionNode::ExpressionNode (const NE::String& name, const NUIE::Point& posit
 
 void ExpressionNode::Initialize ()
 {
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("x"), NE::String (L"X"), NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("y"), NE::String (L"Y"), NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("z"), NE::String (L"Z"), NE::ValuePtr (new NE::DoubleValue (0.0)), NE::OutputSlotConnectionMode::Single)));

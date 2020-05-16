@@ -71,7 +71,7 @@ MaterialNode::MaterialNode (const NE::String& name, const NUIE::Point& position)
 
 void MaterialNode::Initialize ()
 {
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("red"), NE::String (L"Red"), NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("green"), NE::String (L"Green"), NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));
 	RegisterUIInputSlot (NUIE::UIInputSlotPtr (new NUIE::UIInputSlot (NE::SlotId ("blue"), NE::String (L"Blue"), NE::ValuePtr (new NE::IntValue (255)), NE::OutputSlotConnectionMode::Single)));

@@ -27,7 +27,7 @@ PointNodeBase::PointNodeBase (const NE::String& name, const NUIE::Point& positio
 
 void PointNodeBase::Initialize ()
 {
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 }
 
 void PointNodeBase::RegisterParameters (NUIE::NodeParameterList& parameterList) const

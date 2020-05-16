@@ -26,7 +26,7 @@ TransformationMatrixNode::TransformationMatrixNode (const NE::String& name, cons
 
 void TransformationMatrixNode::Initialize ()
 {
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 }
 
 NE::Stream::Status TransformationMatrixNode::Read (NE::InputStream& inputStream)

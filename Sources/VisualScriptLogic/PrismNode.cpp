@@ -67,7 +67,7 @@ PrismNode::PrismNode (const NE::String& name, const NUIE::Point& position) :
 void PrismNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 
 	NE::ListValuePtr basePointsDefaultValue (new NE::ListValue ());
 	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (0.0, 0.0))));
@@ -173,7 +173,7 @@ PrismShellNode::PrismShellNode (const NE::String& name, const NUIE::Point& posit
 void PrismShellNode::Initialize ()
 {
 	ShapeNode::Initialize ();
-	RegisterFeature (NUIE::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
+	RegisterFeature (BI::NodeFeaturePtr (new BI::ValueCombinationFeature ()));
 
 	NE::ListValuePtr basePointsDefaultValue (new NE::ListValue ());
 	basePointsDefaultValue->Push (NE::ValuePtr (new Point2DValue (glm::vec2 (0.0, 0.0))));
