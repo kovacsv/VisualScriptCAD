@@ -41,7 +41,7 @@ NE::ValueConstPtr ExpressionNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool success = BI::CombineValues (this, {x, y, z}, [&] (const NE::ValueCombination& combination) {
+	bool success = BI::ValueCombinationFeature::CombineValues (this, {x, y, z}, [&] (const NE::ValueCombination& combination) {
 		BoostOperations::IdentifierMap identifierMap;
 		identifierMap.insert ({ L"x", NE::NumberValue::ToDouble (combination.GetValue (0))});
 		identifierMap.insert ({ L"y", NE::NumberValue::ToDouble (combination.GetValue (1))});

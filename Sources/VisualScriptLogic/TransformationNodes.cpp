@@ -70,7 +70,7 @@ NE::ValueConstPtr TranslationMatrixNode::Calculate (NE::EvaluationEnv& env) cons
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {offsetValue}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {offsetValue}, [&] (const NE::ValueCombination& combination) {
 		glm::vec3 offset = CoordinateValue::Get (combination.GetValue (0));
 		glm::mat4 transformation = glm::translate (glm::mat4 (1.0f), offset);
 		result->Push (NE::ValuePtr (new TransformationValue (transformation)));
@@ -125,7 +125,7 @@ NE::ValueConstPtr TranslationMatrixXYZNode::Calculate (NE::EvaluationEnv& env) c
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
 		glm::vec3 offset (
 			NE::NumberValue::ToFloat (combination.GetValue (0)),
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -192,7 +192,7 @@ NE::ValueConstPtr RotationMatrixNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {angleValue, originValue, axisValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {angleValue, originValue, axisValue}, [&] (const NE::ValueCombination& combination) {
 		float angle = NE::NumberValue::ToFloat (combination.GetValue (0));
 		glm::vec3 origin = CoordinateValue::Get (combination.GetValue (1));
 		glm::vec3 axis = CoordinateValue::Get (combination.GetValue (2));
@@ -265,7 +265,7 @@ NE::ValueConstPtr ScaleMatrixNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {scaleXValue, scaleYValue, scaleZValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {scaleXValue, scaleYValue, scaleZValue}, [&] (const NE::ValueCombination& combination) {
 		glm::vec3 scale (
 			NE::NumberValue::ToFloat (combination.GetValue (0)),
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -337,7 +337,7 @@ NE::ValueConstPtr MatrixCombinationNode::Calculate (NE::EvaluationEnv& env) cons
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {transformation1Value, transformation2Value}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {transformation1Value, transformation2Value}, [&] (const NE::ValueCombination& combination) {
 		glm::dmat4 transformation1 = TransformationValue::Get (combination.GetValue (0));
 		glm::dmat4 transformation2 = TransformationValue::Get (combination.GetValue (1));
 		glm::dmat4 transformation = transformation2 * transformation1;

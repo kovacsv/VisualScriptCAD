@@ -32,7 +32,7 @@ NE::ValueConstPtr TransformPointNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {pointValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {pointValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
 		glm::dvec3 point (CoordinateValue::Get (combination.GetValue (0)));
 		glm::dmat4 transformation (TransformationValue::Get (combination.GetValue (1)));
 		glm::dvec3 transformed = glm::dvec3 (transformation * glm::dvec4 (point, 1.0));

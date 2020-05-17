@@ -83,7 +83,7 @@ NE::ValueConstPtr Point2DNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {x, y}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {x, y}, [&] (const NE::ValueCombination& combination) {
 		glm::vec2 point (
 			NE::NumberValue::ToFloat (combination.GetValue (0)),
 			NE::NumberValue::ToFloat (combination.GetValue (1))
@@ -147,7 +147,7 @@ NE::ValueConstPtr CoordinateNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {x, y, z}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {x, y, z}, [&] (const NE::ValueCombination& combination) {
 		glm::vec3 vec (
 			NE::NumberValue::ToFloat (combination.GetValue (0)),
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -307,7 +307,7 @@ NE::ValueConstPtr LinePointsNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool success = BI::CombineValues (this, {begValue, endValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool success = BI::ValueCombinationFeature::CombineValues (this, {begValue, endValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
 		glm::dvec3 beg (CoordinateValue::Get (combination.GetValue (0)));
 		glm::dvec3 end (CoordinateValue::Get (combination.GetValue (1)));
 		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (2));
@@ -384,7 +384,7 @@ NE::ValueConstPtr ArcPointsNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool success = BI::CombineValues (this, {radiusValue, angleValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool success = BI::ValueCombinationFeature::CombineValues (this, {radiusValue, angleValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
 		float radius = NE::NumberValue::ToFloat (combination.GetValue (0));
 		float angle = NE::NumberValue::ToFloat (combination.GetValue (1));
 		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (2));

@@ -40,7 +40,7 @@ NE::ValueConstPtr TranslateShapeNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {shapeValue, offsetValue}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {shapeValue, offsetValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
 		glm::vec3 offset = CoordinateValue::Get (combination.GetValue (1));
 		glm::mat4 transformation = glm::translate (glm::mat4 (1.0f), offset);
@@ -108,7 +108,7 @@ NE::ValueConstPtr TranslateShapeXYZNode::Calculate (NE::EvaluationEnv& env) cons
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {shapeValue, offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {shapeValue, offsetXValue, offsetYValue, offsetZValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
 		glm::vec3 offset (
 			NE::NumberValue::ToFloat (combination.GetValue (1)),
@@ -178,7 +178,7 @@ NE::ValueConstPtr RotateShapeNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {shapeValue, angleValue, originValue, axisValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {shapeValue, angleValue, originValue, axisValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
 		float angle = NE::NumberValue::ToFloat (combination.GetValue (1));
 		glm::vec3 origin = CoordinateValue::Get (combination.GetValue (2));
@@ -245,7 +245,7 @@ NE::ValueConstPtr TransformShapeNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	BI::CombineValues (this, {shapeValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
+	BI::ValueCombinationFeature::CombineValues (this, {shapeValue, transformationValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (ShapeValue::Get (combination.GetValue (0)));
 		glm::dmat4 transformation (TransformationValue::Get (combination.GetValue (1)));
 		Modeler::ShapePtr transformed = shape->Transform (transformation);

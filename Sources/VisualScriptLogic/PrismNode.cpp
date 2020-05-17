@@ -111,7 +111,7 @@ NE::ValueConstPtr PrismNode::Calculate (NE::EvaluationEnv& env) const
 	});
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, heightValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, heightValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (new Modeler::PrismShape (
 			MaterialValue::Get (combination.GetValue (0)),
 			TransformationValue::Get (combination.GetValue (1)),
@@ -209,7 +209,7 @@ NE::ValueConstPtr PrismShellNode::Calculate (NE::EvaluationEnv& env) const
 	});
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, heightValue, thicknessValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, heightValue, thicknessValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (new Modeler::PrismShellShape (
 			MaterialValue::Get (combination.GetValue (0)),
 			TransformationValue::Get (combination.GetValue (1)),

@@ -62,7 +62,7 @@ NE::ValueConstPtr BoxNode::Calculate (NE::EvaluationEnv& env) const
 	}
 	
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, aValue, bValue, cValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, aValue, bValue, cValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (new Modeler::BoxShape (
 			MaterialValue::Get (combination.GetValue (0)),
 			TransformationValue::Get (combination.GetValue (1)),
@@ -144,7 +144,7 @@ NE::ValueConstPtr BoxShellNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, aValue, bValue, cValue, thicknessValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, aValue, bValue, cValue, thicknessValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (new Modeler::BoxShellShape (
 			MaterialValue::Get (combination.GetValue (0)),
 			TransformationValue::Get (combination.GetValue (1)),
@@ -226,7 +226,7 @@ NE::ValueConstPtr CylinderNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, radiusValue, heightValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, radiusValue, heightValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
 		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (4));
 		Modeler::ShapePtr shape (new Modeler::CylinderShape (
 			MaterialValue::Get (combination.GetValue (0)),
@@ -310,7 +310,7 @@ NE::ValueConstPtr CylinderShellNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, radiusValue, heightValue, thicknessValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, radiusValue, heightValue, thicknessValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
 		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (5));
 		Modeler::ShapePtr shape (new Modeler::CylinderShellShape (
 			MaterialValue::Get (combination.GetValue (0)),
@@ -396,7 +396,7 @@ NE::ValueConstPtr ConeNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, topRadiusValue, bottomRadiusValue, heightValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, topRadiusValue, bottomRadiusValue, heightValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
 		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (5));
 		Modeler::ShapePtr shape (new Modeler::ConeShape (
 			MaterialValue::Get (combination.GetValue (0)),
@@ -478,7 +478,7 @@ NE::ValueConstPtr SphereNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, radiusValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, radiusValue, segmentationValue}, [&] (const NE::ValueCombination& combination) {
 		int segmentation = NE::NumberValue::ToInteger (combination.GetValue (3));
 		Modeler::ShapePtr shape (new Modeler::SphereShape (
 			MaterialValue::Get (combination.GetValue (0)),
@@ -560,7 +560,7 @@ NE::ValueConstPtr TorusNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, outerRadiusValue, innerRadiusValue, outerSegmentationValue, innerSegmentationValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, outerRadiusValue, innerRadiusValue, outerSegmentationValue, innerSegmentationValue}, [&] (const NE::ValueCombination& combination) {
 		int outerSegmentation = NE::NumberValue::ToInteger (combination.GetValue (4));
 		int innerSegmentation = NE::NumberValue::ToInteger (combination.GetValue (5));
 		Modeler::ShapePtr shape (new Modeler::TorusShape (
@@ -648,7 +648,7 @@ NE::ValueConstPtr PlatonicNode::Calculate (NE::EvaluationEnv& env) const
 	}
 
 	NE::ListValuePtr result (new NE::ListValue ());
-	bool isValid = BI::CombineValues (this, {material, transformation, radiusValue}, [&] (const NE::ValueCombination& combination) {
+	bool isValid = BI::ValueCombinationFeature::CombineValues (this, {material, transformation, radiusValue}, [&] (const NE::ValueCombination& combination) {
 		Modeler::ShapePtr shape (new Modeler::PlatonicShape (
 			MaterialValue::Get (combination.GetValue (0)),
 			TransformationValue::Get (combination.GetValue (1)),
