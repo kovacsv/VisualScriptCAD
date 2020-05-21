@@ -86,9 +86,9 @@ NE::ValueConstPtr BoxNode::Calculate (NE::EvaluationEnv& env) const
 void BoxNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxNode, NE::FloatValue> (parameterList, L"Size A", NUIE::ParameterType::Float, NE::SlotId ("a"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxNode, NE::FloatValue> (parameterList, L"Size B", NUIE::ParameterType::Float, NE::SlotId ("b"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxNode, NE::FloatValue> (parameterList, L"Size C", NUIE::ParameterType::Float, NE::SlotId ("c"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxNode, NE::FloatValue> (parameterList, NE::SlotId ("a"), L"Size A", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxNode, NE::FloatValue> (parameterList, NE::SlotId ("b"), L"Size B", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxNode, NE::FloatValue> (parameterList, NE::SlotId ("c"), L"Size C", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status BoxNode::Read (NE::InputStream& inputStream)
@@ -169,10 +169,10 @@ NE::ValueConstPtr BoxShellNode::Calculate (NE::EvaluationEnv& env) const
 void BoxShellNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Size A", NUIE::ParameterType::Float, NE::SlotId ("a"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Size B", NUIE::ParameterType::Float, NE::SlotId ("b"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Size C", NUIE::ParameterType::Float, NE::SlotId ("c"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, L"Thickness", NUIE::ParameterType::Float, NE::SlotId ("thickness"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, NE::SlotId ("a"), L"Size A", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, NE::SlotId ("b"), L"Size B", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, NE::SlotId ("c"), L"Size C", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<BoxShellNode, NE::FloatValue> (parameterList, NE::SlotId ("thickness"), L"Thickness", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status BoxShellNode::Read (NE::InputStream& inputStream)
@@ -252,9 +252,9 @@ NE::ValueConstPtr CylinderNode::Calculate (NE::EvaluationEnv& env) const
 void CylinderNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderNode, NE::FloatValue> (parameterList, NE::SlotId ("radius"), L"Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderNode, NE::FloatValue> (parameterList, NE::SlotId ("height"), L"Height", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderNode, NE::IntValue> (parameterList, NE::SlotId ("segmentation"), L"Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status CylinderNode::Read (NE::InputStream& inputStream)
@@ -337,10 +337,10 @@ NE::ValueConstPtr CylinderShellNode::Calculate (NE::EvaluationEnv& env) const
 void CylinderShellNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::FloatValue> (parameterList, L"Thickness", NUIE::ParameterType::Float, NE::SlotId ("thickness"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::FloatValue> (parameterList, NE::SlotId ("radius"), L"Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::FloatValue> (parameterList, NE::SlotId ("height"), L"Height", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::FloatValue> (parameterList, NE::SlotId ("thickness"), L"Thickness", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CylinderShellNode, NE::IntValue> (parameterList, NE::SlotId ("segmentation"), L"Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status CylinderShellNode::Read (NE::InputStream& inputStream)
@@ -423,10 +423,10 @@ NE::ValueConstPtr ConeNode::Calculate (NE::EvaluationEnv& env) const
 void ConeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::FloatValue> (parameterList, L"Top Radius", NUIE::ParameterType::Float, NE::SlotId ("topradius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::FloatValue> (parameterList, L"Bottom Radius", NUIE::ParameterType::Float, NE::SlotId ("bottomradius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::FloatValue> (parameterList, NE::SlotId ("topradius"), L"Top Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::FloatValue> (parameterList, NE::SlotId ("bottomradius"), L"Bottom Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::FloatValue> (parameterList, NE::SlotId ("height"), L"Height", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ConeNode, NE::IntValue> (parameterList, NE::SlotId ("segmentation"), L"Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status ConeNode::Read (NE::InputStream& inputStream)
@@ -503,8 +503,8 @@ NE::ValueConstPtr SphereNode::Calculate (NE::EvaluationEnv& env) const
 void SphereNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<SphereNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<SphereNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<SphereNode, NE::FloatValue> (parameterList, NE::SlotId ("radius"), L"Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<SphereNode, NE::IntValue> (parameterList, NE::SlotId ("segmentation"), L"Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status SphereNode::Read (NE::InputStream& inputStream)
@@ -588,10 +588,10 @@ NE::ValueConstPtr TorusNode::Calculate (NE::EvaluationEnv& env) const
 void TorusNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::FloatValue> (parameterList, L"Outer Radius", NUIE::ParameterType::Float, NE::SlotId ("outerradius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::FloatValue> (parameterList, L"Inner Radius", NUIE::ParameterType::Float, NE::SlotId ("innerradius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::IntValue> (parameterList, L"Outer Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("outersegmentation"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::IntValue> (parameterList, L"Inner Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("innersegmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::FloatValue> (parameterList, NE::SlotId ("outerradius"), L"Outer Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::FloatValue> (parameterList, NE::SlotId ("innerradius"), L"Inner Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::IntValue> (parameterList, NE::SlotId ("outersegmentation"), L"Outer Segmentation", NUIE::ParameterType::Integer);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TorusNode, NE::IntValue> (parameterList, NE::SlotId ("innersegmentation"), L"Inner Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status TorusNode::Read (NE::InputStream& inputStream)
@@ -735,7 +735,7 @@ void PlatonicNode::RegisterParameters (NUIE::NodeParameterList& parameterList) c
 	};
 
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<PlatonicNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<PlatonicNode, NE::FloatValue> (parameterList, NE::SlotId ("radius"), L"Radius", NUIE::ParameterType::Float);
 	parameterList.AddParameter (NUIE::NodeParameterPtr (new ShapeTypeParameter ()));
 }
 

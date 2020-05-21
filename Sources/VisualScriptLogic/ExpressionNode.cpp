@@ -101,9 +101,9 @@ void ExpressionNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegi
 void ExpressionNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	BI::BasicUINode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<ExpressionNode, NE::DoubleValue> (parameterList, L"X", NUIE::ParameterType::Double, NE::SlotId ("x"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ExpressionNode, NE::DoubleValue> (parameterList, L"Y", NUIE::ParameterType::Double, NE::SlotId ("y"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ExpressionNode, NE::DoubleValue> (parameterList, L"Z", NUIE::ParameterType::Double, NE::SlotId ("z"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<ExpressionNode, NE::DoubleValue> (parameterList, NE::SlotId ("x"), L"X", NUIE::ParameterType::Double);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ExpressionNode, NE::DoubleValue> (parameterList, NE::SlotId ("y"), L"Y", NUIE::ParameterType::Double);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ExpressionNode, NE::DoubleValue> (parameterList, NE::SlotId ("z"), L"Z", NUIE::ParameterType::Double);
 }
 
 NE::Stream::Status ExpressionNode::Read (NE::InputStream& inputStream)

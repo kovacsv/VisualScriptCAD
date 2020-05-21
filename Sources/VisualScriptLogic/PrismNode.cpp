@@ -141,7 +141,7 @@ void PrismNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegistrat
 void PrismNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<PrismNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<PrismNode, NE::FloatValue> (parameterList, NE::SlotId ("height"), L"Height", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status PrismNode::Read (NE::InputStream& inputStream)
@@ -239,8 +239,8 @@ void PrismShellNode::RegisterCommands (NUIE::NodeCommandRegistrator& commandRegi
 void PrismShellNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<PrismShellNode, NE::FloatValue> (parameterList, L"Height", NUIE::ParameterType::Float, NE::SlotId ("height"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<PrismShellNode, NE::FloatValue> (parameterList, L"Thickness", NUIE::ParameterType::Float, NE::SlotId ("thickness"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<PrismShellNode, NE::FloatValue> (parameterList, NE::SlotId ("height"), L"Height", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<PrismShellNode, NE::FloatValue> (parameterList, NE::SlotId ("thickness"), L"Thickness", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status PrismShellNode::Read (NE::InputStream& inputStream)

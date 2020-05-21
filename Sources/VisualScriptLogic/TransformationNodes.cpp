@@ -142,9 +142,9 @@ NE::ValueConstPtr TranslationMatrixXYZNode::Calculate (NE::EvaluationEnv& env) c
 void TranslationMatrixXYZNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	TransformationMatrixNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, NE::SlotId ("offsetx"), L"Offset X", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, NE::SlotId ("offsety"), L"Offset Y", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslationMatrixXYZNode, NE::FloatValue> (parameterList, NE::SlotId ("offsetz"), L"Offset Z", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status TranslationMatrixXYZNode::Read (NE::InputStream& inputStream)
@@ -216,7 +216,7 @@ NE::ValueConstPtr RotationMatrixNode::Calculate (NE::EvaluationEnv& env) const
 void RotationMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	TransformationMatrixNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, L"Angle", NUIE::ParameterType::Float, NE::SlotId ("angle"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<RotationMatrixNode, NE::FloatValue> (parameterList, NE::SlotId ("angle"), L"Angle", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status RotationMatrixNode::Read (NE::InputStream& inputStream)
@@ -288,9 +288,9 @@ NE::ValueConstPtr ScaleMatrixNode::Calculate (NE::EvaluationEnv& env) const
 void ScaleMatrixNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	TransformationMatrixNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, L"Scale X", NUIE::ParameterType::Float, NE::SlotId ("scalex"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, L"Scale Y", NUIE::ParameterType::Float, NE::SlotId ("scaley"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, L"Scale Z", NUIE::ParameterType::Float, NE::SlotId ("scalez"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, NE::SlotId ("scalex"), L"Scale X", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, NE::SlotId ("scaley"), L"Scale Y", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ScaleMatrixNode, NE::FloatValue> (parameterList, NE::SlotId ("scalez"), L"Scale Z", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status ScaleMatrixNode::Read (NE::InputStream& inputStream)

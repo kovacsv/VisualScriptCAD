@@ -98,8 +98,8 @@ NE::ValueConstPtr Point2DNode::Calculate (NE::EvaluationEnv& env) const
 void Point2DNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	PointNodeBase::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<Point2DNode, NE::FloatValue> (parameterList, L"X", NUIE::ParameterType::Float, NE::SlotId ("x"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<Point2DNode, NE::FloatValue> (parameterList, L"Y", NUIE::ParameterType::Float, NE::SlotId ("y"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<Point2DNode, NE::FloatValue> (parameterList, NE::SlotId ("x"), L"X", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<Point2DNode, NE::FloatValue> (parameterList, NE::SlotId ("y"), L"Y", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status Point2DNode::Read (NE::InputStream& inputStream)
@@ -170,9 +170,9 @@ NE::ValueConstPtr CoordinateNode::Calculate (NE::EvaluationEnv& env) const
 void CoordinateNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	PointNodeBase::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<CoordinateNode, NE::FloatValue> (parameterList, L"X", NUIE::ParameterType::Float, NE::SlotId ("x"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CoordinateNode, NE::FloatValue> (parameterList, L"Y", NUIE::ParameterType::Float, NE::SlotId ("y"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<CoordinateNode, NE::FloatValue> (parameterList, L"Z", NUIE::ParameterType::Float, NE::SlotId ("z"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<CoordinateNode, NE::FloatValue> (parameterList, NE::SlotId ("x"), L"X", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CoordinateNode, NE::FloatValue> (parameterList, NE::SlotId ("y"), L"Y", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<CoordinateNode, NE::FloatValue> (parameterList, NE::SlotId ("z"), L"Z", NUIE::ParameterType::Float);
 }
 
 NE::Stream::Status CoordinateNode::Read (NE::InputStream& inputStream)
@@ -336,7 +336,7 @@ NE::ValueConstPtr LinePointsNode::Calculate (NE::EvaluationEnv& env) const
 void LinePointsNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	PointNodeBase::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<LinePointsNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<LinePointsNode, NE::IntValue> (parameterList, NE::SlotId ("segmentation"), L"Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status LinePointsNode::Read (NE::InputStream& inputStream)
@@ -414,9 +414,9 @@ NE::ValueConstPtr ArcPointsNode::Calculate (NE::EvaluationEnv& env) const
 void ArcPointsNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	PointNodeBase::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<ArcPointsNode, NE::FloatValue> (parameterList, L"Radius", NUIE::ParameterType::Float, NE::SlotId ("radius"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ArcPointsNode, NE::FloatValue> (parameterList, L"Angle", NUIE::ParameterType::Float, NE::SlotId ("angle"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<ArcPointsNode, NE::IntValue> (parameterList, L"Segmentation", NUIE::ParameterType::Integer, NE::SlotId ("segmentation"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<ArcPointsNode, NE::FloatValue> (parameterList, NE::SlotId ("radius"), L"Radius", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ArcPointsNode, NE::FloatValue> (parameterList, NE::SlotId ("angle"), L"Angle", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<ArcPointsNode, NE::IntValue> (parameterList, NE::SlotId ("segmentation"), L"Segmentation", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status ArcPointsNode::Read (NE::InputStream& inputStream)

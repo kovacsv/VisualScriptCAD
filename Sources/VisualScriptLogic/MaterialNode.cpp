@@ -104,9 +104,9 @@ NE::ValueConstPtr MaterialNode::Calculate (NE::EvaluationEnv& env) const
 void MaterialNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	BI::BasicUINode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<MaterialNode, NE::IntValue> (parameterList, L"Red", NUIE::ParameterType::Integer, NE::SlotId ("red"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<MaterialNode, NE::IntValue> (parameterList, L"Green", NUIE::ParameterType::Integer, NE::SlotId ("green"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<MaterialNode, NE::IntValue> (parameterList, L"Blue", NUIE::ParameterType::Integer, NE::SlotId ("blue"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<MaterialNode, NE::IntValue> (parameterList, NE::SlotId ("red"), L"Red", NUIE::ParameterType::Integer);
+	NUIE::RegisterSlotDefaultValueNodeParameter<MaterialNode, NE::IntValue> (parameterList, NE::SlotId ("green"), L"Green", NUIE::ParameterType::Integer);
+	NUIE::RegisterSlotDefaultValueNodeParameter<MaterialNode, NE::IntValue> (parameterList, NE::SlotId ("blue"), L"Blue", NUIE::ParameterType::Integer);
 }
 
 NE::Stream::Status MaterialNode::Read (NE::InputStream& inputStream)

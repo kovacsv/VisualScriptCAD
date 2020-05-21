@@ -92,9 +92,9 @@ void TranslateShapeXYZNode::Initialize ()
 void TranslateShapeXYZNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, L"Offset X", NUIE::ParameterType::Float, NE::SlotId ("offsetx"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, L"Offset Y", NUIE::ParameterType::Float, NE::SlotId ("offsety"));
-	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, L"Offset Z", NUIE::ParameterType::Float, NE::SlotId ("offsetz"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, NE::SlotId ("offsetx"), L"Offset X", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, NE::SlotId ("offsety"), L"Offset Y", NUIE::ParameterType::Float);
+	NUIE::RegisterSlotDefaultValueNodeParameter<TranslateShapeXYZNode, NE::FloatValue> (parameterList, NE::SlotId ("offsetz"), L"Offset Z", NUIE::ParameterType::Float);
 }
 
 NE::ValueConstPtr TranslateShapeXYZNode::Calculate (NE::EvaluationEnv& env) const
@@ -164,7 +164,7 @@ void RotateShapeNode::Initialize ()
 void RotateShapeNode::RegisterParameters (NUIE::NodeParameterList& parameterList) const
 {
 	ShapeNode::RegisterParameters (parameterList);
-	NUIE::RegisterSlotDefaultValueNodeParameter<RotateShapeNode, NE::FloatValue> (parameterList, L"Angle", NUIE::ParameterType::Float, NE::SlotId ("angle"));
+	NUIE::RegisterSlotDefaultValueNodeParameter<RotateShapeNode, NE::FloatValue> (parameterList, NE::SlotId ("angle"), L"Angle", NUIE::ParameterType::Float);
 }
 
 NE::ValueConstPtr RotateShapeNode::Calculate (NE::EvaluationEnv& env) const
