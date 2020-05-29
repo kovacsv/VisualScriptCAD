@@ -23,7 +23,7 @@ public:
 	virtual void						OnValuesRecalculated () override;
 	
 	virtual void						OnRedrawRequested () override;
-	virtual NUIE::EventHandlers&		GetEventHandlers () override;
+	virtual NUIE::EventHandler&			GetEventHandler () override;
 
 private:
 	NE::EvaluationEnv					evaluationEnv;

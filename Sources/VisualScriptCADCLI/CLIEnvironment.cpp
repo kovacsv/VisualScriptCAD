@@ -3,7 +3,7 @@
 #include "NE_StringConverter.hpp"
 #include "NUIE_SkinParams.hpp"
 #include "NUIE_DrawingContext.hpp"
-#include "NUIE_EventHandlers.hpp"
+#include "NUIE_EventHandler.hpp"
 
 namespace CLI
 {
@@ -61,10 +61,10 @@ void NodeUIEnvironment::OnRedrawRequested ()
 
 }
 
-NUIE::EventHandlers& NodeUIEnvironment::GetEventHandlers ()
+NUIE::EventHandler& NodeUIEnvironment::GetEventHandler ()
 {
-	static NUIE::NullEventHandlers nullEventHandlers;
-	return nullEventHandlers;
+	static NUIE::NullEventHandler nullEventHandler;
+	return nullEventHandler;
 }
 
 }

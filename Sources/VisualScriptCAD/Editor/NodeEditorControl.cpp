@@ -56,10 +56,10 @@ public:
 	NodeEditorUIEnvironment (	WXAS::NodeEditorControl* nodeEditorControl,
 								std::shared_ptr<NE::StringConverter> stringConverter,
 								std::shared_ptr<NUIE::SkinParams> skinParams,
-								std::shared_ptr<NUIE::EventHandlers> eventHandlers,
+								std::shared_ptr<NUIE::EventHandler> eventHandler,
 								NE::EvaluationEnv& evaluationEnv,
 								ModelUpdater& modelUpdater) :
-		WXAS::NodeEditorUIEnvironment (nodeEditorControl, stringConverter, skinParams, eventHandlers, evaluationEnv),
+		WXAS::NodeEditorUIEnvironment (nodeEditorControl, stringConverter, skinParams, eventHandler, evaluationEnv),
 		modelUpdater (modelUpdater)
 	{
 	}
@@ -98,7 +98,7 @@ NodeEditorControl::NodeEditorControl (wxWindow *parent, const std::shared_ptr<NE
 			nodeEditorControl,
 			NE::StringConverterPtr (new NE::BasicStringConverter (NE::GetDefaultStringSettings ())),
 			NUIE::SkinParamsPtr (new NUIE::BasicSkinParams (GetSkinParams ())),
-			NUIE::EventHandlersPtr (new WXAS::NodeEditorEventHandlers (nodeEditorControl)),
+			NUIE::EventHandlerPtr (new WXAS::NodeEditorEventHandler (nodeEditorControl)),
 			evalEnv, modelUpdater
 		)
 	);
