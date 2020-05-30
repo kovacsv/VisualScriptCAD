@@ -4,6 +4,7 @@
 #include "NUIE_SkinParams.hpp"
 #include "NUIE_DrawingContext.hpp"
 #include "NUIE_EventHandler.hpp"
+#include "NUIE_ClipboardHandler.hpp"
 
 namespace CLI
 {
@@ -65,6 +66,12 @@ NUIE::EventHandler& NodeUIEnvironment::GetEventHandler ()
 {
 	static NUIE::NullEventHandler nullEventHandler;
 	return nullEventHandler;
+}
+
+NUIE::ClipboardHandler& NodeUIEnvironment::GetClipboardHandler ()
+{
+	static NUIE::NullClipboardHandler nullClipboardHandler;
+	return nullClipboardHandler;
 }
 
 }
