@@ -61,17 +61,15 @@ def InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration):
 		solutionPath = os.path.join (cgalFolderPath, 'build', 'CGAL.sln')
 		BuildSolution (msBuildPath, solutionPath, msBuildConfiguration)
 		
-def InstallVisualScriptEngine (libName, targetFolder, msBuildPath, msBuildConfiguration):
-	vseName = libName + '-master'
-	vseZipUrl = 'https://github.com/kovacsv/' + libName + '/archive/master.zip'
-	vseZipPath = os.path.join (targetFolder, vseName + '.zip')
-	vseFolderPath = os.path.join (targetFolder, vseName)
-	if not os.path.exists (vseFolderPath):
-		DownloadFile (vseZipUrl, vseZipPath)
-		UnzipFile (vseZipPath, targetFolder)
-		CmakeProject (vseFolderPath, 'Build')
-		solutionPath = os.path.join (vseFolderPath, 'Build', libName + '.sln')
-		installProjectPath = os.path.join (vseFolderPath, 'Build', 'INSTALL.vcxproj')
+def InstallVisualScriptEngine (libName, libZipUrl, targetFolder, msBuildPath, msBuildConfiguration):
+	zipPath = os.path.join (targetFolder, libName + '.zip')
+	folderPath = os.path.join (targetFolder, libName)
+	if not os.path.exists (folderPath):
+		DownloadFile (libZipUrl, zipPath)
+		UnzipFile (zipPath, targetFolder)
+		CmakeProject (folderPath, 'Build')
+		solutionPath = os.path.join (folderPath, 'Build', libName + '.sln')
+		installProjectPath = os.path.join (folderPath, 'Build', 'INSTALL.vcxproj')
 		BuildSolution (msBuildPath, solutionPath, msBuildConfiguration)
 		BuildSolution (msBuildPath, installProjectPath, msBuildConfiguration)
 
@@ -92,8 +90,12 @@ def Main (argv):
 	
 	InstallwxWidgets (targetFolder, msBuildPath, msBuildConfiguration)
 	InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration)
-	InstallVisualScriptEngine ('VisualScriptEngine', targetFolder, msBuildPath, msBuildConfiguration)
-	InstallVisualScriptEngine ('VisualScriptEngineWxWidgets', targetFolder, msBuildPath, msBuildConfiguration)
+	
+	vseZipUrl = 'https://github.com/kovacsv/VisualScriptEngine/archive/0.2.10.zip'
+	vseWxZipUrl = 'https://github.com/kovacsv/VisualScriptEngineWxWidgets/archive/0.0.1.zip'
+	
+	InstallVisualScriptEngine ('VisualScriptEngine', vseZipUrl, targetFolder, msBuildPath, msBuildConfiguration)
+	InstallVisualScriptEngine ('VisualScriptEngineWxWidgets', vseWxZipUrl, targetFolder, msBuildPath, msBuildConfiguration)
 	return 0
 	
 sys.exit (Main (sys.argv))
