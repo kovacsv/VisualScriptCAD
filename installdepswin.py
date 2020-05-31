@@ -61,11 +61,13 @@ def InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration):
 		solutionPath = os.path.join (cgalFolderPath, 'build', 'CGAL.sln')
 		BuildSolution (msBuildPath, solutionPath, msBuildConfiguration)
 		
-def InstallVisualScriptEngine (libName, libZipUrl, targetFolder, msBuildPath, msBuildConfiguration):
+def InstallVisualScriptEngine (libName, libTag, targetFolder, msBuildPath, msBuildConfiguration):
+	zipUrl = 'https://github.com/kovacsv/' + libName + '/archive/' + libTag + '.zip'
 	zipPath = os.path.join (targetFolder, libName + '.zip')
-	folderPath = os.path.join (targetFolder, libName)
+	folderName = libName + '-' + libTag
+	folderPath = os.path.join (targetFolder, folderName)
 	if not os.path.exists (folderPath):
-		DownloadFile (libZipUrl, zipPath)
+		DownloadFile (zipUrl, zipPath)
 		UnzipFile (zipPath, targetFolder)
 		CmakeProject (folderPath, 'Build')
 		solutionPath = os.path.join (folderPath, 'Build', libName + '.sln')
@@ -91,11 +93,8 @@ def Main (argv):
 	InstallwxWidgets (targetFolder, msBuildPath, msBuildConfiguration)
 	InstallCGAL (targetFolder, msBuildPath, msBuildConfiguration)
 	
-	vseZipUrl = 'https://github.com/kovacsv/VisualScriptEngine/archive/0.2.10.zip'
-	vseWxZipUrl = 'https://github.com/kovacsv/VisualScriptEngineWxWidgets/archive/0.0.1.zip'
-	
-	InstallVisualScriptEngine ('VisualScriptEngine', vseZipUrl, targetFolder, msBuildPath, msBuildConfiguration)
-	InstallVisualScriptEngine ('VisualScriptEngineWxWidgets', vseWxZipUrl, targetFolder, msBuildPath, msBuildConfiguration)
+	InstallVisualScriptEngine ('VisualScriptEngine', '0.2.10', targetFolder, msBuildPath, msBuildConfiguration)
+	InstallVisualScriptEngine ('VisualScriptEngineWxWidgets', '0.0.1', targetFolder, msBuildPath, msBuildConfiguration)
 	return 0
 	
 sys.exit (Main (sys.argv))
