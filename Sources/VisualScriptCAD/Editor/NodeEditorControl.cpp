@@ -39,8 +39,7 @@ const NUIE::BasicSkinParams& GetSkinParams ()
 			{ L"Green", NUIE::Color (160, 239, 160) },
 			{ L"Red", NUIE::Color (239, 189, 160) }
 		}),
-		/*groupPadding*/ 10.0,
-		/*mouseMoveMinOffset*/ 2.0
+		/*groupPadding*/ 10.0
 	);
 	return defaultSkinParams;
 }

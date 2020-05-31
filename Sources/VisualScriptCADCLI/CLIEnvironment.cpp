@@ -74,4 +74,9 @@ NUIE::ClipboardHandler& NodeUIEnvironment::GetClipboardHandler ()
 	return nullClipboardHandler;
 }
 
+double NodeUIEnvironment::GetMouseMoveMinOffset ()
+{
+	return 2.0;
+}
+
 }

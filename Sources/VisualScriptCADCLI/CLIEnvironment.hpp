@@ -25,6 +25,7 @@ public:
 	virtual void						OnRedrawRequested () override;
 	virtual NUIE::EventHandler&			GetEventHandler () override;
 	virtual NUIE::ClipboardHandler&		GetClipboardHandler () override;
+	virtual double						GetMouseMoveMinOffset () override;
 
 private:
 	NE::EvaluationEnv					evaluationEnv;
