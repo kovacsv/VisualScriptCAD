@@ -1,6 +1,7 @@
 # VisualScriptCAD
 
-[![Build Status](https://ci.appveyor.com/api/projects/status/k6w0f78gijardc9c?svg=true)](https://ci.appveyor.com/project/kovacsv/visualscriptcad)
+[![Build Status](https://ci.appveyor.com/api/projects/status/k6w0f78gijardc9c?svg=true)](https://ci.appveyor.com/project/kovacsv/visualscriptcad) ![No Maintenance](https://img.shields.io/maintenance/no/2019)
+
 
 VisualScriptCAD is a simple experimental 3D modeling application based on [VisualScriptEngine](https://github.com/kovacsv/VisualScriptEngine). With VisualScriptCAD you can create fully parametric 3D models and export them to various 3D file formats.
 
